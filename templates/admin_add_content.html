@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="main page">
+    <meta name="author" content="l00351192">
+    <title>添加解决方法</title>
+    <script src="text/jsavascript" src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src="text/jsavascript" src = "{% static 'jquery/jquery-latest.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.js' %}"></script>  
+
+    <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}"
+          rel="stylesheet" media="screen">
+
+</head>
+
+<body style="padding:20px">
+<form role="form" method="post">
+	<div class="form-group">
+		<label for="inputfile">输入版本信息文件</label>
+		<input type="file" id="inputfile" name="inputfile1">
+		<p class="help-block">文件内容格式参考example</p>
+	</div>
+	<button type="submit" class="btn btn-default">生成版本信息</button>
+</form>
+
+<form method="post" action="">{% csrf_token %}
+    {{ form.as_p }}
+    <input type="file" name="personico" /><br /><br /><br />
+    <input type="submit" value="提交"/>
+</form>
+
+</body>
+
+</html>

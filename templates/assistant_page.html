@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+{% extends 'navir_bar.html' %}
+
+
+
+
+
+{% block title%}
+<title>分发开始</title>
+{% endblock%}
+
+{% block content %}
+
+<style type="text/css">
+
+
+
+
+div.col-lg-3
+{
+margin:0px;
+padding:20px;
+text-align:center;
+background:#e5eecc;
+border:solid 1px #c3c3c3;
+height:120px;
+}
+
+#quick_nav
+{
+margin:50px;
+}
+
+.form-group has-feedback has-feedback-left*/
+{
+width=200px;
+}
+</style>
+
+<h3>选择版本:</h3>
+
+<div class="row" id="page">
+    <div class="col-lg-8">
+<div class="row" id="quick_nav">
+    <div class="col-lg-3">
+        a
+    </div>
+    <div class="col-lg-3">
+        b
+    </div>
+    <div class="col-lg-3">
+         c
+    </div>
+    <div class="col-lg-3">
+         d
+    </div>
+</div>
+
+<div class="row" id="quick_nav1">
+    <div class="col-lg-3">
+        a
+    </div>
+    <div class="col-lg-3">
+        b
+    </div>
+    <div class="col-lg-3">
+         c
+    </div>
+    <div class="col-lg-3">
+         d
+    </div>
+</div>
+
+<div class="row" id="quick_nav2">
+    <div class="col-lg-3">
+        <h1>版本:</h1>
+    </div>
+    <div class="col-lg-3">
+        b
+    </div>
+    <div class="col-lg-3">
+         c
+    </div>
+    <div class="col-lg-3">
+         d
+    </div>
+</div>
+    </div>
+    <div class="col-lg-4">
+    <h3>
+        联想推荐
+    </h3>
+    </div>
+</div>
+
+
+
+<div class="row">
+    <div class="col-lg-3">
+    </div>
+    <div class="col-lg-6">
+        <form class="form-horizontal" role="search">
+            <label for="tds_search" class="sr-only">搜索:</label>
+            <input type="text" class="form-control" id="tds_search" value="" placeholder="Search"/>
+        </form>
+    </div>
+    <div class="col-lg-3">
+    </div>
+
+</div>
+<div class="row">
+<div class="col-lg-12">
+    <p>您选择的版本是R10C10,当前对应的版本接口人信息如下</p>
+<p>交付经理:杨发森</p>
+<a>应用:张伟</a></br>
+<a>内核:贾林丽</a></br>
+<a>业务:刘进谋</a></br>
+
+</div>
+</div>
+
+
+
+{% endblock %}

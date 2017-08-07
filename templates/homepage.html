@@ -27,14 +27,15 @@
     <meta name="description" content="main page">
     <meta name="author" content="l00351192">
     <title>半自动化助手</title>
-    <script src="http://apps.bdimg.com/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="text/jsavascript" src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src="text/jsavascript" src = "{% static 'jquery/jquery-latest.js' %}"></script>
   <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.js' %}"></script>  
 
     <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}"
           rel="stylesheet" media="screen">
+
 </head>
 
 <!-- NAVBAR
@@ -53,13 +54,13 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">TDA</a>
+                    <a class="navbar-brand" href="" onClick="window.location.href='./';">TDA</a>
                 </div>
 
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">主页</a></li>
-                        <li><a href="#rtn300">RTN300</a></li>
+                        <li class="active"><a href="" onClick="window.location.href='./';">主页</a></li>
+                        <li><a href="rtn300">RTN300</a></li>
                         <li><a href="#rtn900">RTN900</a></li>
                         <li><a href="#MSTPFrame">MSTP框</a></li>
                         <li><a href="#MSTPBox">MSTP盒</a></li>
@@ -99,52 +100,45 @@
     </ol>
     <div class="carousel-inner" role="listbox">
         <div class="item active">
-        <img class="first-slide" src="" alt="">
-        <div class="container">
-        <div class="carousel-caption">
-                                <h1>单板启动过程.</h1>
-                    <p>有可能是传送网最优质的扫盲贴了.</p>
-                    <p><a class="btn btn-lg btn-primary" href="http://www.baidu.com" role="button">了解一下</a></p>
-<!--            <div class="row">
-                <div class="col-lg-4">
-                </div>-->
-
-            </div>
-        </div>
-        </div>
-    </div>
-    <div class="item">
-        <img class="second-slide" src="" alt="">
-        <div class="container">
-            <div class="carousel-caption">
-                <h1>异常问题定位精彩集合</h1>
-                <p>不会挖坑？对复位问题没有经验？进来瞧一瞧，总能找到你的菜~</p>
-                <p><a class="btn btn-lg btn-primary" href="#" role="button">了解一下</a></p>
-            </div>
-        </div>
-    </div>
-    <div class="item">
-        <img class="third-slide" src="" alt="">
+            <img class="first-slide" src="" alt="">
             <div class="container">
                 <div class="carousel-caption">
-                    <h1>TDS使用指南</h1>
-                    <p>TDS(Trouble Dispatch System)缺陷分发系统使用指导</p>
+                    <h1>单板启动过程.</h1>
+                    <p>有可能是传送网最优质的扫盲贴了.</p>
+                    <p><a class="btn btn-lg btn-primary" href="http://www.baidu.com" role="button">了解一下</a></p>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <img class="second-slide" src="" alt="">
+            <div class="container">
+                <div class="carousel-caption">
+                    <h1>异常问题定位精彩集合</h1>
+                    <p>不会挖坑？对复位问题没有经验？进来瞧一瞧，总能找到你的菜~</p>
                     <p><a class="btn btn-lg btn-primary" href="#" role="button">了解一下</a></p>
                 </div>
             </div>
+        </div>
+        <div class="item">
+            <img class="third-slide" src="" alt="">
+                <div class="container">
+                    <div class="carousel-caption">
+                        <h1>TDS使用指南</h1>
+                        <p>TDS(Trouble Dispatch System)缺陷分发系统使用指导</p>
+                        <p><a class="btn btn-lg btn-primary" href="#" role="button">了解一下</a></p>
+                    </div>
+                </div>
+        </div>
     </div>
-    </div>
-        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div><!-- /.carousel -->
-
-
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
     <!-- Marketing messaging and featurettes
     ================================================== -->
     <!-- Wrap the rest of the page in another container to center all the content. -->
@@ -221,7 +215,7 @@
                 </div>
         </div><!-- /.col-lg-4 -->
     </div><!-- /.row -->
-
+</div>
 
       <!-- START THE FEATURETTES -->
 <!--
@@ -327,6 +321,6 @@
     </div>
     -->
 
-</body>
 
+</body>
 </html>
