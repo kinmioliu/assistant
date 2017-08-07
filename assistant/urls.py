@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from base_assistant.views import TestHomePage, TestAssistant
+from base_assistant import views
 urlpatterns = [
     url(r'^rtn300/', TestAssistant.as_view()),
     url(r'^admin/', admin.site.urls),
