@@ -1,3 +1,4 @@
+#-*-coding:utf-8-*-
 from django.shortcuts import render
 from django.views.generic import View
 import os
@@ -24,42 +25,51 @@ def handle_verinfo_file(file):
     base_dir = os.path.dirname(os.path.abspath(__name__))
     textdir = os.path.join(base_dir, 'static', 'upload');
     filename = os.path.join(textdir, file.name);
+    infos = []
 
     if not os.path.exists(filename):
-        print("exist file")
-        return "exist file"
+        return infos
     else:
         fileobj = open(filename, 'wb+')
         for chrunk in file.chunks():
             fileobj.write(chrunk)
         fileobj.close()
-    fileobjs = open(filename)
-    alllines = fileobjs.readlines()
-    print(alllines)
+    print(filename)
 
-#        parser_verinfo_file(filename)
-    return "yes"
+    #解析文件
+    with open(filename, 'rb') as f:
+        lines = [x.decode('utf8').strip() for x in f.readlines()]
+        for line in lines:
+            infos.append(line.split(':',1))
 
+    print(infos)
+    return infos
 
 # Create your views here.
 class TestHomePage(View):
     def get(self, request):
         print(request)
         print("get")
-        return render(request, "admin_add_content.html")
+        para = dict()
+        uf = VersionFileForm()
+        para['uf'] = uf;
+        return render(request, "admin_add_content.html", para)
+
     def post(self, request):
         if self.request.method == "POST":
             print(self.request.FILES)
             version_file = VersionFileForm(self.request.POST, self.request.FILES)
             print(version_file.is_valid())
             if version_file.is_valid():
-                print("valid")
-                print(version_file)
-
-            file = self.request.FILES.get('verinfo_file')
-            handle_verinfo_file(file)
-
+                file = self.request.FILES.get('verinfo_file')
+                if file != None:
+                    infos = handle_verinfo_file(file)
+                    paras = dict()
+                    paras['infos'] = infos
+                    paras['uf'] = VersionFileForm()
+                    return render(request, "admin_add_content.html", paras)
         return render(request, "admin_add_content.html")
+
 
 class TestAssistant(View):
     def get(self, request):
