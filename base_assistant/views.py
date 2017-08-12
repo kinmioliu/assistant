@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.views.generic import View
 import os
-from base_assistant.forms import VersionFileForm
+from base_assistant.forms import VersionFileForm, VerinfoFileFormModel
 
 def parser_verinfo_file(filename):
     print(filename)
@@ -21,29 +21,62 @@ def parser_verinfo_file(filename):
     print(para)
     return True;
 
+def infos2verinform(infos, verinfform):
+    print(len(infos))
+    if len(infos) < 3:
+        verinfform.errors['err0'] = "输入文件内容非法"
+        return
+    lens = len(infos)
+    print(lens)
+    print(infos)
+    for i in range(0,2):
+        print(infos[i])
+        if infos[i][0] == '产品' or infos[i][0] == '\ufeffproduct':
+            verinfform.product = infos[i][1]
+        elif infos[i][0] == '平台版本' or infos[i][0] == 'platform_ver':
+            verinfform.platform_ver = infos[i][1]
+        elif infos[i][0] == '产品版本' or infos[i][0] == 'product_ver':
+            verinfform.product_ver = infos[i][1]
+        else:
+            verinfform.errors['err1'] = "参数非法"
+            return
+
+    info = ""
+    for i in range(3,lens):
+        print(infos[i])
+        info += infos[i][0];
+        info += ","
+        info += infos[i][1];
+        info += ";"
+    print(info)
+    verinfform.verinfo = info
+    return
+
 def handle_verinfo_file(file):
     base_dir = os.path.dirname(os.path.abspath(__name__))
     textdir = os.path.join(base_dir, 'static', 'upload');
     filename = os.path.join(textdir, file.name);
+    verinfo_formmodel = VerinfoFileFormModel()
     infos = []
 
+    #for test
     if not os.path.exists(filename):
-        return infos
+        return verinfo_formmodel
     else:
         fileobj = open(filename, 'wb+')
         for chrunk in file.chunks():
             fileobj.write(chrunk)
         fileobj.close()
-    print(filename)
 
     #解析文件
-    with open(filename, 'rb') as f:
+    with open(filename, 'rb+') as f:
         lines = [x.decode('utf8').strip() for x in f.readlines()]
         for line in lines:
             infos.append(line.split(':',1))
 
-    print(infos)
-    return infos
+    infos2verinform(infos, verinfo_formmodel)
+    print(verinfo_formmodel.verinfo)
+    return verinfo_formmodel
 
 # Create your views here.
 class TestHomePage(View):
@@ -56,19 +89,30 @@ class TestHomePage(View):
         return render(request, "admin_add_content.html", para)
 
     def post(self, request):
+        paras = dict()
         if self.request.method == "POST":
-            print(self.request.FILES)
+            #表单获取
             version_file = VersionFileForm(self.request.POST, self.request.FILES)
-            print(version_file.is_valid())
+            verinfo_form = VerinfoFileFormModel(self.request.POST)
+            #提交了文件表单
             if version_file.is_valid():
                 file = self.request.FILES.get('verinfo_file')
                 if file != None:
                     infos = handle_verinfo_file(file)
-                    paras = dict()
-                    paras['infos'] = infos
-                    paras['uf'] = VersionFileForm()
+                    print("infossss")
+                    print(infos.verinfo)
+                    infos.save(commit= True)
+                    paras['verinfo_form'] = infos
+                    paras['uf'] = version_file
                     return render(request, "admin_add_content.html", paras)
-        return render(request, "admin_add_content.html")
+            #提交了版本信息
+            elif verinfo_form.is_valid():
+                verinfo_form.save();
+                return render(request, "admin_add_content.html", paras)
+        #提交空表单
+        else:
+            paras['uf'] = VersionFileForm()
+        return render(request, "admin_add_content.html", paras)
 
 
 class TestAssistant(View):
