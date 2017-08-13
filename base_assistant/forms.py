@@ -12,4 +12,5 @@ class VerinfoFileFormModel(forms.ModelForm):
         model = VersionInfo
         fields = ['product', 'platform_ver', 'product_ver', 'verinfo']
 
-
+class SearchForm(forms.Form):
+    query = forms.CharField(label='cfg-add-board', widget=forms.TextInput(attrs={'size':32, 'class':'form-control'}))

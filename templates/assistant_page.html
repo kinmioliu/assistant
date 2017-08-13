@@ -1,41 +1,117 @@
 <!DOCTYPE html>
 {% extends 'navir_bar.html' %}
-
-
-
+{% load staticfiles %}
 
 
 {% block title%}
 <title>分发开始</title>
 {% endblock%}
 
+{% block js %}
+<script type="text/javascript" src="{% static 'js/search.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 
 <style type="text/css">
-
-
-
-
-div.col-lg-3
+.verinfo_card {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    height: 200px;
+    margin-bottom: 30px;
+    border-radius: 6px;
+    color: rgba(0, 0, 0, 0.87);
+    background: #fff;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+.verinfo_card.detail{
+    margin-top: 15px;
+}
+.verinfo_card.detail.blank
 {
-margin:0px;
-padding:20px;
-text-align:center;
-background:#e5eecc;
-border:solid 1px #c3c3c3;
-height:120px;
+    width:80%;
+}
+.verinfo_card.detail.question
+{
+    width:20%;
 }
 
-#quick_nav
-{
-margin:50px;
+.verinfo_card.h2{
+    width=5px;
 }
 
-.form-group has-feedback has-feedback-left*/
-{
-width=200px;
+.verinfo_card .ftr {
+    margin-top: 15px;
 }
+
+.verinfo_card .ftr div {
+    display: inline-block;
+}
+
+.verinfo_card .ftr .author {
+    color: #888;
+}
+
+.verinfo_card .ftr .stats {
+    float: right;
+    line-height: 30px;
+}
+
+.verinfo_card .ftr .stats {
+    position: relative;
+    top: 1px;
+    font-size: 14px;
+}
+
+.page-ztb-box3 .ztb-zy-list{margin-top:50px}
+.page-ztb-box3 .ztb-zy-list li{float: left;width: 25%;height:155px;position: relative;}
+.ztb-zy-i{position: absolute;top:0;right:20px;bottom:20px;left: 0;color:#ffffff;font-family: 'Microsoft YaHei';font-size: 14px;white-space: nowrap;text-align: center;cursor: pointer;}
+.ztb-zy-i .vh-i{display: inline-block;height: 100%;width: 0;vertical-align: middle;}
+.ztb-zy-i .cnt-area{position: relative;display: inline-block;margin:0 20px;vertical-align: middle;white-space: normal;text-align: left;}
+.ztb-zy-i..ztb-zy-i-m{width:100%;height: 100%}
+.ztb-zy-i-m .text{display: block;margin-top:10px;}
+.ztb-zy-i .ztb-zy-i-d{width:100%;height: 100%;position: absolute;top:0;left:0;opacity:0;
+    -webkit-transition: all .25s ease;
+    -moz-transition: all .25s ease;
+    -o-transition: all .25s ease;
+    transition: all .25s ease;
+}
+.ztb-zy-i:hover .ztb-zy-i-d{
+    z-index:201413159;
+    opacity: 1;
+    filter: alpha(opacity=100);
+    -webkit-transition: all .25s ease;
+    -moz-transition: all .25s ease;
+    -o-transition: all .25s ease;
+    transition: all .25s ease;
+    -webkit-transform: scale(1.15, 1.3);
+    -moz-transform: scale(1.15, 1.3);
+    -ms-transform: scale(1.15, 1.3);
+    -o-transform: scale(1.15, 1.3);
+    transform: scale(1.15, 1.3);
+}
+
 </style>
+
+<script>
+$(document).ready(function(){
+$(#testajax).click(function(){
+    $.post('/search/',{},function(ret){$('.lable').html(ret.result)})});
+
+$('#search-form').submit(function(e){
+    alert("You clicked me!");
+    $.post("/search/", $(this).serialize(), function(data){
+        $('.assistant_page').html(data);
+        });
+    e.preventDefault();
+});
+});
+
+
+</script>
+
+
 
 <h3>选择版本:</h3>
 
@@ -43,22 +119,74 @@ width=200px;
     <div class="col-lg-8">
 <div class="row" id="quick_nav">
     <div class="col-lg-3">
-        a
+
+        <div class="card">
+                            <div class="table table-info">
+                                <h5 class="category-social">
+	    									<i class="fa fa-twitter"></i> Twitter
+	    								</h5>
+                                <h4 class="card-caption">
+	    									<a href="#">"Vivamus odio ante, feugiat eget nisi sit amet, dignissim velit. Sus pendisse ultricies varius."</a>
+	    								</h4>
+                                <div class="ftr">
+                                    <div class="author">
+                                        <a href="#"> <img src="images/avatar1.png" alt="" class="avatar img-raised"> <span>Debbon Amet</span> </a>
+                                    </div>
+                                    <div class="stats"> <i class="fa fa-heart"></i> 365 &nbsp; <i class="fa fa-share-alt"></i> 120 </div>
+                                </div>
+                            </div>
+                        </div>
+
+
     </div>
     <div class="col-lg-3">
-        b
+        <div class="verinfo_card">
+                                <div class="ftr">
+                                    <div class="author">
+                                        aaa
+                                    </div>
+                                    <div class="stats">
+                                        <i class="fa fa-heart"></i>
+                                        365 &nbsp;
+                                        <i class="fa fa-share-alt"></i>
+                                        120
+                                    </div>
+                                </div>
+            <h2>product_ver</h2>
+            <h3>utsver</h3>
+            <p>info</p>
+        </div>
     </div>
     <div class="col-lg-3">
-         c
+         <div class="verinfo_card">
+             <div class="detail">
+                 <div class="blank"></div>
+                 <div class="question">???</div>
+             </div>
+         </div>
     </div>
     <div class="col-lg-3">
-         d
+        <div class="verinfo_card2">
+            ccc
+        </div>
     </div>
 </div>
 
 <div class="row" id="quick_nav1">
     <div class="col-lg-3">
-        a
+        <div class="ztb-zy-i">
+            <div class="ztb-zy-i-m" style="background-color:#9d7cd4">
+                <i class="vh-i"></i>
+                <div class="cnt-area">
+                    <span class="ico"><img src="http://www.jsdaima.com/Uploads/js/201705/1494912198/ios开发工程师_tQEO92m.png" alt="iOS应用开发"></span>
+                    <span class="text">iOS应用开发</span>
+                </div>
+            </div>
+            <div class="ztb-zy-i-d" style="background-color:#9d7cd4">
+                <i class="vh-i"></i>
+                <div class="cnt-area">6964位学员正在学习</div>
+            </div>
+        </div>
     </div>
     <div class="col-lg-3">
         b
@@ -76,13 +204,17 @@ width=200px;
         <h1>版本:</h1>
     </div>
     <div class="col-lg-3">
-        b
+                <form class="form-horizontal" role="search">
+            <label for="tds_search" class="sr-only">搜索:</label>
+            <input type="text" class="form-control" id="tds_search" value="" placeholder="Search"/>
+        </form>
     </div>
     <div class="col-lg-3">
          c
     </div>
-    <div class="col-lg-3">
-         d
+    <div class="col-lg-3" >
+        <button id="testajax"> btn</button>
+
     </div>
 </div>
     </div>
@@ -99,10 +231,21 @@ width=200px;
     <div class="col-lg-3">
     </div>
     <div class="col-lg-6">
-        <form class="form-horizontal" role="search">
-            <label for="tds_search" class="sr-only">搜索:</label>
-            <input type="text" class="form-control" id="tds_search" value="" placeholder="Search"/>
-        </form>
+        <div class="row clearfix">
+            <div class="col-md-6 col-md-offset-3 column">
+                <form id="search-form" action="" method="post">
+                    {% csrf_token %}
+                    <div class="input-group input-group-sm">
+                        {{ search.query.errors }}
+                        {{ search.query }}
+                        <span class="input-group-btn">
+                            <button class="btn btn-search" type="submit">search</button>
+                        </span>
+                    </div><!-- /input-group -->
+                </form>
+            </div>
+            <div class="col-lg-12 column cmdinfos"> </div>
+        </div>
     </div>
     <div class="col-lg-3">
     </div>
@@ -122,3 +265,4 @@ width=200px;
 
 
 {% endblock %}
+

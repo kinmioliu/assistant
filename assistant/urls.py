@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^rtn300/', TestAssistant.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^', TestHomePage.as_view()),
+url(r'/search/', TestHomePage.as_view()),
 ]

@@ -1,8 +1,13 @@
 #-*-coding:utf-8-*-
 from django.shortcuts import render
 from django.views.generic import View
+from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm
+from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, ResponsibilityField
+from django.template import Context
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+import json
 import os
-from base_assistant.forms import VersionFileForm, VerinfoFileFormModel
 
 def parser_verinfo_file(filename):
     print(filename)
@@ -21,47 +26,41 @@ def parser_verinfo_file(filename):
     print(para)
     return True;
 
-def infos2verinform(infos, verinfform):
-    print(len(infos))
-    if len(infos) < 3:
-        verinfform.errors['err0'] = "输入文件内容非法"
+def infos2verinform(infos, verinfo_model):
+    print("info2ver")
+    if len(infos) < 4:
         return
-    lens = len(infos)
-    print(lens)
     print(infos)
-    for i in range(0,2):
-        print(infos[i])
-        if infos[i][0] == '产品' or infos[i][0] == '\ufeffproduct':
-            verinfform.product = infos[i][1]
+    for i in range(0,3):
+        if infos[i][0] == '产品型号' or infos[i][0] == '\ufeffproduct_type':
+            verinfo_model.product = infos[i][1]
         elif infos[i][0] == '平台版本' or infos[i][0] == 'platform_ver':
-            verinfform.platform_ver = infos[i][1]
+            verinfo_model.platform_ver = infos[i][1]
         elif infos[i][0] == '产品版本' or infos[i][0] == 'product_ver':
-            verinfform.product_ver = infos[i][1]
+            verinfo_model.product_ver = infos[i][1]
         else:
-            verinfform.errors['err1'] = "参数非法"
             return
 
     info = ""
-    for i in range(3,lens):
-        print(infos[i])
+    for i in range(3,len(infos)):
         info += infos[i][0];
         info += ","
         info += infos[i][1];
         info += ";"
     print(info)
-    verinfform.verinfo = info
+    verinfo_model.verinfo = info
     return
 
 def handle_verinfo_file(file):
     base_dir = os.path.dirname(os.path.abspath(__name__))
     textdir = os.path.join(base_dir, 'static', 'upload');
     filename = os.path.join(textdir, file.name);
-    verinfo_formmodel = VerinfoFileFormModel()
+    verinfo_model = VersionInfo()
     infos = []
 
     #for test
     if not os.path.exists(filename):
-        return verinfo_formmodel
+        return verinfo_model
     else:
         fileobj = open(filename, 'wb+')
         for chrunk in file.chunks():
@@ -74,15 +73,14 @@ def handle_verinfo_file(file):
         for line in lines:
             infos.append(line.split(':',1))
 
-    infos2verinform(infos, verinfo_formmodel)
-    print(verinfo_formmodel.verinfo)
-    return verinfo_formmodel
+    print(infos)
+    infos2verinform(infos, verinfo_model)
+    return verinfo_model
 
 # Create your views here.
-class TestHomePage(View):
+class TestAddContent(View):
     def get(self, request):
         print(request)
-        print("get")
         para = dict()
         uf = VersionFileForm()
         para['uf'] = uf;
@@ -98,16 +96,15 @@ class TestHomePage(View):
             if version_file.is_valid():
                 file = self.request.FILES.get('verinfo_file')
                 if file != None:
-                    infos = handle_verinfo_file(file)
-                    print("infossss")
-                    print(infos.verinfo)
-                    infos.save(commit= True)
-                    paras['verinfo_form'] = infos
+                    verinfo = handle_verinfo_file(file)
+                    verinfo_formmodel = VerinfoFileFormModel(instance=verinfo)
+                    paras['verinfo_form'] = verinfo_formmodel
                     paras['uf'] = version_file
                     return render(request, "admin_add_content.html", paras)
             #提交了版本信息
             elif verinfo_form.is_valid():
                 verinfo_form.save();
+                paras['uf'] = VersionFileForm()
                 return render(request, "admin_add_content.html", paras)
         #提交空表单
         else:
@@ -122,8 +119,22 @@ class TestAssistant(View):
     def post(self, request):
         return render(request, "assistant_page.html")
 
-class TestAddContent(View):
+
+
+class TestHomePage(View):
     def get(self, request):
-        return render(request, "admin_add_content.html")
+        form = SearchForm()
+        paras = dict()
+        paras['search'] = form
+        return render(request, "assistant_page.html", paras)
     def post(self, request):
-        return render(request, "admin_add_contetn.html")
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            cmdinfo = MMLCmdInfo.objects.filter(cmdname__icontains=query)
+            #context = Context({"query":query, "cmdinfos":cmdinfo})
+            context = dict({"query": query, "cmdinfos": cmdinfo})
+            return_str = render_to_string('partials/_cmdmml_search.html', context)
+            print(return_str)
+            return HttpResponse(json.dumps(return_str),content_type="application/json")
+        return render(request, "assistant_page.html.html")
