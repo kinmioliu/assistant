@@ -119,15 +119,22 @@ class TestAssistant(View):
     def post(self, request):
         return render(request, "assistant_page.html")
 
-
-
 class TestHomePage(View):
     def get(self, request):
+        return render(request, "homepage.html")
+    def post(self, request):
+        print("post")
+        return render(request, "homepage.html")
+
+class TestTDSPage(View):
+    def get(self, request):
+        print("testtdspage")
         form = SearchForm()
         paras = dict()
         paras['search'] = form
         return render(request, "assistant_page.html", paras)
     def post(self, request):
+        print("post hhh1")
         form = SearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
@@ -137,4 +144,4 @@ class TestHomePage(View):
             return_str = render_to_string('partials/_cmdmml_search.html', context)
             print(return_str)
             return HttpResponse(json.dumps(return_str),content_type="application/json")
-        return render(request, "assistant_page.html.html")
+        return HttpResponse("/search")

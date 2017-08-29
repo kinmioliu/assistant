@@ -22,6 +22,40 @@
     $(".panel").slideDown("slow");
   });
     });
+
+    $(document).ready(function(){
+    console.log($("form").serialize()); // FirstName=Bill&LastName=Gates
+});
+
+ $(document).ready(function(){  
+    console.log($("form").serialize()); // FirstName=Bill&LastName=Gates
+              $.ajaxSetup({  
+                   data: {csrfmiddlewaretoken: '{{ csrf_token }}' },  
+              });  
+             $('#sqlform').submit(function(){  
+                  var input = $("#sqlinput").val();                 //获得form中用户输入sql语句注意 与你html中input的id一致  
+                    console.log("执行了提交"); // FirstName=Bill&LastName=Gates
+                  $.ajax({  
+                      type:"POST",  
+                      data: {input:input},  
+                      url: "", //后台处理函数的url 这里用的是static url 需要与urls.py中的name一致,或者直接写http地址  
+                      cache: false,  
+                      dataType: "html",  
+                      success: function(ret){
+                         $('#sql_output').html(ret)    
+                         // var content= $("#sqlinput");  
+                         // $('#sql_output').append(content.val());  
+                          
+                     },  
+                     error: function(){  
+                         alert("false");  
+                     }  
+                 });  
+                 return false;  
+             });  
+   
+         }); 
+
     </script>
 
 <style type="text/css">
@@ -57,7 +91,18 @@ display:none;
 <p class="flip">请点击这里</p>
 
 
+<form action="">
+First name: <input type="text" name="FirstName" value="Bill" /><br />
+Last name: <input type="text" name="LastName" value="Gates" /><br />
+</form>
 
+
+<form id="sqlform" method="post">  
+ {% csrf_token %}
+ <input  id="sqlinput" name="sqlinputname" type="text"></input>
+ <button id="submit" type="submit" >查询</button>
+ </form>  
+ <pre id="sql_output" style="width:95%;margin-top:10px;height:100%;background-color:#fefcff; border:#d1d0ce 1px solid;" ></pre>  
 
 </body>
 </html>

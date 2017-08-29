@@ -1,9 +1,10 @@
 {% for cmdinfo in cmdinfos %}
 <div class="well">
     <span>{{ cmdinfo.cmdname }}</span>
+    <span>{{ cmdinfo.responsefield.groupname }}</span>
 </div>
 {% endfor %}
-{% if not tweets %}
+{% if not cmdinfos %}
 <div class="well">
     <span> 没找到和{{query}}相关的结果.</span>
 </div>
