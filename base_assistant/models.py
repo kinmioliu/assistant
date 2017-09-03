@@ -27,3 +27,19 @@ class MMLCmdInfo(models.Model):
     responsefield = models.ForeignKey("ResponsibilityField")
     #相关问题列表
     solutions = models.ManyToManyField("Solution")
+
+class Questions(models.Model):
+    #相关产品
+    product = models.CharField(max_length=30)
+
+class Replay(models.Model):
+    #QuestionID
+    question = models.ForeignKey("Solution")
+    #Replay
+    question = models.ForeignKey("Replay")
+    #url 指向wiki的
+    url = models.URLField()
+    #describe
+    describe = models.CharField(max_length=200)
+
+

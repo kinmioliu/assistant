@@ -11,7 +11,12 @@
 <script src = "{% static 'js/search.js' %}"></script>
 
 <script>
-
+$(document).ready(function(){
+$(".cardinfo").click(function(){
+console.log("d");
+$(".ttt").append("<b>Appended text</b>.")
+});
+});
 </script>
 
 {% endblock %}
@@ -28,17 +33,66 @@ body {
 
 {% block content %}
 
-<h3>选择版本:</h3>
 
-<div class="row" id="page">
+<h3><span class="label label-default">默认标签</span><span class="label label-default">默认标签</span></h3>
+
+<h3 class="ttt">选择版本:</h3>
+
+<div class="row">
     <div class="col-lg-8">
         <div class="row" id="quick_nav">
+            <div class="col-lg-3">
+                <div class="verinfo_card cardinfo" id="cardinfo1">
+                    <div class="verinfo">
+                        <div class="text">
+                            <h2>产品版本.</h2>
+                            <h3 class="animate-text">平台版本UTSV1R3.</h3>
+                            <p class="animate-text">版本信息. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-3">
                 <div class="verinfo_card">
                     <div class="verinfo">
                         <div class="text">
                             <h2>产品版本.</h2>
                             <h3 class="animate-text">平台版本.</h3>
+                            <p class="animate-text">版本信息. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="verinfo_card">
+                    <div class="verinfo">
+                        <div class="text">
+                            <h2>产品版本.</h2>
+                            <h3 class="animate-text">平台版本.</h3>
+                            <p class="animate-text">版本信息. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                <div class="verinfo_card">
+                    <div class="verinfo">
+                        <div class="text">
+                            <h2>产品版本.</h2>
+                            <h3 class="animate-text">平台版本.</h3>
+                            <p class="animate-text">版本信息. </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" id="quick_nav1">
+            <div class="col-lg-3">
+                <div class="verinfo_card cardinfo" id="cardinfo2">
+                    <div class="verinfo">
+                        <div class="text">
+                            <h2>产品版本.</h2>
+                            <h3 class="animate-text">平台版本UTSV1R3.</h3>
                             <p class="animate-text">版本信息. </p>
                         </div>
                     </div>
@@ -79,6 +133,7 @@ body {
             </div>
         </div>
     </div>
+
     <div class="col-lg-4">
     <h3>
         相关推荐
@@ -100,6 +155,13 @@ body {
                 </form>
             </div>
         </div>
+
+<div id="myButtons2" class="bs-example">
+	<button type="button" class="btn btn-primary"
+			data-loading-text="Loading..." style="width:200" onclick="window.location='tds'">原始
+	</button>
+</div>
+
  <div class="col-md-12 column cmdinfos">  </div>
 
 <div class="row">

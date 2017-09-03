@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RTN380</title>
+    <meta name="description" content="main page">
+    <meta name="author" content="l00351192">
+    <script src = "{% static 'jquery/jquery.js' %}"></script>
+    <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+
+    <link href="{% static 'cards-style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'extcss/animate.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'extcss/tds.css' %}" rel="stylesheet" type="text/css">
+
+    <script>
+        $(function() {
+		    $("#tdsbtn").click(function(e){
+		        //根据tdspath的内容向服务器发起请求
+		        var childrensize = $("#tdspath").children().length;
+                //alert("请求数据1"+ childrensize);
+		        //若没有孩子节点，
+		        if (childrensize == 0)
+		        {
+		            //从服务器请求数据
+		            console.log("执行了提交"+$(this).serialize());
+                    $.post('', {'requesttype':'getverinfo', 'product':'RTN300'}, function(verinfo_data){
+                    console.log(verinfo_data);
+                    $("#selector_info").text("选择版本信息")
+                    var jslength=0;
+                    //将数据填充到html
+                    for(var data in verinfo_data){
+                        jslength++;
+                        if (jslength == 1)
+                            continue;
+                      $(".selector:eq("+(jslength-2)+")").html(verinfo_data[data])
+                    }
+                    });
+                    e.preventDefault();
+		        }
+		        else
+		        {
+		            alert("请求数据5"+ childrensize);
+		        }
+		    });
+		});
+    </script>
+
+    <script>
+    $(document).ready(function(){
+        // 点击selector
+        $(".selector").click(function(){
+            //提取selector的内容
+            $(this).children().attr("class")
+            var selector_class = $(this).children().attr("class")
+            if (selector_class == "verinfo_card")
+                var verinfo_text = $(this).children().children().children();
+                var product_ver = verinfo_text.children("h2").text();
+                var platform_ver = verinfo_text.children("h3").text();
+                var info_ver = verinfo_text.children("p").text();
+
+                var tag = '<span class="label label-info label-verinfo col-sm-1 input-sm" style="font-size:20px;">' + platform_ver + '</span>'
+                if ($("#tdspath").children(".label-verinfo").length == 0)
+                    $("#tdspath").append(tag)
+                else
+                    $("#tdspath").children(".label-verinfo").text(platform_ver)
+
+                var pathinfo_tag = '<p class="pathinfo_ver">您选择的版本是'+ product_ver + 'R10C10,当前对应的版本接口人信息如下</p>' +
+                                '<p class="pathinfo_verinfo">'+ info_ver +'<p>'
+
+                if ($("#tdsinfo").children(".pathinfo_ver").length == 0)
+                    $("#tdsinfo").append(pathinfo_tag)
+                else
+                    $("#tdsinfo").children(".pathinfo_ver").text(product_ver)
+                    $("#tdsinfo").children(".pathinfo_verinfo").text(info_ver)
+
+                // 申请相关版本信息
+                $.post('', {'requesttype':'get_relative_question', 'product':'RTN300', 'verinfo':platform_ver}, function(verinfo_data){
+                console.log(verinfo_data);
+                $("#selector_info").text("选择版本信息")
+                var jslength=0;
+                //将数据填充到html
+                for(var data in verinfo_data){
+                    jslength++;
+                    if (jslength == 1)
+                        continue;
+                  $(".selector:eq("+(jslength-2)+")").html(verinfo_data[data])
+                }
+                });
+                e.preventDefault();
+        });
+    });
+
+    </script>
+
+
+</head>
+
+<body style="padding:40px">
+<button type="button" class="btn btn-primary" style="width:200px" id="tdsbtn" data-complete-text="重置">开始 </button>
+
+<!-- 显示定位路径-->
+<div class="row" id="tdspath">
+    <!--<span class="label label-info col-sm-1 input-sm label-verinfo" style="font-size:20px;">默认标签</span>-->
+</div>
+
+<!-- 定位面板 -->
+<div class="row">
+    <!-- 定位信息（供选择）-->
+    <div class="col-lg-8">
+        <!-- 选择标题-->
+        <div class="row">
+            <h3 id="selector_info"></h3>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+            <div class="col-lg-3 selector">
+            </div>
+        </div>
+    </div>
+
+    <!-- 历史定位信息（供推荐）-->
+    <div class="col-lg-4">
+    <h3>
+        相关推荐
+    </h3>
+    </div>
+
+</div>
+
+<!-- 定位过程 -->
+<div class="row" id="tdsinfo">
+
+</div>
+
+</body>
+
+</html>

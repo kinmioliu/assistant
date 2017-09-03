@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage
+from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage, RTN300, TestTDS
 from base_assistant import views
 
 urlpatterns = [
-    url(r'^rtn300/', TestTDSPage.as_view()),
+    url(r'^rtn300/$', RTN300.as_view()),
+    url(r'^rtn300/tds/$', TestTDS.as_view()),
     url(r'^admin/', admin.site.urls),
     url(r'^$', TestHomePage.as_view()),
     url(r'^search/$', TestTDSPage.as_view()),

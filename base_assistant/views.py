@@ -1,11 +1,12 @@
 #-*-coding:utf-8-*-
+from django.core import serializers
 from django.shortcuts import render
 from django.views.generic import View
 from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm
 from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, ResponsibilityField
 from django.template import Context
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 import json
 import os
 
@@ -145,3 +146,97 @@ class TestTDSPage(View):
             print(return_str)
             return HttpResponse(json.dumps(return_str),content_type="application/json")
         return HttpResponse("/search")
+
+    def getpg_by_product(self, request, product):
+        verinfos = VersionInfo.objects.filter(product=product)
+        print("testtdspage")
+        print(verinfos)
+        form = SearchForm()
+        paras = dict()
+        paras['search'] = form
+        return render(request, "assistant_page.html", paras)
+
+class RTN300(TestTDSPage):
+    def get(self, request):
+        product = 'RTN300'
+        print("testtdspage")
+        return TestTDSPage.getpg_by_product(self, request, product)
+
+class SolutionNode:
+    serial_num = 0
+    solution_info = ''
+    def __init__(self, num, info):
+        self.serial_num = num
+        self.solution_info = info
+
+    def __str__(self):
+        return str(self.serial_num) + self.solution_info
+
+class SolutionModel:
+    parent = SolutionNode(0,'')
+    selfinfo = SolutionNode(0,'')
+    level = 0
+
+    def __init__(self, parent, selfinfo, level):
+        self.parent = parent
+        self.selfinfo = selfinfo
+        self.level = level
+
+def parse_solution_file(path):
+    path = r"F:\pyhton\project\site\assistant\templates\syserr_solution.txt"
+    print(path)
+    solution_file = open(path)
+    lines = solution_file.readlines()
+    infos = dict()
+    begin_construct = False;
+    for line in lines:
+        #读取
+        if line.find('[solution]') > 0:
+            begin_construct = True
+
+        #读取数字
+        if begin_construct == False:
+            solution = line.split('.', 1)
+            if len(solution) == 2:
+                serial_num = solution[0]
+                replay = solution[1]
+                if serial_num.isdigit():
+                    infos[serial_num] = SolutionNode(num = serial_num, info = replay)
+
+        #开始筛选节点
+        if begin_construct == True:
+            print("筛选" + line)
+
+    print(infos)
+    solution_file.close()
+#        print(solution)
+
+class TestTDS(View):
+    def get(self, request):
+        paras = dict()
+        return render(request, 'tds.html', paras)
+
+    def post(self, request):
+        requestype = request.POST['requesttype']
+        product = request.POST['product']
+        print(requestype)
+        if (requestype == 'getverinfo'):
+            verinfos = VersionInfo.objects.filter(product=product)
+            verinfo_ajax = serializers.serialize("json",verinfos)
+            paras = {'requesttype':requestype}
+            i = 0;
+            for verinfo in verinfos:
+                context = {"verinfo":verinfo}
+                verinfo_xml_str = render_to_string('partials/_verinfo_card.html', context)
+                print(verinfo_xml_str)
+                paras['verinfo'+ str(i)] = verinfo_xml_str
+                i += 1
+
+            print(paras)
+            return JsonResponse(paras)
+        elif (requestype == 'get_relative_question'):
+            path = ""
+            print("path111")
+            parse_solution_file(path)
+            return HttpResponse("")
+        return HttpResponse("")
