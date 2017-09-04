@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 import json
 import os
+import re
 
 def parser_verinfo_file(filename):
     print(filename)
@@ -175,12 +176,14 @@ class SolutionNode:
 class SolutionModel:
     parent = SolutionNode(0,'')
     selfinfo = SolutionNode(0,'')
-    level = 0
+    parents = dict()
 
-    def __init__(self, parent, selfinfo, level):
+    def __init__(self, parent, selfinfo):
         self.parent = parent
         self.selfinfo = selfinfo
-        self.level = level
+
+    def __str__(self):
+        return str(self.parent.serial_num) + "<-" + str(self.selfinfo.serial_num)
 
 def parse_solution_file(path):
     path = r"F:\pyhton\project\site\assistant\templates\syserr_solution.txt"
@@ -188,26 +191,104 @@ def parse_solution_file(path):
     solution_file = open(path)
     lines = solution_file.readlines()
     infos = dict()
+    solution_path_node = dict()
     begin_construct = False;
+
     for line in lines:
         #读取
-        if line.find('[solution]') > 0:
+        if line.find('solution]') > 0:
+            print("find solution")
             begin_construct = True
 
         #读取数字
-        if begin_construct == False:
+        elif begin_construct == False:
             solution = line.split('.', 1)
             if len(solution) == 2:
                 serial_num = solution[0]
                 replay = solution[1]
                 if serial_num.isdigit():
-                    infos[serial_num] = SolutionNode(num = serial_num, info = replay)
+                    infos[int(serial_num)] = SolutionNode(num = serial_num, info = replay)
 
         #开始筛选节点
-        if begin_construct == True:
+        elif begin_construct == True:
             print("筛选" + line)
+            nodes = line.split("->")
+            size = len(nodes)
+            cur_pos = 0
+            for node in nodes:
+                cur_pos += 1
+                #若是第一个节点
+                if node == nodes[0]:
+                    print("cur_pos:" + str(cur_pos) + "," + node)
+                    serial_num = int(node)
+                    #若已经存在，就跳过
+#                    if solution_path_node.has_key(serial_num):
+                    if serial_num in solution_path_node:
+                        print("solution_path_node.has_key(serial_num):")
+                        continue;
+                    # 若不存在，就创建，并加入到字典中
+                    else:
+                        sm = SolutionModel(parent=SolutionNode(0,''), selfinfo=infos[serial_num])
+                        solution_path_node[serial_num] = sm
+                #是最后一个节点
+                elif node == nodes[size-1]:
+                    print("cur_pos:" + str(cur_pos) + "," + node)
+                    #判断是否有()
+                    if node.find(')') > 0:
+                        #提取()中的内容
+                        substr = re.findall(r'[^()]+', node)[0]
+#                        print("substr:" + substr)
+                        tail_nodes = substr.split(',')
+                        #(10,11,12,13)
+ #                       print(tail_nodes)
+                        for tail_node in tail_nodes:
+                            serial_num = int(tail_node)
+                            print("tail_node:" + str(serial_num))
+                            # 若是中间节点，则直接创建，或者是提取上一个节点到配置
+                            #if solution_path_node.has_key(serial_num):
+                            if serial_num in solution_path_node:
+                                #若节点存在，则刷新父亲节点
+                                tmp_node = solution_path_node[serial_num]
+                                tmp_node.parent = infos[int(nodes[cur_pos - 2])]
+                                solution_path_node[serial_num] = tmp_node
+                            else:
+                                #若节点不存在，则创建
+  #                              print("pre node:" + nodes[cur_pos - 2])
+                                sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])], selfinfo=infos[serial_num])
+                                solution_path_node[serial_num] = sm
 
-    print(infos)
+                    else:
+                        #没有节点
+                        serial_num = int(tail_node)
+                        # 若是中间节点，则直接创建，或者是提取上一个节点到配置
+#                        if solution_path_node.has_key(serial_num):
+                        if serial_num in solution_path_node:
+                            # 若节点存在，则刷新父亲节点
+                            tmp_node = solution_path_node[serial_num]
+                            tmp_node.parent = infos[int(nodes[cur_pos - 2])]
+                            solution_path_node[serial_num] = tmp_node
+                        else:
+                            # 若节点不存在，则创建
+#                            print("pre node:" + nodes[cur_pos - 2])
+                            sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])], selfinfo=infos[serial_num])
+                            solution_path_node[serial_num] = sm
+
+                else:
+                    print("cur_pos:" + str(cur_pos) + "," + node)
+                    serial_num = int(node)
+                    #若是中间节点，则直接创建，或者是提取上一个节点到配置
+#                    if solution_path_node.has_key(serial_num):
+                    if serial_num in solution_path_node:
+                        print("语法问题")
+                        return 0xffff   #若存在，说明语法有问题
+                    else:
+                        sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])],selfinfo= infos[serial_num])
+                        solution_path_node[serial_num] = sm
+
+    for sm in solution_path_node:
+        print(solution_path_node[sm])
+
+#    print(infos)
     solution_file.close()
 #        print(solution)
 
