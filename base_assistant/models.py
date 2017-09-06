@@ -10,7 +10,10 @@ class VersionInfo(models.Model):
 
 #解决方法
 class Solution(models.Model):
-    solutionname = models.CharField(max_length=100)
+    solutionname = models.CharField(max_length=200)
+    #是否是问题，默认为False
+    is_question = models.BooleanField(default=False)
+    nex_solution = models.ForeignKey('self')
     url = models.URLField()
 
 #责任田
@@ -41,5 +44,4 @@ class Replay(models.Model):
     url = models.URLField()
     #describe
     describe = models.CharField(max_length=200)
-
 

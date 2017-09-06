@@ -164,26 +164,82 @@ class RTN300(TestTDSPage):
         return TestTDSPage.getpg_by_product(self, request, product)
 
 class SolutionNode:
-    serial_num = 0
-    solution_info = ''
+#    serial_num = 0
+#    solution_info = ''
     def __init__(self, num, info):
         self.serial_num = num
         self.solution_info = info
 
     def __str__(self):
-        return str(self.serial_num) + self.solution_info
+        return str(self.serial_num)
+#        return str(self.serial_num) + self.solution_info
 
 class SolutionModel:
-    parent = SolutionNode(0,'')
-    selfinfo = SolutionNode(0,'')
-    parents = dict()
+#    parent = SolutionNode(0,'')
+#    selfinfo = SolutionNode(0,'')
+#    parents = {0:SolutionNode(0,'')}
+ #   parents = {}
 
     def __init__(self, parent, selfinfo):
-        self.parent = parent
+        #self.parent = parent
         self.selfinfo = selfinfo
+        self.parents = dict()#[parent.serial_num] = parent
+#        self.parents[0] = SolutionNode(0,'')
+
+    def getselfinfo(self):
+        return self.selfinfo
+
+    def has_parent(self, parent_sn):
+        if parent_sn in self.parents:
+            return True
+        return False
+
+
+    def insert_paret(self, parentnode):
+#        print("insert node+" + str(parentnode.serial_num))
+#        for node in self.parents:
+#            print(node)
+#            print(str(self.parents[node].serial_num))
+#        if parentnode.serial_num in self.parents:
+#            return 0xffff
+#        print("insert node success +" + str(parentnode.serial_num))
+        self.parents[parentnode.serial_num] = parentnode
+        return 0
 
     def __str__(self):
-        return str(self.parent.serial_num) + "<-" + str(self.selfinfo.serial_num)
+        infostr = ''
+        if len(self.parents) == 0:
+            infostr += "问题现象"
+        else:
+            infostr += '('
+            for sn in self.parents:
+                infostr += str(self.parents[sn].serial_num)
+                infostr += ','
+            infostr += ')'
+        return infostr + "<-" + str(self.selfinfo.serial_num)
+
+class SolutionModelChild:
+    def __init__(self, selfinfo):
+        self.selfinfo = selfinfo
+        self.childs = dict()
+
+    def insert_child(self, childnode):
+        self.childs[childnode.serial_num] = childnode
+        return 0
+
+    def __str__(self):
+        infostr = ''
+        if len(self.childs) == 0:
+        #    print("解决方法")
+            infostr += '解决方法'
+        else:
+            infostr += '('
+            for sn in self.childs:
+                infostr += str(self.childs[sn].serial_num)
+                infostr += ','
+            infostr += ')'
+        return str(self.selfinfo.serial_num) + "->" + infostr
+
 
 def parse_solution_file(path):
     path = r"F:\pyhton\project\site\assistant\templates\syserr_solution.txt"
@@ -249,12 +305,18 @@ def parse_solution_file(path):
                             if serial_num in solution_path_node:
                                 #若节点存在，则刷新父亲节点
                                 tmp_node = solution_path_node[serial_num]
-                                tmp_node.parent = infos[int(nodes[cur_pos - 2])]
+                                ret = tmp_node.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                                if ret != 0:
+                                    print("insert parent node fail4:" + str(infos[int(nodes[cur_pos - 2])]))
+#                                tmp_node.parent = infos[int(nodes[cur_pos - 2])]
                                 solution_path_node[serial_num] = tmp_node
                             else:
                                 #若节点不存在，则创建
   #                              print("pre node:" + nodes[cur_pos - 2])
                                 sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])], selfinfo=infos[serial_num])
+                                ret = sm.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                                if ret != 0:
+                                    print("insert parent node fail:" + str(infos[int(nodes[cur_pos - 2])]))
                                 solution_path_node[serial_num] = sm
 
                     else:
@@ -265,12 +327,18 @@ def parse_solution_file(path):
                         if serial_num in solution_path_node:
                             # 若节点存在，则刷新父亲节点
                             tmp_node = solution_path_node[serial_num]
-                            tmp_node.parent = infos[int(nodes[cur_pos - 2])]
+                            ret = tmp_node.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                            if ret != 0:
+                                print("insert parent node fail2:" + str(infos[int(nodes[cur_pos - 2])]))
+#                            tmp_node.parent = infos[int(nodes[cur_pos - 2])]
                             solution_path_node[serial_num] = tmp_node
                         else:
                             # 若节点不存在，则创建
 #                            print("pre node:" + nodes[cur_pos - 2])
                             sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])], selfinfo=infos[serial_num])
+                            ret = sm.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                            if ret != 0:
+                                print("insert parent node fail3:" + str(infos[int(nodes[cur_pos - 2])]))
                             solution_path_node[serial_num] = sm
 
                 else:
@@ -283,10 +351,38 @@ def parse_solution_file(path):
                         return 0xffff   #若存在，说明语法有问题
                     else:
                         sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])],selfinfo= infos[serial_num])
+                        ret = sm.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                        if ret != 0:
+                            print("insert parent node fail3:" + str(infos[int(nodes[cur_pos - 2])]))
                         solution_path_node[serial_num] = sm
 
     for sm in solution_path_node:
         print(solution_path_node[sm])
+
+
+    solution_path = dict()
+
+    for sm in solution_path_node:
+        smc = SolutionModelChild(selfinfo=solution_path_node[sm].getselfinfo())
+        for tmpsm in solution_path_node:
+            if solution_path_node[tmpsm].has_parent(solution_path_node[sm].getselfinfo().serial_num):
+         #       print(str(sm) + " 中插入 " + str(tmpsm))
+                smc.insert_child(childnode=solution_path_node[tmpsm].getselfinfo())
+        solution_path[sm] = smc
+
+    print("开始反向输出")
+
+    for sp_sn in solution_path:
+        #print(sp_sn)
+        print(solution_path[sp_sn])
+
+    #开始构建数据库
+    for sp_sn in solution_path:
+        solution_model = Solution(solutionname=infos[sp_sn].solution_info)
+        solution_model.save()
+
+    #构建外键
+    for
 
 #    print(infos)
     solution_file.close()
