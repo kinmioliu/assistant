@@ -13,7 +13,7 @@ class Solution(models.Model):
     solutionname = models.CharField(max_length=200)
     #是否是问题，默认为False
     is_question = models.BooleanField(default=False)
-    nex_solution = models.ForeignKey('self')
+    next_solution = models.ManyToManyField('self', null=True, blank=True, verbose_name='子解决方法')
     url = models.URLField()
 
 #责任田
@@ -30,18 +30,18 @@ class MMLCmdInfo(models.Model):
     responsefield = models.ForeignKey("ResponsibilityField")
     #相关问题列表
     solutions = models.ManyToManyField("Solution")
-
-class Questions(models.Model):
-    #相关产品
-    product = models.CharField(max_length=30)
-
-class Replay(models.Model):
-    #QuestionID
-    question = models.ForeignKey("Solution")
-    #Replay
-    question = models.ForeignKey("Replay")
-    #url 指向wiki的
-    url = models.URLField()
-    #describe
-    describe = models.CharField(max_length=200)
+#
+# class Questions(models.Model):
+#     #相关产品
+#     product = models.CharField(max_length=30)
+#
+# class Replay(models.Model):
+#     #QuestionID
+#     question = models.ForeignKey("Solution")
+#     #Replay
+#     question = models.ForeignKey("Replay")
+#     #url 指向wiki的
+#     url = models.URLField()
+#     #describe
+#     describe = models.CharField(max_length=200)
 

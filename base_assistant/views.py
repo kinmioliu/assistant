@@ -378,11 +378,8 @@ def parse_solution_file(path):
 
     #开始构建数据库
     for sp_sn in solution_path:
-        solution_model = Solution(solutionname=infos[sp_sn].solution_info)
+        solution_model = Solution(solutionname=infos[sp_sn].solution_info, is_question=False)
         solution_model.save()
-
-    #构建外键
-    for
 
 #    print(infos)
     solution_file.close()
@@ -414,6 +411,10 @@ class TestTDS(View):
         elif (requestype == 'get_relative_question'):
             path = ""
             print("path111")
-            parse_solution_file(path)
+#            parse_solution_file(path)
+            solutions = Solution.objects.filter(is_question=True)
+
+            for obj in solutions:
+
             return HttpResponse("")
         return HttpResponse("")
