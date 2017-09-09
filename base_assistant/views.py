@@ -157,11 +157,6 @@ class TestTDSPage(View):
         paras['search'] = form
         return render(request, "assistant_page.html", paras)
 
-class RTN300(TestTDSPage):
-    def get(self, request):
-        product = 'RTN300'
-        print("testtdspage")
-        return TestTDSPage.getpg_by_product(self, request, product)
 
 class SolutionNode:
 #    serial_num = 0
@@ -376,14 +371,40 @@ def parse_solution_file(path):
         #print(sp_sn)
         print(solution_path[sp_sn])
 
+    s_models = dict()
     #开始构建数据库
     for sp_sn in solution_path:
         solution_model = Solution(solutionname=infos[sp_sn].solution_info, is_question=False)
         solution_model.save()
+        s_models[sp_sn] = solution_model
+
+    # 非对称模型间关系建立
+    for sm in s_models:
+        print("sn:" + str(sm))
+        for sub_solution in solution_path[sm].childs:
+            print("insert:" + str(sub_solution))
+            s_models[sm].next_solution.add( s_models[int(sub_solution)] )
+            s_models[sm].save()
+
+    #寻找question
+    for sm in s_models:
+        if len(solution_path_node[sm].parents) == 0 :
+            s_models[sm].is_question = True
+            s_models[sm].save()
 
 #    print(infos)
     solution_file.close()
 #        print(solution)
+
+class RTN300(TestTDSPage):
+    def get(self, request):
+        product = 'RTN300'
+        path = ""
+        print("path111")
+        parse_solution_file(path)
+        print("testtdspage")
+        return TestTDSPage.getpg_by_product(self, request, product)
+
 
 class TestTDS(View):
     def get(self, request):
@@ -396,7 +417,7 @@ class TestTDS(View):
         print(requestype)
         if (requestype == 'getverinfo'):
             verinfos = VersionInfo.objects.filter(product=product)
-            verinfo_ajax = serializers.serialize("json",verinfos)
+#            verinfo_ajax = serializers.serialize("json",verinfos)
             paras = {'requesttype':requestype}
             i = 0;
             for verinfo in verinfos:
@@ -412,9 +433,35 @@ class TestTDS(View):
             path = ""
             print("path111")
 #            parse_solution_file(path)
+ #           return HttpResponse("")
             solutions = Solution.objects.filter(is_question=True)
+            paras = {'requesttype':requestype}
+            i = 0;
+            for solution in solutions:
+                context = {"solution":solution}
+                solution_xml_str = render_to_string('partials/_solution_card.html', context)
+                paras['solution'+ str(i)] = solution_xml_str
+                i += 1
 
-            for obj in solutions:
+            print(paras)
+            return JsonResponse(paras)
 
-            return HttpResponse("")
+        elif (requestype == 'get_sub_question'):
+            solutionid = request.POST['solutionid']
+            print("solutionid :" + solutionid)
+            solution = Solution.objects.filter(pk=int(solutionid))
+            if (len(solution)):
+                print(solution[0].solutionname)
+                subsolutions = solution[0].next_solution.all()
+                paras = {'requesttype':requestype}
+                i = 0;
+                for solution in subsolutions:
+                    context = {"solution":solution}
+                    solution_xml_str = render_to_string('partials/_solution_card.html', context)
+                    paras['solution'+ str(i)] = solution_xml_str
+                    i += 1
+
+                print(paras)
+                return JsonResponse(paras)
+
         return HttpResponse("")

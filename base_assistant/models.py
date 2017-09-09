@@ -13,8 +13,12 @@ class Solution(models.Model):
     solutionname = models.CharField(max_length=200)
     #是否是问题，默认为False
     is_question = models.BooleanField(default=False)
-    next_solution = models.ManyToManyField('self', null=True, blank=True, verbose_name='子解决方法')
+    #不对称
+    next_solution = models.ManyToManyField('self', symmetrical=False, verbose_name='子解决方法')
     url = models.URLField()
+
+    def __unicode__(self):
+        return self.solutionname
 
 #责任田
 class ResponsibilityField(models.Model):

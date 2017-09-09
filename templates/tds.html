@@ -32,6 +32,18 @@
                     $.post('', {'requesttype':'getverinfo', 'product':'RTN300'}, function(verinfo_data){
                     console.log(verinfo_data);
                     $("#selector_info").text("选择版本信息")
+
+                    var jslength_tmp = 0
+                    for (var data in verinfo_data){
+                        jslength_tmp++;
+                    }
+                    if (jslength_tmp > 1)
+                    {
+                        //先将数据清空
+                        $(".selector").empty()
+                    }
+
+
                     var jslength=0;
                     //将数据填充到html
                     for(var data in verinfo_data){
@@ -54,11 +66,14 @@
     <script>
     $(document).ready(function(){
         // 点击selector
-        $(".selector").click(function(){
+        $(".selector").click(function(e){
             //提取selector的内容
             $(this).children().attr("class")
             var selector_class = $(this).children().attr("class")
+            console.log(selector_class)
             if (selector_class == "verinfo_card")
+            {
+                console.log("process:" + selector_class)
                 var verinfo_text = $(this).children().children().children();
                 var product_ver = verinfo_text.children("h2").text();
                 var platform_ver = verinfo_text.children("h3").text();
@@ -80,19 +95,77 @@
                     $("#tdsinfo").children(".pathinfo_verinfo").text(info_ver)
 
                 // 申请相关版本信息
-                $.post('', {'requesttype':'get_relative_question', 'product':'RTN300', 'verinfo':platform_ver}, function(verinfo_data){
-                console.log(verinfo_data);
-                $("#selector_info").text("选择版本信息")
+                $.post('', {'requesttype':'get_relative_question', 'product':'RTN300', 'verinfo':platform_ver}, function(solution_data){
+                console.log(solution_data);
+                $("#selector_info").text("选择相关问题")
+                var jslength_tmp = 0
+                for (var data in solution_data){
+                    jslength_tmp++;
+                }
+                if (jslength_tmp > 1)
+                {
+                    //先将数据清空
+                    $(".selector").empty()
+                }
+
                 var jslength=0;
                 //将数据填充到html
-                for(var data in verinfo_data){
+                for(var data in solution_data){
                     jslength++;
                     if (jslength == 1)
                         continue;
-                  $(".selector:eq("+(jslength-2)+")").html(verinfo_data[data])
+                  $(".selector:eq("+(jslength-2)+")").html(solution_data[data])
                 }
                 });
                 e.preventDefault();
+            }
+            else if (selector_class == "solution_card")
+            {
+                console.log("process:" + selector_class)
+                var solution_text = $(this).children().children().children();
+                var solution_name = solution_text.children("h3").text();
+                var solution_id = solution_text.children("p").text();
+                console.log("solution_name:" + solution_name + "solution_id:" + solution_id)
+                var tag = '<span class="label label-info label-solution col-sm-1 input-sm" style="font-size:20px;">' + solution_name + '</span>'
+                if ($("#tdspath").children(".label-solution").length == 0)
+                    $("#tdspath").append(tag)
+                else
+                    // 末尾的children
+                    $("#tdspath").children(".label-solution").text(solution_name)
+
+                var soltuion_tags = '<p class="solution_tag">solution_name</p>'
+
+                if ($("#tdsinfo").children(".solution_tag").length == 0)
+                    $("#tdsinfo").append(soltuion_tags)
+                else
+                    $("#tdsinfo").children("last").text(solution_name)
+
+                console.log("{'requesttype':'get_sub_question', 'product':'RTN300', 'verinfo':platform_ver, 'solutionid':solution_id}")
+                //申请子解决信息
+                $.post('', {'requesttype':'get_sub_question', 'product':'RTN300', 'verinfo':platform_ver, 'solutionid':solution_id}, function(solution_data){
+                console.log(solution_data);
+
+                var jslength_tmp = 0
+                for (var data in solution_data){
+                    jslength_tmp++;
+                }
+                if (jslength_tmp > 1)
+                {
+                    //先将数据清空
+                    $(".selector").empty()
+                }
+                $("#selector_info").text("选择相关问题")
+                var jslength=0;
+                //将数据填充到html
+                for(var data in solution_data){
+                    jslength++;
+                    if (jslength == 1)
+                        continue;
+                  $(".selector:eq("+(jslength-2)+")").html(solution_data[data])
+                }
+                });
+                e.preventDefault();
+            }
         });
     });
 
