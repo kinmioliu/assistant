@@ -1,0 +1,12 @@
+{% for solution in solutions %}
+    <div class="col-lg-3" >
+        <div class="solution_card" >
+            <div class="solutioninfo" onclick="return jump_subsolution(event)" type="submit">
+                <div class="text">
+                    <h3>{{solution.solutionname}}</h3>
+                    <p hidden="hidden">{{solution.id}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

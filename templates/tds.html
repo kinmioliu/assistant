@@ -9,7 +9,7 @@
     <meta name="author" content="l00351192">
     <script src = "{% static 'jquery/jquery.js' %}"></script>
     <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
-  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 
     <link href="{% static 'cards-style.css' %}" rel="stylesheet" type="text/css">
@@ -19,7 +19,20 @@
     <link href="{% static 'extcss/tds.css' %}" rel="stylesheet" type="text/css">
 
     <script>
+
+        function getCookie(name) 
+        { 
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)"); 
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]); 
+        else 
+            return null; 
+        } 
+
         $(function() {
+            $.ajaxSetup({
+           headers: { "X-CSRFToken": getCookie("csrftoken") }
+           });
 		    $("#tdsbtn").click(function(e){
 		        //根据tdspath的内容向服务器发起请求
 		        var childrensize = $("#tdspath").children().length;
@@ -246,6 +259,18 @@
 
 </div>
 
+
 </body>
+
+<div id="footer" class="container">
+<nav class="navbar navbar-default navbar-fixed-bottom">
+    <div class="navbar-inner navbar-content-center">
+        <p>相关链接</p>
+        <a style="padding:10px" href="/contribute">上传决策信息</a>
+        <a style="padding:10px" href="http://www.baidu.com/">WIKI</a>
+    </div>
+</nav>
+</div>
+
 
 </html>

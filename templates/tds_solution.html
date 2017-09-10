@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+
+<head>
+    <meta charset="UTF-8">
+    <script src = "{% static 'jquery/jquery.js' %}"></script>
+    <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+
+    <link href="{% static 'cards-style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'extcss/animate.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'extcss/tds.css' %}" rel="stylesheet" type="text/css">
+
+    <script>
+
+        function getCookie(name) 
+        { 
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)"); 
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]); 
+        else 
+            return null; 
+        } 
+
+        $(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+        });
+
+        function jump_subsolution(event) {
+            //提取selector的内容
+            var obj = event.srcElement ? event.srcElement : event.target;
+            textinfo = $(obj)
+            solution_id = textinfo.children().children("p").text();
+            console.log("solution_id:" + solution_id )
+            if (solution_id != null && solution_id != "")
+            {
+                $.post('', {'requesttype':'get_sub_question', 'solutionid':solution_id}, function(solution_data){
+                console.log(solution_data);
+                if (solution_data != "")
+                {
+                    $(".solution_infos").html(solution_data)
+                }
+                });
+                event.preventDefault();
+            }
+        }
+    </script>
+
+    <title>{{mmlcmd}}</title>
+</head>
+
+<body>
+
+    <div style="padding-top:50px"></div>
+
+    <div class="container">
+
+        {% if not solutions0 %}
+            <div id = "mml-alert" class="alert alert-warning">没有找到和{{mmlcmd}}相关的问题</div>
+        {% endif%}
+
+        {% if solutions0 %}
+            <div class="alert alert-success">和{{mmlcmd}}相关的问题如下所示</div>
+        {% endif%}
+    </div>
+
+    <div class="row solution_infos">
+        {% for solution in solutions0 %}
+            <div class="col-lg-3" >
+                <div class="solution_card" >
+                    <div class="solutioninfo" onclick="return jump_subsolution(event)" type="submit">
+                        <div class="text">
+                            <h3>{{solution.solutionname}}</h3>
+                            <p hidden="hidden">{{solution.id}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+
+</body>
+</html>

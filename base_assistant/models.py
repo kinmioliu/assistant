@@ -8,6 +8,9 @@ class VersionInfo(models.Model):
     product_ver = models.CharField(max_length=20)
     verinfo = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.product + "(" + self.platform_ver + ")"
+
 #解决方法
 class Solution(models.Model):
     solutionname = models.CharField(max_length=200)
@@ -20,11 +23,34 @@ class Solution(models.Model):
     def __unicode__(self):
         return self.solutionname
 
+    def __str__(self):
+        return self.solutionname
+
+#标签
+class HashTag(models.Model):
+        """  HashTag model  """
+        name = models.CharField(max_length=64, unique=True)
+        solution = models.ManyToManyField(Solution)
+
+        def __unicode__(self):
+            return self.name
+
+        def __str__(self):
+            return self.name
+
+
 #责任田
 class ResponsibilityField(models.Model):
-    groupname = models.CharField(max_length=50)
+    groupname = models.CharField(max_length=50, unique=True)
     introduce = models.URLField()
     plname = models.CharField(max_length=50)
+
+    def __unicode__(self):
+        return self.groupname
+
+    def __str__(self):
+        return self.groupname
+
 
 #mml信息
 class MMLCmdInfo(models.Model):
@@ -33,19 +59,7 @@ class MMLCmdInfo(models.Model):
     #所属责任田
     responsefield = models.ForeignKey("ResponsibilityField")
     #相关问题列表
-    solutions = models.ManyToManyField("Solution")
-#
-# class Questions(models.Model):
-#     #相关产品
-#     product = models.CharField(max_length=30)
-#
-# class Replay(models.Model):
-#     #QuestionID
-#     question = models.ForeignKey("Solution")
-#     #Replay
-#     question = models.ForeignKey("Replay")
-#     #url 指向wiki的
-#     url = models.URLField()
-#     #describe
-#     describe = models.CharField(max_length=200)
+    solutions = models.ManyToManyField("Solution", blank=True, null=True)
 
+    def __str__(self):
+        return self.cmdname

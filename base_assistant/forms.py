@@ -14,3 +14,11 @@ class VerinfoFileFormModel(forms.ModelForm):
 
 class SearchForm(forms.Form):
     query = forms.CharField(label='cfg-add-board', widget=forms.TextInput(attrs={'size':32, 'class':'form-control'}))
+
+class PolicyFileForm(forms.Form):
+    """策略"""
+    policy_file = forms.FileField()
+
+class MMLFileForm(forms.Form):
+    """策略"""
+    mml_file = forms.FileField()

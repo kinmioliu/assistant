@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html>
+    <head>
+        <script src = "{% static 'jquery/jquery.js' %}"></script>
+        <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+      <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    </head>
+
+    <body>
+    <nav class="navbar navbar-default navbar-fixed-top"  role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/" style="margin-left:400px">TDS</a>
+            </div>
+            <p class="navbar-text navbar-right" style="margin-right:400px"> <a href="/admin">User Profile Page</a></p>
+
+        </div>
+    </nav>
+
+    <div style="padding-top:30px"></div>
+    <div class="alert alert-info">!!!功能在完善，当前仅提供发布决策和版本信息功能</div>
+
+    <div class="container">
+        <div class="row">
+            <button type="button" class="btn btn-primary col-lg-2" onclick="window.location='make-policy'">发布决策</button>
+        </div>
+        <br>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-lg-2" onclick="window.location='make-verinfo'">发布版本信息</button>
+        </div>
+        <br>
+        <div class="row">
+            <button type="button" class="btn btn-primary col-lg-2" onclick="window.location='make-mml'">发布命令行列表</button>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-default navbar-fixed-bottom"  role="navigation">
+        <p class="navbar-text navbar-right" style="margin-right:5px">Footer </p>
+    </nav>
+
+    </body>
+</html>

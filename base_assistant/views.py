@@ -1,15 +1,53 @@
 #-*-coding:utf-8-*-
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.conf import settings
 from django.core import serializers
 from django.shortcuts import render
 from django.views.generic import View
-from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm
-from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, ResponsibilityField
+from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm
+from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField
 from django.template import Context
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
 import json
 import os
 import re
+
+
+
+def download_policy_excample(request):
+    """下载模板"""
+    response = HttpResponse()
+    response['Content-Disposition'] = 'attachment;filename=syserr_solution.txt'
+    base_dir = os.path.dirname(os.path.abspath(__name__))
+    example_dir = os.path.join(base_dir, 'static', 'example');
+    full_path = os.path.join(example_dir, 'syserr_solution.txt');
+
+    if os.path.exists(full_path):
+        response['Content-Length'] = os.path.getsize(full_path)
+        content = open(full_path, 'rb').read()
+        response.write(content)
+        return response
+    else:
+        return HttpResponse(u'文件未找到')
+
+def download_mml_excample(request):
+    """下载模板"""
+    response = HttpResponse()
+    response['Content-Disposition'] = 'attachment;filename=mml_info.txt'
+    base_dir = os.path.dirname(os.path.abspath(__name__))
+    example_dir = os.path.join(base_dir, 'static', 'example');
+    full_path = os.path.join(example_dir, 'mml_info.txt');
+
+    if os.path.exists(full_path):
+        response['Content-Length'] = os.path.getsize(full_path)
+        content = open(full_path, 'rb').read()
+        response.write(content)
+        return response
+    else:
+        return HttpResponse(u'文件未找到')
+
 
 def parser_verinfo_file(filename):
     print(filename)
@@ -141,8 +179,15 @@ class TestTDSPage(View):
         if form.is_valid():
             query = form.cleaned_data['query']
             cmdinfo = MMLCmdInfo.objects.filter(cmdname__icontains=query)
-            #context = Context({"query":query, "cmdinfos":cmdinfo})
-            context = dict({"query": query, "cmdinfos": cmdinfo})
+            hashtags = HashTag.objects.filter(name__icontains = query)
+            solutions = list() #warning，考虑合理性
+            if len(hashtags) > 0:
+                for tag in hashtags:
+                    tmp_solutions = tag.solution.all()
+                    for solution in tmp_solutions:
+                        solutions.append(solution)
+
+            context = dict({"query": query, "cmdinfos": cmdinfo, "solutions": solutions},)
             return_str = render_to_string('partials/_cmdmml_search.html', context)
             print(return_str)
             return HttpResponse(json.dumps(return_str),content_type="application/json")
@@ -159,8 +204,6 @@ class TestTDSPage(View):
 
 
 class SolutionNode:
-#    serial_num = 0
-#    solution_info = ''
     def __init__(self, num, info):
         self.serial_num = num
         self.solution_info = info
@@ -237,7 +280,6 @@ class SolutionModelChild:
 
 
 def parse_solution_file(path):
-    path = r"F:\pyhton\project\site\assistant\templates\syserr_solution.txt"
     print(path)
     solution_file = open(path)
     lines = solution_file.readlines()
@@ -258,6 +300,7 @@ def parse_solution_file(path):
                 serial_num = solution[0]
                 replay = solution[1]
                 if serial_num.isdigit():
+                    print(replay)
                     infos[int(serial_num)] = SolutionNode(num = serial_num, info = replay)
 
         #开始筛选节点
@@ -316,7 +359,7 @@ def parse_solution_file(path):
 
                     else:
                         #没有节点
-                        serial_num = int(tail_node)
+                        serial_num = int(node)
                         # 若是中间节点，则直接创建，或者是提取上一个节点到配置
 #                        if solution_path_node.has_key(serial_num):
                         if serial_num in solution_path_node:
@@ -351,8 +394,8 @@ def parse_solution_file(path):
                             print("insert parent node fail3:" + str(infos[int(nodes[cur_pos - 2])]))
                         solution_path_node[serial_num] = sm
 
-    for sm in solution_path_node:
-        print(solution_path_node[sm])
+    # for sm in solution_path_node:
+    #     print(solution_path_node[sm])
 
 
     solution_path = dict()
@@ -365,7 +408,7 @@ def parse_solution_file(path):
                 smc.insert_child(childnode=solution_path_node[tmpsm].getselfinfo())
         solution_path[sm] = smc
 
-    print("开始反向输出")
+    # print("开始反向输出")
 
     for sp_sn in solution_path:
         #print(sp_sn)
@@ -375,6 +418,7 @@ def parse_solution_file(path):
     #开始构建数据库
     for sp_sn in solution_path:
         solution_model = Solution(solutionname=infos[sp_sn].solution_info, is_question=False)
+        print(infos[sp_sn].solution_info)
         solution_model.save()
         s_models[sp_sn] = solution_model
 
@@ -392,16 +436,25 @@ def parse_solution_file(path):
             s_models[sm].is_question = True
             s_models[sm].save()
 
-#    print(infos)
+    #创建hashtag
+    for sn in infos:
+        words = infos[sn].solution_info.split(" ")
+        print(words)
+        for word in words:
+            if len(word) >= 2 and word[0] == "#":
+                hashtag, created = HashTag.objects.get_or_create(name = word[1:])
+                hashtag.solution.add(s_models[int(sn)])
+
     solution_file.close()
-#        print(solution)
+
+    return 0
 
 class RTN300(TestTDSPage):
     def get(self, request):
         product = 'RTN300'
         path = ""
         print("path111")
-        parse_solution_file(path)
+        #parse_solution_file(path)
         print("testtdspage")
         return TestTDSPage.getpg_by_product(self, request, product)
 
@@ -464,4 +517,461 @@ class TestTDS(View):
                 print(paras)
                 return JsonResponse(paras)
 
+        return HttpResponse("")
+
+@login_required(redirect_field_name='/contribute/',login_url='/admin/')
+def get_contribute_view(request):
+    return render(request, "contribute.html")
+
+class ContributeSolution(LoginRequiredMixin, View):
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+    """上传资源"""
+    def get(self, request):
+        print("dddd")
+        return render(request, "contribute.html")
+
+    def post(self, request):
+        return
+
+def parser_policy_file(filepath):
+    output = dict()
+    print(filepath)
+    solution_file = open(filepath)
+    lines = solution_file.readlines()
+    infos = dict()
+    solution_path_node = dict()
+    begin_construct = False;
+
+    for line in lines:
+        # 读取
+        if line.find('solution]') > 0:
+            print("find solution")
+            begin_construct = True
+
+        # 读取数字
+        elif begin_construct == False:
+            solution = line.split('.', 1)
+            if len(solution) == 2:
+                serial_num = solution[0]
+                replay = solution[1]
+                if serial_num.isdigit():
+                    print(replay)
+                    infos[int(serial_num)] = SolutionNode(num=serial_num, info=replay)
+
+        # 开始筛选节点
+        elif begin_construct == True:
+            print("筛选" + line)
+            nodes = line.split("->")
+            size = len(nodes)
+            cur_pos = 0
+            for node in nodes:
+                cur_pos += 1
+                # 若是第一个节点
+                if node == nodes[0]:
+                    print("cur_pos:" + str(cur_pos) + "," + node)
+                    serial_num = int(node)
+                    # 若已经存在，就跳过
+                    #                    if solution_path_node.has_key(serial_num):
+                    if serial_num in solution_path_node:
+                        print("solution_path_node.has_key(serial_num):")
+                        continue;
+                    # 若不存在，就创建，并加入到字典中
+                    else:
+                        sm = SolutionModel(parent=SolutionNode(0, ''), selfinfo=infos[serial_num])
+                        solution_path_node[serial_num] = sm
+                # 是最后一个节点
+                elif node == nodes[size - 1]:
+                    print("cur_pos:" + str(cur_pos) + "," + node)
+                    # 判断是否有()
+                    if node.find(')') > 0:
+                        # 提取()中的内容
+                        substr = re.findall(r'[^()]+', node)[0]
+                        #                        print("substr:" + substr)
+                        tail_nodes = substr.split(',')
+                        # (10,11,12,13)
+                        #                       print(tail_nodes)
+                        for tail_node in tail_nodes:
+                            serial_num = int(tail_node)
+                            print("tail_node:" + str(serial_num))
+                            # 若是中间节点，则直接创建，或者是提取上一个节点到配置
+                            # if solution_path_node.has_key(serial_num):
+                            if serial_num in solution_path_node:
+                                # 若节点存在，则刷新父亲节点
+                                tmp_node = solution_path_node[serial_num]
+                                ret = tmp_node.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                                if ret != 0:
+                                    print("insert parent node fail4:" + str(infos[int(nodes[cur_pos - 2])]))
+                                    #                                tmp_node.parent = infos[int(nodes[cur_pos - 2])]
+                                solution_path_node[serial_num] = tmp_node
+                            else:
+                                # 若节点不存在，则创建
+                                #                              print("pre node:" + nodes[cur_pos - 2])
+                                sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])], selfinfo=infos[serial_num])
+                                ret = sm.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                                if ret != 0:
+                                    print("insert parent node fail:" + str(infos[int(nodes[cur_pos - 2])]))
+                                solution_path_node[serial_num] = sm
+
+                    else:
+                        # 没有节点
+                        serial_num = int(node)
+                        print("last node without )" + str(serial_num))
+                        # 若是中间节点，则直接创建，或者是提取上一个节点到配置
+                        #                        if solution_path_node.has_key(serial_num):
+                        if serial_num in solution_path_node:
+                            # 若节点存在，则刷新父亲节点
+                            tmp_node = solution_path_node[serial_num]
+                            ret = tmp_node.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                            if ret != 0:
+                                print("insert parent node fail2:" + str(infos[int(nodes[cur_pos - 2])]))
+                                #                            tmp_node.parent = infos[int(nodes[cur_pos - 2])]
+                            solution_path_node[serial_num] = tmp_node
+                        else:
+                            # 若节点不存在，则创建
+                            #                            print("pre node:" + nodes[cur_pos - 2])
+                            sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])], selfinfo=infos[serial_num])
+                            ret = sm.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                            if ret != 0:
+                                print("insert parent node fail3:" + str(infos[int(nodes[cur_pos - 2])]))
+                            solution_path_node[serial_num] = sm
+
+                else:
+                    print("cur_pos:" + str(cur_pos) + "," + node)
+                    serial_num = int(node)
+                    # 若是中间节点，则直接创建，或者是提取上一个节点到配置
+                    #                    if solution_path_node.has_key(serial_num):
+                    if serial_num in solution_path_node:
+                        print("语法问题")
+                        output['errno'] = "0xffff"
+                        output['errorinfo'] = "中间节点 " + str(serial_num) + " 不应该存在多个父节点"
+                        return output  # 若存在，说明语法有问题
+                    else:
+                        sm = SolutionModel(parent=infos[int(nodes[cur_pos - 2])], selfinfo=infos[serial_num])
+                        ret = sm.insert_paret(parentnode=infos[int(nodes[cur_pos - 2])])
+                        if ret != 0:
+                            print("insert parent node fail3:" + str(infos[int(nodes[cur_pos - 2])]))
+                        solution_path_node[serial_num] = sm
+
+    output['errno'] = "0"
+
+
+    for sm in solution_path_node:
+        print(solution_path_node[sm])
+
+    solution_path = dict()
+
+    for sm in solution_path_node:
+        smc = SolutionModelChild(selfinfo=solution_path_node[sm].getselfinfo())
+        for tmpsm in solution_path_node:
+            if solution_path_node[tmpsm].has_parent(solution_path_node[sm].getselfinfo().serial_num):
+                #       print(str(sm) + " 中插入 " + str(tmpsm))
+                smc.insert_child(childnode=solution_path_node[tmpsm].getselfinfo())
+        solution_path[sm] = smc
+
+    print("开始反向输出")
+    for sp_sn in solution_path:
+        print(solution_path[sp_sn])
+
+    for sp_sn in solution_path:
+        output[str(sp_sn)] = str(solution_path[sp_sn])
+
+    solution_file.close()
+
+    return output
+
+def handle_policy_file(file):
+    base_dir = os.path.dirname(os.path.abspath(__name__))
+    textdir = os.path.join(base_dir, 'static', 'upload');
+    filename = os.path.join(textdir, file.name);
+    output = dict()
+
+    #for test
+    if os.path.exists(filename):
+        output['errno'] = "0xfff1"
+        output['errorinfo'] = "文件"+ file.name +"已存在"
+        return output
+    else:
+        fileobj = open(filename, 'wb+')
+        for chrunk in file.chunks():
+            fileobj.write(chrunk)
+        fileobj.close()
+
+    print(filename)
+    output = parser_policy_file(filename)
+    if output['errno'] != "0":
+        #删除文件
+        os.remove(filename)
+    output['filename'] = file.name
+    return output
+
+
+class MakePolicy(LoginRequiredMixin, View):
+    """制作策略"""
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+    def get(self, request):
+        print("make Policy")
+        paras = dict()
+        uf = PolicyFileForm()
+        paras['uf'] = uf;
+        return render(request, "make_policy.html", paras)
+
+    def post(self, request):
+        print("post PolicyFile")
+        paras = dict()
+        if self.request.method == "POST":
+            policy_file = PolicyFileForm(self.request.POST, self.request.FILES)
+            filename = request.POST.get('filename')
+            if policy_file.is_valid():
+                file = self.request.FILES.get('policy_file')
+                if file != None:
+                    ##解析文件
+                    output = handle_policy_file(file)
+                    if output['errno'] != "0":
+                        uf = PolicyFileForm()
+                        paras['uf'] = uf;
+                        paras['errorinfo'] = output['errorinfo']
+                        return render(request, "make_policy.html", paras)
+                    else:
+                        uf = PolicyFileForm()
+                        paras['uf'] = uf;
+                        policy = list()
+                        for node in output:
+                            if node == 'errno' or node == 'errorinfo' or node == 'filename':
+                                continue
+                            policy.append(output[node])
+
+                        print(output['filename'])
+                        print("POLICY")
+                        print(policy)
+
+                        paras['filename'] = output['filename']
+                        paras['policys'] = policy
+                        return render(request, "make_policy.html", paras)
+            elif filename != None:
+                print(filename)
+                base_dir = os.path.dirname(os.path.abspath(__name__))
+                textdir = os.path.join(base_dir, 'static', 'upload');
+                filepath = os.path.join(textdir, filename);
+                result = parse_solution_file(filepath)
+                paras = {'result':result}
+                return JsonResponse(paras)
+
+        #提交空表单
+        else:
+            print("post PolicyFile112")
+            paras['uf'] = PolicyFileForm()
+
+        return render(request, "make_policy.html", paras)
+
+
+def check_mml_file(filepath):
+    output = dict()
+    print(filepath)
+    mml_file = open(filepath)
+    lines = mml_file.readlines()
+
+    if len(lines) < 2:
+        output['errno'] = "0xffff"
+        output['errorinfo'] = "文件格式不对！！！"
+        return output
+
+    responsefield = lines[0];
+
+    print("responsefield:" + responsefield)
+    if len(responsefield) >= 2 and responsefield[0] != '#':
+        output['errno'] = "0xfff2"
+        output['errorinfo'] = "文件格式错误，责任领域前面需要加上'#'"
+        return output
+
+    print(responsefield[1:])
+    group = responsefield[1:].replace(' ','')
+
+    if len(group) < 3:
+        output['errno'] = "0xfff3"
+        output['errorinfo'] = "文件格式错误，责任领域错误"
+        return output
+
+    groups = ResponsibilityField.objects.filter(groupname__icontains=group[0:2])
+    print(groups)
+    if len(groups) == 0:
+        output['errno'] = "0xfff3"
+        output['errorinfo'] = "责任组" + responsefield + "不存在，请先创建"
+        return output
+
+    mmls = list()
+    count = 0
+    for line in lines:
+        count += 1
+        if count == 1:  #跳过责任田
+            continue
+
+        if len(line)>=2 and line[0] == ':':
+            mmls.append(line[1:])
+        else:
+            output['errno'] = "0xfff1"
+            output['errorinfo'] = "文件格式错误，命令行前面需要加上':'"
+            return output
+
+    output['errno'] = "0"
+    output['mmls'] = mmls
+    output['responsefield'] = responsefield[1:]
+
+    mml_file.close()
+
+    return output
+
+def parse_mml_file(filepath):
+    output = check_mml_file(filepath)
+    if output['errno'] != "0":
+        return 0xffff
+    else:
+        mmls = output['mmls']
+        responsefield = output['responsefield']
+        responsefield_obj = ResponsibilityField.objects.filter(groupname__icontains = responsefield[0:2])
+        if len(responsefield_obj) == 0:
+            return 0xffff
+
+        for mml in mmls:
+            mmlinfo_model = MMLCmdInfo(cmdname = mml, responsefield = responsefield_obj[0])
+            mmlinfo_model.save()
+        return 0
+
+def handle_mml_file(file):
+    base_dir = os.path.dirname(os.path.abspath(__name__))
+    textdir = os.path.join(base_dir, 'static', 'upload');
+    filename = os.path.join(textdir, file.name);
+    output = dict()
+
+    #for test
+    if os.path.exists(filename):
+        output['errno'] = "0xfff1"
+        output['errorinfo'] = "文件"+ file.name +"已存在"
+        return output
+    else:
+        fileobj = open(filename, 'wb+')
+        for chrunk in file.chunks():
+            fileobj.write(chrunk)
+        fileobj.close()
+
+    print(filename)
+
+    output = check_mml_file(filename)
+
+    if output['errno'] != "0":
+        #删除文件
+        os.remove(filename)
+    output['filename'] = file.name
+    return output
+
+
+class MakeMMLInfo(LoginRequiredMixin, View):
+    """制作MML信息"""
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+    def get(self, request):
+        print("make MML")
+        paras = dict()
+        uf = MMLFileForm()
+        paras['uf'] = uf;
+        return render(request, "make_mml.html", paras)
+
+    def post(self, request):
+        print("post MMLFile")
+        paras = dict()
+        if self.request.method == "POST":
+            policy_file = MMLFileForm(self.request.POST, self.request.FILES)
+            filename = request.POST.get('filename')
+            if policy_file.is_valid():
+                file = self.request.FILES.get('mml_file')
+                if file != None:
+                    ##解析文件
+                    output = handle_mml_file(file)
+                    if output['errno'] != "0":
+                        uf = MMLFileForm()
+                        paras['uf'] = uf;
+                        paras['errorinfo'] = output['errorinfo']
+                        return render(request, "make_mml.html", paras)
+                    else:
+                        uf = MMLFileForm()
+                        paras['uf'] = uf;
+                        mmls = output['mmls']
+
+                        print(output['filename'])
+
+                        paras['filename'] = output['filename']
+                        paras['mmls'] = mmls
+                        paras['responsefield'] = output['responsefield']
+                        return render(request, "make_mml.html", paras)
+            elif filename != None:
+                print(filename)
+                base_dir = os.path.dirname(os.path.abspath(__name__))
+                textdir = os.path.join(base_dir, 'static', 'upload');
+                filepath = os.path.join(textdir, filename);
+                result = parse_mml_file(filepath)
+                paras = {'result':result}
+                return JsonResponse(paras)
+
+        #提交空表单
+        else:
+            print("post MMLFile")
+            paras['uf'] = MMLFileForm()
+
+        return render(request, "make_mml.html", paras)
+
+
+class TDS(View):
+    def get(self, request):
+        print("getTDS")
+        print(request)
+        mmlcmd = request.GET.get('mml')
+        print(mmlcmd)
+        solutionid = request.GET.get('solution')
+        print(solutionid)
+
+        if mmlcmd != None:
+            print("mml")
+            mml_objs = MMLCmdInfo.objects.filter(cmdname=mmlcmd)
+            solution_map = list()
+            paras = dict()
+            count = 0;
+            for mml_obj in mml_objs:
+                solutions = mml_obj.solutions.all()
+                for solution in solutions:
+                    solution_map.append(solution)
+                    count += 1
+                    #每4个放一组
+     #               if count % 4 == 0:
+                        #paras['solutions'+str(count/4)] = solution_map
+                        #solution_map.clear()
+            print(count)
+    #        if count < 4:
+            paras['solutions0'] = solution_map
+            paras['mmlcmd'] = mmlcmd
+            return render(request, "tds_solution.html", paras)
+
+        elif solutionid != None:
+            print("solution")
+            solutions = list()
+            solution = Solution.objects.filter(pk=int(solutionid))
+            paras = dict()
+            solutions.append(solution[0])
+            paras['solutions0'] = solutions
+            paras['mmlcmd'] = solution[0].solutionname
+            return render(request, "tds_solution.html", paras)
+
+    def post(self, request):
+        print("postTDS")
+        requesttype = request.POST['requesttype']
+        if (requesttype == 'get_sub_question'):
+            solutionid = request.POST['solutionid']
+            print("solutionid :" + solutionid)
+            solution = Solution.objects.filter(pk=int(solutionid))
+            if (len(solution)):
+                print(solution[0].solutionname)
+                subsolutions = solution[0].next_solution.all()
+                context = dict({"solutions": subsolutions}, )
+                return_str = render_to_string('partials/_solutions.html', context)
+                return HttpResponse(json.dumps(return_str), content_type="application/json")
         return HttpResponse("")

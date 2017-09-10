@@ -1,0 +1,16 @@
+#框架
+:cfg-add-board
+:cfg-get-board
+:cfg-init-all
+:cfg-get-devicetype
+:cfg-set-devicetype
+:cfg-add-xc
+:cfg-add-sncppg
+:cfg-add-lmspg
+:cfg-add-rmspg
+:cfg-add-rmspg
+:cfg-get-xc
+:cfg-get-sncppg
+:cfg-get-lmspg
+:cfg-get-rmspg
+:cfg-set-sncpbdmap

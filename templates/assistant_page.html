@@ -11,11 +11,58 @@
 <script src = "{% static 'js/search.js' %}"></script>
 
 <script>
+            function getCookie(name) 
+        { 
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)"); 
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]); 
+        else 
+            return null; 
+        } 
+        $(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+        });
+
+        function searched_mmlinfo_click(event){
+            var obj = event.srcElement ? event.srcElement : event.target;
+            cmdname = $(obj).text()
+            console.log("cmdname:" + cmdname)
+            //跳转到定位页面 ?username=zhangsan
+            next_location = '/searchresult/?mml='+ cmdname;
+            console.log("lcmdname:" + next_location)
+            location.href= next_location
+        }
+
+        function searched_solutioninfo_click(event){
+            var obj = event.srcElement ? event.srcElement : event.target;
+            solutionid = $(obj).children("p").text()
+            console.log("solutionid:" + solutionid)
+            //跳转到定位页面 ?username=zhangsan
+            next_location = '/searchresult/?solution='+ solutionid;
+            console.log("lcmdname:" + next_location)
+            location.href= next_location
+        }
+
+</script>
+
+<script>
 $(document).ready(function(){
-$(".cardinfo").click(function(){
-console.log("d");
-$(".ttt").append("<b>Appended text</b>.")
-});
+    $("searched_mmlinfo").click(function(e){
+        alter("ddd")
+        //提取selector的内容
+        cmdname = $(this).children(".cmdname").text()
+        console.log(cmdname)
+     })
+
+    $("searched_solution").click(function(e){
+        alter("ddd")
+        //提取selector的内容
+        solutioninfo = $(this).children(".solution_info").text()
+        solution_id = $(this).children(".solution_id").text()
+        console.log(solutioninfo + solution_id)
+     })
 });
 </script>
 
@@ -33,157 +80,28 @@ body {
 
 {% block content %}
 
-
-<h3><span class="label label-default">默认标签</span><span class="label label-default">默认标签</span></h3>
-
-<h3 class="ttt">选择版本:</h3>
-
-<div class="row">
-    <div class="col-lg-8">
-        <div class="row" id="quick_nav">
-            <div class="col-lg-3">
-                <div class="verinfo_card cardinfo" id="cardinfo1">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本UTSV1R3.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="verinfo_card">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="verinfo_card">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="verinfo_card">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row" id="quick_nav1">
-            <div class="col-lg-3">
-                <div class="verinfo_card cardinfo" id="cardinfo2">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本UTSV1R3.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="verinfo_card">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="verinfo_card">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3">
-                <div class="verinfo_card">
-                    <div class="verinfo">
-                        <div class="text">
-                            <h2>产品版本.</h2>
-                            <h3 class="animate-text">平台版本.</h3>
-                            <p class="animate-text">版本信息. </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<div class="container">
+	<button type="button" class="btn btn-primary col-md-offset-3 col-lg-3" data-loading-text="Loading..." style="width:200" onclick="window.location='tds'">问题自助</button>
+</div>
+<br>
+<div class="container">
+    <div class="row clearfix">
+        <div class="col-md-6 col-md-offset-3 column">
+            <form id="search-form" action="" method="post">
+                {% csrf_token %}
+                <div class="input-group input-group-sm">
+                    {{ search.query.errors }}
+                    {{ search.query }}
+                    <span class="input-group-btn">
+                        <button class="btn btn-search" type="submit" >search</button>
+                    </span>
+                </div><!-- /input-group -->
+            </form>
         </div>
     </div>
 
-    <div class="col-lg-4">
-    <h3>
-        相关推荐
-    </h3>
-    </div>
-</div>
-
-        <div class="row clearfix">
-            <div class="col-md-6 col-md-offset-3 column">
-                <form id="search-form" action="" method="post">
-                    {% csrf_token %}
-                    <div class="input-group input-group-sm">
-                        {{ search.query.errors }}
-                        {{ search.query }}
-                        <span class="input-group-btn">
-                            <button class="btn btn-search" type="submit" >search</button>
-                        </span>
-                    </div><!-- /input-group -->
-                </form>
-            </div>
-        </div>
-
-<div id="myButtons2" class="bs-example">
-	<button type="button" class="btn btn-primary"
-			data-loading-text="Loading..." style="width:200" onclick="window.location='tds'">原始
-	</button>
-</div>
-
- <div class="col-md-12 column cmdinfos">  </div>
-
-<div class="row">
-    <div class="col-lg-3">
-    </div>
-    <div class="col-lg-6">
-    </div>
-    <div class="col-lg-3">
-    </div>
+    <div class="col-md-12 column cmdinfos" id="search_result">  </div>
 
 </div>
-
-<div class="row">
-<div class="col-lg-12">
-    <p>您选择的版本是R10C10,当前对应的版本接口人信息如下</p>
-<p>交付经理:杨发森</p>
-<a>应用:张伟</a><br>
-<a>内核:贾林丽</a><br>
-<a>业务:刘进谋</a><br>
-
-</div>
-</div>
-
 
 {% endblock %}

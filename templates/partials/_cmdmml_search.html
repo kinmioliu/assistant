@@ -1,10 +1,17 @@
 {% for cmdinfo in cmdinfos %}
-<div class="well">
-    <span>{{ cmdinfo.cmdname }}</span>
-    <span>{{ cmdinfo.responsefield.groupname }}</span>
+<div class="well searched_mmlinfo">
+    <span class="cmdname" onclick="searched_mmlinfo_click(event)">{{ cmdinfo.cmdname }}</span>
+    <span class="groupname"><a href="{{cmdinfo.responsefield.introduce}}">{{ cmdinfo.responsefield.groupname }}</a></span>
 </div>
 {% endfor %}
-{% if not cmdinfos %}
+
+{% for solution in solutions %}
+<div class="well searched_solution">
+    <span class="solution_info" onclick="searched_solutioninfo_click(event)">{{ solution.solutionname }}<p class="solution_id" hidden="hidden">{{solution.id}}</p></span>
+
+</div>
+{% endfor %}
+{% if not cmdinfos and not solutions %}
 <div class="well">
     <span> 没找到和{{query}}相关的结果.</span>
 </div>

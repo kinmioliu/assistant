@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo
+from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag
 
 class VerinfoAdmin(admin.ModelAdmin):
     list_display = ('product', 'platform_ver', 'product_ver', 'verinfo')
@@ -13,12 +13,12 @@ class ResponsibilityAdmin(admin.ModelAdmin):
 class MMLAdmin(admin.ModelAdmin):
     list_display = ('cmdname', 'responsefield')
 
-list_filter = ('user',)
-ordering = ('-created_date',)
-search_fields = ('text',)
+class HashTagAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
 # Register your models here.
 admin.site.register(VersionInfo, VerinfoAdmin)
 admin.site.register(Solution, SolutionAdmin)
 admin.site.register(ResponsibilityField, ResponsibilityAdmin)
 admin.site.register(MMLCmdInfo, MMLAdmin)
+admin.site.register(HashTag, HashTagAdmin)

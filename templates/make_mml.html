@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+
+<head>
+    <meta charset="UTF-8">
+        <script src = "{% static 'jquery/jquery.js' %}"></script>
+        <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+      <script src = "{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+        <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+
+    <script>
+
+        function getCookie(name) 
+        { 
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)"); 
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]); 
+        else 
+            return null; 
+        } 
+
+        $(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+        });
+
+        function save_mml() {
+            bt_text = $("#bt_save_mml").text();
+            console.log("bt_text" + bt_text);
+
+            if (bt_text =="继续制作mml信息")
+            {
+                location.href='/contribute/make-mml/'
+            }
+            else
+            {
+                filename = $("#filename").text();
+                console.log("开始保存数据" + filename);
+                if (filename == null || filename=="")
+                {
+                    alert("您已经保存过了！");
+                }
+                else
+                {
+                    $("#bt_save_mml").text("正在保存...");
+                  $("#bt_save_mml").attr("disabled", true);
+                    $.post('', {'filename':filename }, function(save_result){
+                        console.log(save_result);
+                        result = save_result['result']
+                        console.log(result);
+                      $("#bt_save_mml").attr("disabled", false);
+                        if (result == 0)
+                        {
+                            $("#filename").text("");
+                            $("#bt_save_mml").text("继续制作mml信息");
+                            $("#mml-alert").text("保存mml成功，请前往后台数据库查看");
+                        }
+                        else
+                        {
+                            $("#bt_save_mml").text("重新保存");
+                            alert("保存失败，联系管理员！");
+                        }
+                    });
+                }
+             }
+        }
+    </script>
+
+
+    <title>制作MML信息</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top"  role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">TDS</a>
+            </div>
+            <p class="navbar-text" style="margin-left:400px"> 制作MML信息</p>
+            <p class="navbar-text navbar-right"> <a href="/admin">User Profile Page</a></p>
+        </div>
+    </nav>
+
+    <div style="padding-top:50px"></div>
+
+    <div class="container">
+        <form class="form-horizontal" id="mml-form" enctype="multipart/form-data" method="post"action="" >
+            {% csrf_token %}
+            {{uf.as_p}}
+            <p class="help-block">文件内容格式参考<a href="download_mml">example</a></p>
+            <button type="submit" class="btn btn-default">生成MML信息</button>
+        </form>
+
+        {% if mmls %}
+            <div id = "mml-alert" class="alert alert-success">生成mml文件成功，信息如下</div>
+        {% endif%}
+
+        {% if mmls %}
+            <p>责任领域{{ responsefield }}</p>
+        {% endif%}
+
+        {% for mml in mmls %}
+        <p>{{ mml }}</p>
+        {% endfor %}
+
+        {% if mmls %}
+        <div class="row">
+            <button type="button" id="bt_save_mml" class="btn btn-primary col-lg-2" onclick="save_mml()">
+                {% csrf_token %}
+                保存mml信息到数据库
+            </button>
+            <p id = "filename" hidden="hidden">{{filename}}</p> <!-- 仅限demo无赖之举，存在严重的安全隐患 -->
+        </div>
+        {% endif%}
+        {% if errorinfo %}
+            <div class="alert alert-danger">{{errorinfo}}</div>
+        {% endif %}
+
+    </div>
+
+</body>
+</html>
