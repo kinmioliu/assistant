@@ -161,7 +161,7 @@ class TestAssistant(View):
 
 class TestHomePage(View):
     def get(self, request):
-        return render(request, "homepage.html")
+        return render(request, "search_page.html")
     def post(self, request):
         print("post")
         return render(request, "homepage.html")
@@ -975,3 +975,11 @@ class TDS(View):
                 return_str = render_to_string('partials/_solutions.html', context)
                 return HttpResponse(json.dumps(return_str), content_type="application/json")
         return HttpResponse("")
+
+# def search_page(request):
+#     variables = RequestContext(request,
+#                                {'form': form, 'bookmarks': bookmarks, 'show_results': show_results, 'show_tags': True,
+#                                 'show_user': True})
+#     if request.GET.has_key('AJAX'): ):):    return render_to_response('bookmark_list.html',
+#                                                                       variables)  else:    return render_to_response(
+#         'search.html', variables)
