@@ -1,0 +1,13 @@
+1. 配置没有下发到单板 #配置下发单板
+2. 命令查询得到，但是单板上不生效 #配置下发单板
+3. 必现问题
+4. 不必现问题
+5. 取数据库, ofs1/log ofs2/log ofs2/ocp目录下的日志，取之前最好执行一次(cfg-gsp-test:"printctrl mml";cfg-gsp-test:"exportalllog";)
+6. 打开bdatest,(cfg-gsp-test:"printctrl mml", cfg-gsp-test:"bdatest 3 bid 1 0"，把bid换成有问题的单板)，重新设置一遍
+7. 观察send消息，看是否有下发，若有下发，那么找单板同事分析
+
+[solution]
+1->(3,4)
+2->(3,4)
+3->6->7
+4->5
