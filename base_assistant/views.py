@@ -161,9 +161,11 @@ class TestAssistant(View):
 
 class TestHomePage(View):
     def get(self, request):
+        print("dddds")
         return render(request, "search_page.html")
     def post(self, request):
         print("post")
+        print("dddds")
         return render(request, "homepage.html")
 
 class TestTDSPage(View):
@@ -172,7 +174,14 @@ class TestTDSPage(View):
         form = SearchForm()
         paras = dict()
         paras['search'] = form
-        return render(request, "assistant_page.html", paras)
+
+        context = dict({"personId": 'query', "cmdinfos": 'cmdinfo', "solutions": 'solutions'}, )
+#        return_str = render_to_string('partials/_cmdmml_search.html', context)
+ #       print(return_str)
+#        return HttpResponse(json.dumps(return_str), content_type="application/json")
+        return_str = [{"personid":'liu', "name":'jinmou'},]
+        return HttpResponse(json.dumps(return_str), content_type="application/json")
+    #        return render(request, "assistant_page.html", paras)
     def post(self, request):
         print("post hhh1")
         form = SearchForm(request.POST)

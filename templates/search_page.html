@@ -7,9 +7,93 @@
     <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
     <script src = "{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 
+    <script src = "{% static 'js/handlebars-v4.0.10.js' %}"></script>
+    <script src = "{% static 'js/typeahead.bundle.js' %}"></script>
+
     <link href="{% static 'extcss/index.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
     <title>Title</title>
+
+    <style>
+        .search {
+  display: inline-flex;
+  height: 35px;
+  margin: 50px auto;
+  position: relative;
+}
+.search input {
+  border: #eee 1px solid;
+  background-color: #fff;
+  outline: none;
+  width: 200px;
+  padding: 0 5px;
+}
+.search button {
+  background-color: #ff3300;
+  color: #fff;
+  border: none;
+  width: 80px;
+}
+    </style>
+
+    <script>
+
+//远程数据源
+var remote_cities = new Bloodhound({
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('CityName'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    // 在文本框输入字符时才发起请求
+    remote: '/search?personName=%QUERY'
+});
+
+
+remote_cities.initialize();
+$(document).ready(function ($) {
+$('#ajax-remote-example .typeahead').typeahead(null, {
+    name: 'cities',
+    displayKey: 'CityName',
+    source: remote_cities.ttAdapter()
+});
+});
+
+var persons = new Bloodhound({  
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('personName'), //服务端返回的json中， Person Name对应的字段叫personName   
+  queryTokenizer: Bloodhound.tokenizers.whitespace,         
+  remote:{   
+      url: '/search?personName=%QUERY',  //'%QUERY' 将被用户输入的值代替
+      filter: function(resp){ //服务端未必直接以json array方式返回搜索结果。如果不是的话，指定一下搜索结果在json中的路径。
+              console.log("ddddd")
+              console.log(resp.personList)
+            return resp.personList;  
+        }                   
+  }  
+  
+});  
+   
+  
+persons.initialize();  
+$(document).ready(function ($) {
+
+$('#personNameInput').typeahead({ //把这个输入框变成auto complete风格  
+  hint: true,  
+  highlight: true,  
+  minLength: 1  
+},  
+{  
+  name: 'thePersons', //其实没什么用，只是用来构建生成的dom元素的css class名  
+  displayKey: 'personName', //选择好结果后，输入框里显示的字段  
+  source: persons.ttAdapter(), //请照抄  
+  
+  templates: { //这个函数决定下拉列表中的每一行怎么渲染。
+        suggestion: Handlebars.compile('<p>ID:{{personId}} - name:{{personName}}</p>')  //这是个模板，里面的{{xxx}}中的xxx是服务端所返回JSON数据中所对应的字段。下文会说明Handlebars的角色.   
+      }  
+}).on('typeahead:selected',function(evt,datum){
+console.log("ddd")
+    $('#personIdInput').val(datum.personId); //用户从下拉中选择某项后，刷新那个只读的personId值  
+});
+});
+    </script>
+
 </head>
 <body>
 
@@ -19,24 +103,53 @@
             <div class="input-group">
                 <span><input type="text" class="form-control input-lg" id="gover_search_key"></span>
                 <span class="input-group-addon btn btn-primary">搜索</span>
-                <ul></ul>
-                <div class="search_suggest" id="gov_search_suggest"></div>
             </div>
         </div>
         <div class="col-lg-4"></div>
     </div>
+    <div class="row">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
+            <div class="search_suggest" id="gov_search_suggest">
+                <ul></ul>
+            </div>
+        </div>
+        <div class="col-lg-4"></div>
 
-<div class="gover_search">  
-        <div class="gover_search_form clearfix">  
-            <span class="search_t">关键词匹配搜索</span>  
-            <input type="text" class="input_search_key" id="gover_search_key1" placeholder="请输入关键词直接搜索" />
-            <button type="submit" class="search_btn">搜索</button>  
-            <div class="search_suggest" id="gov_search_suggest1">
-                <ul>  
-                </ul>  
-            </div>  
-        </div>  
-    </div>  
+    </div>
+
+<div class="search">
+    <input type="text" value="">
+    <button>搜索</button>
+</div>
+
+<div class="example">
+    <h2>Ajax数据预读示例</h2>
+    <div id="ajax-prefetch-example">
+        <input class="typeahead" type="text" placeholder="请输入省份">
+    </div>
+</div>
+
+<div class="example">
+    <h2>Ajax及时获取数据示例</h2>
+    <div id="ajax-remote-example">
+        <input class="typeahead" type="text" placeholder="请输入城市">
+    </div>
+</div>
+
+<form>  
+        <table>         
+            <tr>                
+                <td>Person Name</td>  
+                <td><input type="text" class="typeahead" name="personName" id="personNameInput" placeholder="输入Person Name搜索"/>  </td>  
+            </tr>  
+            <tr>                
+                <td>Person ID</td>  
+                <td><input type="text" name="personId" id="personIdInput" readonly/>  </td>  
+            </tr>   
+
+        </table>  
+</form>  
 
 </body>
 
