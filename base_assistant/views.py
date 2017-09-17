@@ -171,17 +171,24 @@ class TestHomePage(View):
 class TestTDSPage(View):
     def get(self, request):
         print("testtdspage")
-        form = SearchForm()
-        paras = dict()
-        paras['search'] = form
+        print(request)
+        solutionname = request.GET.get('solutionName')
+        print(solutionname)
 
-        context = dict({"personId": 'query', "cmdinfos": 'cmdinfo', "solutions": 'solutions'}, )
-#        return_str = render_to_string('partials/_cmdmml_search.html', context)
- #       print(return_str)
-#        return HttpResponse(json.dumps(return_str), content_type="application/json")
-        return_str = [{"personid":'liu', "name":'jinmou'},]
-        return HttpResponse(json.dumps(return_str), content_type="application/json")
-    #        return render(request, "assistant_page.html", paras)
+        cmdinfo_objs = MMLCmdInfo.objects.filter(cmdname__icontains=solutionname)
+        hashtags = HashTag.objects.filter(name__icontains=solutionname)
+
+        rsp_data = list()
+        print(hashtags)
+        for cmdinfo in cmdinfo_objs:
+            elem = {"SolutionName":cmdinfo.cmdname}
+            rsp_data.append(elem)
+        for tag in hashtags:
+            elem = {"SolutionName": tag.name}
+            rsp_data.append(elem)
+        print(rsp_data)
+        return HttpResponse(json.dumps(rsp_data), content_type="application/json")
+
     def post(self, request):
         print("post hhh1")
         form = SearchForm(request.POST)
@@ -201,6 +208,26 @@ class TestTDSPage(View):
             print(return_str)
             return HttpResponse(json.dumps(return_str),content_type="application/json")
         return HttpResponse("/search")
+
+    # def post(self, request):
+    #     print("post hhh1")
+    #     form = SearchForm(request.POST)
+    #     if form.is_valid():
+    #         query = form.cleaned_data['query']
+    #         cmdinfo = MMLCmdInfo.objects.filter(cmdname__icontains=query)
+    #         hashtags = HashTag.objects.filter(name__icontains = query)
+    #         solutions = list() #warning，考虑合理性
+    #         if len(hashtags) > 0:
+    #             for tag in hashtags:
+    #                 tmp_solutions = tag.solution.all()
+    #                 for solution in tmp_solutions:
+    #                     solutions.append(solution)
+    #
+    #         context = dict({"query": query, "cmdinfos": cmdinfo, "solutions": solutions},)
+    #         return_str = render_to_string('partials/_cmdmml_search.html', context)
+    #         print(return_str)
+    #         return HttpResponse(json.dumps(return_str),content_type="application/json")
+    #     return HttpResponse("/search")
 
     def getpg_by_product(self, request, product):
         verinfos = VersionInfo.objects.filter(product=product)

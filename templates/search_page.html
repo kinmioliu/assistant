@@ -12,241 +12,190 @@
 
     <link href="{% static 'extcss/index.css' %}" rel="stylesheet" type="text/css">
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
-    <title>Title</title>
-
-    <style>
-        .search {
-  display: inline-flex;
-  height: 35px;
-  margin: 50px auto;
-  position: relative;
-}
-.search input {
-  border: #eee 1px solid;
-  background-color: #fff;
-  outline: none;
-  width: 200px;
-  padding: 0 5px;
-}
-.search button {
-  background-color: #ff3300;
-  color: #fff;
-  border: none;
-  width: 80px;
-}
-    </style>
+    <link href="{% static 'extcss/typeaheadjs.css' %}" rel="stylesheet">
+    <title>TDS</title>
 
     <script>
 
-//远程数据源
-var remote_cities = new Bloodhound({
-    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('CityName'),
-    queryTokenizer: Bloodhound.tokenizers.whitespace,
-    // 在文本框输入字符时才发起请求
-    remote: '/search?personName=%QUERY'
-});
+        function getCookie(name) 
+        { 
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)"); 
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]); 
+        else 
+            return null; 
+        } 
+        $(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+        });
 
 
-remote_cities.initialize();
-$(document).ready(function ($) {
-$('#ajax-remote-example .typeahead').typeahead(null, {
-    name: 'cities',
-    displayKey: 'CityName',
-    source: remote_cities.ttAdapter()
-});
-});
 
-var persons = new Bloodhound({  
-  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('personName'), //服务端返回的json中， Person Name对应的字段叫personName   
-  queryTokenizer: Bloodhound.tokenizers.whitespace,         
-  remote:{   
-      url: '/search?personName=%QUERY',  //'%QUERY' 将被用户输入的值代替
-      filter: function(resp){ //服务端未必直接以json array方式返回搜索结果。如果不是的话，指定一下搜索结果在json中的路径。
-              console.log("ddddd")
-              console.log(resp.personList)
-            return resp.personList;  
-        }                   
-  }  
-  
-});  
-   
-  
-persons.initialize();  
-$(document).ready(function ($) {
+    $(document).ready(function ($) {
+    //远程数据源
+    var remote_solutions = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('SolutionName'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: 'search?solutionName=%QUERY&request=typeaheadData',
+            wildcard: '%QUERY'
+        }
+    });
 
-$('#personNameInput').typeahead({ //把这个输入框变成auto complete风格  
-  hint: true,  
-  highlight: true,  
-  minLength: 1  
-},  
-{  
-  name: 'thePersons', //其实没什么用，只是用来构建生成的dom元素的css class名  
-  displayKey: 'personName', //选择好结果后，输入框里显示的字段  
-  source: persons.ttAdapter(), //请照抄  
-  
-  templates: { //这个函数决定下拉列表中的每一行怎么渲染。
-        suggestion: Handlebars.compile('<p>ID:{{personId}} - name:{{personName}}</p>')  //这是个模板，里面的{{xxx}}中的xxx是服务端所返回JSON数据中所对应的字段。下文会说明Handlebars的角色.   
-      }  
-}).on('typeahead:selected',function(evt,datum){
-console.log("ddd")
-    $('#personIdInput').val(datum.personId); //用户从下拉中选择某项后，刷新那个只读的personId值  
-});
-});
+    remote_solutions.initialize();
+
+    $('#remote-solution .typeahead').typeahead(null, {
+        name: 'solutions',
+        displayKey: 'SolutionName',
+        source: remote_solutions.ttAdapter()
+    });
+    });
+$(document).keyup(function(event){
+      if(event.keyCode ==13){
+        $("#submit").trigger("click");
+      }
+    });
+
+    $(document).ready(function(){
+    $("#input_search").keyup(function(event){
+        if(event.keyCode ==13){
+            var query = $("#input_search").val()
+            console.log("执行了提交"+ query);
+            $.post('/search/', {"query":query}, function(data){
+            console.log(data);
+                $('.cmdinfos').html(data);
+            });
+         }
+    });
+
+    $('#remote-solution').submit(function(e){
+
+    $.post('/search/', $(this).serialize(), function(data){
+    console.log(data);
+    $('.cmdinfos').html(data);
+    });
+    e.preventDefault();
+    });
+    });
+
+
     </script>
 
 </head>
+
 <body>
 
     <div class="row" style="margin-top:250px">
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
-            <div class="input-group">
-                <span><input type="text" class="form-control input-lg" id="gover_search_key"></span>
-                <span class="input-group-addon btn btn-primary">搜索</span>
+            <div class="input-group" id="remote-solution">
+                <input class="form-control input-lg typeahead" type="text" id="input_search">
+                <span class="input-group-addon btn btn-primary" id="bt_search">搜索</span>
             </div>
         </div>
         <div class="col-lg-4"></div>
     </div>
-    <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-4">
-            <div class="search_suggest" id="gov_search_suggest">
-                <ul></ul>
-            </div>
-        </div>
-        <div class="col-lg-4"></div>
 
-    </div>
-
-<div class="search">
-    <input type="text" value="">
-    <button>搜索</button>
-</div>
-
-<div class="example">
-    <h2>Ajax数据预读示例</h2>
-    <div id="ajax-prefetch-example">
-        <input class="typeahead" type="text" placeholder="请输入省份">
-    </div>
-</div>
-
-<div class="example">
-    <h2>Ajax及时获取数据示例</h2>
-    <div id="ajax-remote-example">
-        <input class="typeahead" type="text" placeholder="请输入城市">
-    </div>
-</div>
-
-<form>  
-        <table>         
-            <tr>                
-                <td>Person Name</td>  
-                <td><input type="text" class="typeahead" name="personName" id="personNameInput" placeholder="输入Person Name搜索"/>  </td>  
-            </tr>  
-            <tr>                
-                <td>Person ID</td>  
-                <td><input type="text" name="personId" id="personIdInput" readonly/>  </td>  
-            </tr>   
-
-        </table>  
-</form>  
+    <div class="col-md-12 column cmdinfos" id="search_result">  </div>
 
 </body>
 
 
 <script type="text/javascript">  
   
-//实现搜索输入框的输入提示js类  
-function oSearchSuggest(searchFuc){  
-    var input = $('#gover_search_key');  
-    var suggestWrap = $('#gov_search_suggest');  
-    var key = "";  
-    var init = function(){  
-        input.bind('keyup',sendKeyWord);  
-        input.bind('blur',function(){setTimeout(hideSuggest,100);})  
-    }  
-    var hideSuggest = function(){  
-        suggestWrap.hide();  
+//实现搜索输入框的输入提示js类
+function oSearchSuggest(searchFuc){
+    var input = $('#gover_search_key');
+    var suggestWrap = $('#gov_search_suggest');
+    var key = "";
+    var init = function(){
+        input.bind('keyup',sendKeyWord);
+        input.bind('blur',function(){setTimeout(hideSuggest,100);})
+    }
+    var hideSuggest = function(){
+        suggestWrap.hide();
     }
 
-      
-    //发送请求，根据关键字到后台查询  
-    var sendKeyWord = function(event){  
+
+    //发送请求，根据关键字到后台查询
+    var sendKeyWord = function(event){
     console.log("solution_id:" )
-        //键盘选择下拉项  
-        if(suggestWrap.css('display')=='block'&&event.keyCode == 38||event.keyCode == 40){  
-            var current = suggestWrap.find('li.hover');  
-            if(event.keyCode == 38){  
-                if(current.length>0){  
-                    var prevLi = current.removeClass('hover').prev();  
-                    if(prevLi.length>0){  
-                        prevLi.addClass('hover');  
-                        input.val(prevLi.html());  
-                    }  
-                }else{  
-                    var last = suggestWrap.find('li:last');  
-                    last.addClass('hover');  
-                    input.val(last.html());  
-                }  
-                  
-            }else if(event.keyCode == 40){  
-                if(current.length>0){  
-                    var nextLi = current.removeClass('hover').next();  
-                    if(nextLi.length>0){  
-                        nextLi.addClass('hover');  
-                        input.val(nextLi.html());  
-                    }  
-                }else{  
-                    var first = suggestWrap.find('li:first');  
-                    first.addClass('hover');  
-                    input.val(first.html());  
-                }  
-            }  
-              
-        //输入字符  
-        }else{   
-            var valText = $.trim(input.val());  
-            if(valText ==''||valText==key){  
-                return;  
-            }  
-            searchFuc(valText);  
-            key = valText;  
-        }             
-          
-    }  
-    //请求返回后，执行数据展示  
-    this.dataDisplay = function(data){  
-        if(data.length<=0){  
-            suggestWrap.hide();  
-            return;  
-        }  
+        //键盘选择下拉项
+        if(suggestWrap.css('display')=='block'&&event.keyCode == 38||event.keyCode == 40){
+            var current = suggestWrap.find('li.hover');
+            if(event.keyCode == 38){
+                if(current.length>0){
+                    var prevLi = current.removeClass('hover').prev();
+                    if(prevLi.length>0){
+                        prevLi.addClass('hover');
+                        input.val(prevLi.html());
+                    }
+                }else{
+                    var last = suggestWrap.find('li:last');
+                    last.addClass('hover');
+                    input.val(last.html());
+                }
+
+            }else if(event.keyCode == 40){
+                if(current.length>0){
+                    var nextLi = current.removeClass('hover').next();
+                    if(nextLi.length>0){
+                        nextLi.addClass('hover');
+                        input.val(nextLi.html());
+                    }
+                }else{
+                    var first = suggestWrap.find('li:first');
+                    first.addClass('hover');
+                    input.val(first.html());
+                }
+            }
+
+        //输入字符
+        }else{
+            var valText = $.trim(input.val());
+            if(valText ==''||valText==key){
+                return;
+            }
+            searchFuc(valText);
+            key = valText;
+        }
+
+    }
+    //请求返回后，执行数据展示
+    this.dataDisplay = function(data){
+        if(data.length<=0){
+            suggestWrap.hide();
+            return;
+        }
           console.log("solution_idddddd:" )
-        //往搜索框下拉建议显示栏中添加条目并显示  
-        var li;  
-        var tmpFrag = document.createDocumentFragment();  
-        suggestWrap.find('ul').html('');  
-        for(var i=0; i<data.length; i++){  
-            li = document.createElement('LI');  
-            li.innerHTML = data[i];  
-            tmpFrag.appendChild(li);  
-        }  
-        suggestWrap.find('ul').append(tmpFrag);  
-        suggestWrap.show();  
-          
-        //为下拉选项绑定鼠标事件  
-        suggestWrap.find('li').hover(function(){  
-                suggestWrap.find('li').removeClass('hover');  
-                $(this).addClass('hover');  
-          
-            },function(){  
-                $(this).removeClass('hover');  
-        }).bind('click',function(){  
-            input.val(this.innerHTML);  
-            suggestWrap.hide();  
-        });  
-    }  
-    init();  
-};  
+        //往搜索框下拉建议显示栏中添加条目并显示
+        var li;
+        var tmpFrag = document.createDocumentFragment();
+        suggestWrap.find('ul').html('');
+        for(var i=0; i<data.length; i++){
+            li = document.createElement('LI');
+            li.innerHTML = data[i];
+            tmpFrag.appendChild(li);
+        }
+        suggestWrap.find('ul').append(tmpFrag);
+        suggestWrap.show();
+
+        //为下拉选项绑定鼠标事件
+        suggestWrap.find('li').hover(function(){
+                suggestWrap.find('li').removeClass('hover');
+                $(this).addClass('hover');
+
+            },function(){
+                $(this).removeClass('hover');
+        }).bind('click',function(){
+            input.val(this.innerHTML);
+            suggestWrap.hide();
+        });
+    }
+    init();
+};
   
 //实例化输入提示的JS,参数为进行查询操作时要调用的函数名  
 var searchSuggest =  new oSearchSuggest(sendKeyWordToBack);  
