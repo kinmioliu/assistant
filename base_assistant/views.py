@@ -10,6 +10,9 @@ from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, Re
 from django.template import Context
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db.models import QuerySet
+from itertools import chain
 import json
 import os
 import re
@@ -168,6 +171,77 @@ class TestHomePage(View):
         print("dddds")
         return render(request, "homepage.html")
 
+class SearchResultPage(View):
+    def get(self, request):
+        query = request.GET.get('q')
+        page = request.GET.get('page')
+        print(query)
+        print(page)
+
+        cmdinfo_objs = QuerySet()
+        hashtag_objs = QuerySet()
+
+        paras = dict()
+        paras['placeholder'] = query
+
+        if query != "":
+            cmdinfo_objs = MMLCmdInfo.objects.filter(cmdname__icontains=query)
+            hashtag_objs = HashTag.objects.filter(name__icontains = query)
+        else:
+            cmdinfo_objs = MMLCmdInfo.objects.all()
+            hashtag_objs = HashTag.objects.all()
+
+        if len(hashtag_objs) != 0:
+            solution_objs = hashtag_objs[0].solution.all()
+
+        #合并结果
+        for hashtag in hashtag_objs:
+            solution_objs |= hashtag.solution.all()
+
+        #组合
+        if len(solution_objs) != 0 and len(cmdinfo_objs) != 0:
+            combined_query_set = list(chain(cmdinfo_objs, solution_objs))
+        elif len(solution_objs) != 0 and len(cmdinfo_objs) == 0:
+            combined_query_set = list(chain(cmdinfo_objs))
+        elif len(solution_objs) == 0 and len(cmdinfo_objs) != 0:
+            combined_query_set = list(chain(solution_objs))
+        elif len(solution_objs) == 0 and len(cmdinfo_objs) == 0:
+            combined_query_set = list()
+
+        searched_paginator = Paginator(combined_query_set, 5)
+
+        try:
+            items = searched_paginator.page(page)
+        except PageNotAnInteger:
+            items = searched_paginator.page(1)
+        except EmptyPage:
+            items = searched_paginator.page(searched_paginator.num_pages)
+
+        #分离
+        cmdinfo_list = list()
+        solution_list = list()
+        for item in items:
+            if isinstance(item, MMLCmdInfo):
+                cmdinfo_list.append(item)
+            elif isinstance(item, Solution):
+                solution_list.append(item)
+
+        paras['solutions'] = solution_list
+        paras['cmdinfos'] = cmdinfo_list
+
+        pagenums = searched_paginator.num_pages
+        pages = list()
+        for page in range(pagenums):
+            pages.append(page)
+
+        paras['pages'] = pages
+
+        return render(request, "search_result.html", paras)
+
+    def post(self, request):
+        return render(request, "search_result.html")
+
+
 class TestTDSPage(View):
     def get(self, request):
         print("testtdspage")
@@ -196,6 +270,10 @@ class TestTDSPage(View):
             query = form.cleaned_data['query']
             cmdinfo = MMLCmdInfo.objects.filter(cmdname__icontains=query)
             hashtags = HashTag.objects.filter(name__icontains = query)
+
+            cmdinfo_page = Paginator(cmdinfo, 3)
+            hashtag_page = Paginator(hashtags, 3)
+
             solutions = list() #warning，考虑合理性
             if len(hashtags) > 0:
                 for tag in hashtags:

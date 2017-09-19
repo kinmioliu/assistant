@@ -65,21 +65,20 @@ $(document).keyup(function(event){
             console.log("执行了提交"+ query);
             $.post('/search/', {"query":query}, function(data){
             console.log(data);
-                $('.cmdinfos').html(data);
+                $("#search_result").html(data);
             });
          }
     });
 
-    $('#remote-solution').submit(function(e){
-
-    $.post('/search/', $(this).serialize(), function(data){
-    console.log(data);
-    $('.cmdinfos').html(data);
-    });
-    e.preventDefault();
-    });
+    $("#bt_search").click(function(e){
+            var query = $("#input_search").val()
+            //跳转到定位页面 ?username=zhangsan
+            next_location = '/result/?q='+ query  + '&page=1';
+            console.log("执行了按钮"+ next_location);
+            location.href= next_location;
     });
 
+    });
 
     </script>
 
@@ -87,7 +86,7 @@ $(document).keyup(function(event){
 
 <body>
 
-    <div class="row" style="margin-top:250px">
+    <div class="row" style="margin-top:150px">
         <div class="col-lg-4"></div>
         <div class="col-lg-4">
             <div class="input-group" id="remote-solution">
@@ -98,7 +97,13 @@ $(document).keyup(function(event){
         <div class="col-lg-4"></div>
     </div>
 
-    <div class="col-md-12 column cmdinfos" id="search_result">  </div>
+    <br>
+    <br>
+
+    <div class="container">
+        <div class="col-md-12 column cmdinfos" id="search_result">  </div>
+    </div>
+
 
 </body>
 

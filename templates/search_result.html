@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src = "{% static 'jquery/jquery.js' %}"></script>
+    <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src = "{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <script src = "{% static 'js/handlebars-v4.0.10.js' %}"></script>
+    <script src = "{% static 'js/typeahead.bundle.js' %}"></script>
+
+    <link href="{% static 'extcss/index.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'extcss/typeaheadjs.css' %}" rel="stylesheet">
+    <title>TDS</title>
+
+    <script>
+
+        function getCookie(name) 
+        { 
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)"); 
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]); 
+        else 
+            return null; 
+        } 
+        $(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+        });
+
+
+
+    $(document).ready(function ($) {
+    //远程数据源
+    var remote_solutions = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('SolutionName'),
+        queryTokenizer: Bloodhound.tokenizers.whitespace,
+        remote: {
+            url: 'search?solutionName=%QUERY&request=typeaheadData',
+            wildcard: '%QUERY'
+        }
+    });
+
+    remote_solutions.initialize();
+
+    $('#remote-solution .typeahead').typeahead(null, {
+        name: 'solutions',
+        displayKey: 'SolutionName',
+        source: remote_solutions.ttAdapter()
+    });
+    });
+
+
+    $(document).ready(function(){
+    $("#input_search").keyup(function(event){
+        if(event.keyCode ==13){
+            var query = $("#input_search").val()
+            console.log("执行了提交"+ query);
+            $.post('/search/', {"query":query}, function(data){
+            console.log(data);
+                $("#search_result").html(data);
+            });
+         }
+    });
+    });
+
+    </script>
+
+</head>
+
+<body>
+
+
+    <div class="row" style="margin-top:20px">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-4">
+            <div class="input-group" id="remote-solution">
+                <input class="form-control typeahead" type="text" id="input_search" value="{{placeholder}}">
+                <span class="input-group-addon btn btn-primary" id="bt_search">搜索</span>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+
+
+    <div class="col-lg-7 column cmdinfos" id="search_result">
+        {% for cmdinfo in cmdinfos %}
+        <div class="well searched_mmlinfo">
+            <span class="cmdname" onclick="searched_mmlinfo_click(event)">{{ cmdinfo.cmdname }}</span>
+            <span class="groupname"><a href="{{cmdinfo.responsefield.introduce}}">{{ cmdinfo.responsefield.groupname }}</a></span>
+        </div>
+        {% endfor %}
+
+        {% for solution in solutions %}
+        <div class="well searched_solution">
+            <span class="solution_info" onclick="searched_solutioninfo_click(event)">{{ solution.solutionname }}<p class="solution_id" hidden="hidden">{{solution.id}}</p></span>
+        </div>
+        {% endfor %}
+
+        {% if not cmdinfos and not hashtags %}
+        <div class="well">
+            <span> 没找到和{{query}}相关的结果.</span>
+        </div>
+        {% endif %}
+
+        <ul class="pagination">
+            <li><a href="?q={{placeholder}}&page={{page}}">«</a></li>
+            {% for page in pages %}
+            <li><a href="?q={{placeholder}}&page={{page}}">{{page}}</a></li>
+            {% endfor %}
+            <li><a href="#">»</a></li>
+        </ul>
+    </div>
+
+
+</body>
+
+
+</html>
