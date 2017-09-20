@@ -178,36 +178,22 @@ class SearchResultPage(View):
         print(query)
         print(page)
 
-        cmdinfo_objs = QuerySet()
-        hashtag_objs = QuerySet()
-
         paras = dict()
         paras['placeholder'] = query
 
-        if query != "":
-            cmdinfo_objs = MMLCmdInfo.objects.filter(cmdname__icontains=query)
-            hashtag_objs = HashTag.objects.filter(name__icontains = query)
-        else:
-            cmdinfo_objs = MMLCmdInfo.objects.all()
-            hashtag_objs = HashTag.objects.all()
+        cmdinfo_objs = MMLCmdInfo.objects.filter(cmdname__icontains=query)
+        hashtag_objs = HashTag.objects.filter(name__icontains = query)
 
-        if len(hashtag_objs) != 0:
+        solution_objs = Solution.objects.filter(solutionname = "ddd")
+
+        if hashtag_objs.count() != 0:
             solution_objs = hashtag_objs[0].solution.all()
 
         #合并结果
         for hashtag in hashtag_objs:
             solution_objs |= hashtag.solution.all()
 
-        #组合
-        if len(solution_objs) != 0 and len(cmdinfo_objs) != 0:
-            combined_query_set = list(chain(cmdinfo_objs, solution_objs))
-        elif len(solution_objs) != 0 and len(cmdinfo_objs) == 0:
-            combined_query_set = list(chain(cmdinfo_objs))
-        elif len(solution_objs) == 0 and len(cmdinfo_objs) != 0:
-            combined_query_set = list(chain(solution_objs))
-        elif len(solution_objs) == 0 and len(cmdinfo_objs) == 0:
-            combined_query_set = list()
-
+        combined_query_set = list(chain(cmdinfo_objs, solution_objs))
         searched_paginator = Paginator(combined_query_set, 5)
 
         try:
@@ -232,7 +218,7 @@ class SearchResultPage(View):
         pagenums = searched_paginator.num_pages
         pages = list()
         for page in range(pagenums):
-            pages.append(page)
+            pages.append(page+1)
 
         paras['pages'] = pages
 

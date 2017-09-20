@@ -7,7 +7,7 @@
 
 {% for solution in solutions %}
 <div class="well searched_solution">
-    <span class="solution_info" onclick="searched_solutioninfo_click(event)">{{ solution.solutionname }}<p class="solution_id" hidden="hidden">{{solution.id}}</p></span>
+    <span class="solution_info" onclick="searched_solutioninfo_click(event)"><a href="/searchresult/?solution={{solution.id}}">{{ solution.solutionname }}</a></span>
 
 </div>
 {% endfor %}

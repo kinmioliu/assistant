@@ -72,16 +72,22 @@
 
     <div class="row solution_infos">
         {% for solution in solutions0 %}
-            <div class="col-lg-3" >
-                <div class="solution_card" >
-                    <div class="solutioninfo" onclick="return jump_subsolution(event)" type="submit">
-                        <div class="text">
-                            <h3>{{solution.solutionname}}</h3>
-                            <p hidden="hidden">{{solution.id}}</p>
-                        </div>
-                    </div>
+            <div class="panel panel-default col-lg-3">
+                <div class="panel-body">
+                    <h3>{{solution.solutionname}}</h3>
+                    <p hidden="hidden">{{solution.id}}</p>
                 </div>
             </div>
+            <!--<div class="col-lg-3" >-->
+                <!--<div class="solution_card" >-->
+                    <!--<div class="solutioninfo" onclick="return jump_subsolution(event)" type="submit">-->
+                        <!--<div class="text">-->
+                            <!--<h3>{{solution.solutionname}}</h3>-->
+                            <!--<p hidden="hidden">{{solution.id}}</p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
         {% endfor %}
     </div>
 
