@@ -1072,14 +1072,11 @@ class TDS(View):
                 print(solution[0].solutionname)
                 subsolutions = solution[0].next_solution.all()
                 context = dict({"solutions": subsolutions}, )
-                return_str = render_to_string('partials/_solutions.html', context)
+                return_str = render_to_string('partials/_solution_card_new.html', context)
                 return HttpResponse(json.dumps(return_str), content_type="application/json")
         return HttpResponse("")
 
-# def search_page(request):
-#     variables = RequestContext(request,
-#                                {'form': form, 'bookmarks': bookmarks, 'show_results': show_results, 'show_tags': True,
-#                                 'show_user': True})
-#     if request.GET.has_key('AJAX'): ):):    return render_to_response('bookmark_list.html',
-#                                                                       variables)  else:    return render_to_response(
-#         'search.html', variables)
+class SolutionTree(View):
+    def get(self, request):
+        paras = dict()
+        return render(request, "solution_tree.html", paras)

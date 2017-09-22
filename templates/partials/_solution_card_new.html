@@ -1,6 +1,14 @@
-<div class="panel panel-default col-lg-3">
-    <div class="panel-body">
-        <h3>{{solution.solutionname}}</h3>
-        <p hidden="hidden">{{solution.id}}</p>
+{% for solution in solutions %}
+    <div class="col-lg-2" style="margin:10px">
+        <div class="panel panel-primary solution-panel">
+            {% if solution.is_question %}
+            <div class="panel-heading">查看该现象决策树<p hidden="hidden">{{solution.id}}</p></div>
+            {% endif %}
+            <div class="panel-body">
+                <h3><a href="{{solution.url}}" onclick="return checkurl(this.title)" title="{{solution.url}}">{{solution.solutionname}}</a></h3>
+                <p hidden="hidden">{{solution.id}}</p>
+            </div>
+            <div class="panel-footer btn-default btn-subsolutions" onclick="return jump_subsolution(this)">子决策点<p hidden="hidden">{{solution.id}}</p></div>
+        </div>
     </div>
-</div>
+{% endfor %}

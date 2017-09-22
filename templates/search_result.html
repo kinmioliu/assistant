@@ -39,7 +39,7 @@
         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('SolutionName'),
         queryTokenizer: Bloodhound.tokenizers.whitespace,
         remote: {
-            url: 'search?solutionName=%QUERY&request=typeaheadData',
+            url: '/search?solutionName=%QUERY&request=typeaheadData',
             wildcard: '%QUERY'
         }
     });
@@ -58,13 +58,21 @@
     $("#input_search").keyup(function(event){
         if(event.keyCode ==13){
             var query = $("#input_search").val()
-            console.log("执行了提交"+ query);
-            $.post('/search/', {"query":query}, function(data){
-            console.log(data);
-                $("#search_result").html(data);
-            });
+            //跳转到定位页面 ?username=zhangsan
+            next_location = '/result/?q='+ query  + '&page=1';
+            console.log("执行了按钮"+ next_location);
+            location.href= next_location;
          }
     });
+
+    $("#bt_search").click(function(e){
+            var query = $("#input_search").val()
+            //跳转到定位页面 ?username=zhangsan
+            next_location = '/result/?q='+ query  + '&page=1';
+            console.log("执行了按钮"+ next_location);
+            location.href= next_location;
+    });
+
     });
 
     </script>

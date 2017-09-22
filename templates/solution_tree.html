@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <script src = "{% static 'jquery/jquery.js' %}"></script>
+    <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src = "{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <script src = "{% static 'js/handlebars-v4.0.10.js' %}"></script>
+    <script src = "{% static 'js/typeahead.bundle.js' %}"></script>
+
+    <link href="{% static 'extcss/index.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'extcss/typeaheadjs.css' %}" rel="stylesheet">
+
+    <title>solutiontree</title>
+
+<script type="text/javascript">
+ window.onload = function(){
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+   
+    //设置字体样式
+    ctx.font = "30px Courier New";
+    //设置字体填充颜色
+    ctx.fillStyle = "blue";
+    //从坐标点(50,50)开始绘制文字
+    ctx.fillText("CodePlayer+中文测试", 50, 50);
+
+  arrow2("myCanvas",0,0,0,0,300,100)
+  arrow2("myCanvas",0,0,200,200,150,150)
+  arrow2("myCanvas",0,0,20,200,150,150)
+  arrow2("myCanvas",0,0,100,0,50,100)
+  arrow2("myCanvas",0,0,0,100,300,100)
+}
+
+
+function arrow2(canId,ox,oy,x1,y1,x2,y2)
+{
+//参数说明 canvas的 id ，原点坐标  第一个端点的坐标，第二个端点的坐标
+  var sta = new Array(x1,y1);
+  var end = new Array(x2,y2);
+
+  var canvas = document.getElementById(canId);
+  if(canvas == null)return false;
+  var ctx = canvas.getContext('2d');
+  //画线
+  ctx.beginPath();
+  ctx.translate(ox,oy,0); //坐标源点
+  ctx.moveTo(sta[0],sta[1]);
+  ctx.lineTo(end[0],end[1]);
+  ctx.fill();
+  ctx.stroke();
+  ctx.save();
+
+
+
+  //画箭头
+  ctx.translate(end[0],end[1]);
+  //我的箭头本垂直向下，算出直线偏离Y的角，然后旋转 ,rotate是顺时针旋转的，所以加个负号
+  var ang=(end[0]-sta[0])/(end[1]-sta[1]);
+  ang=Math.atan(ang);
+  if(end[1]-sta[1] >= 0){
+	ctx.rotate(-ang);
+  }else{
+	ctx.rotate(Math.PI-ang);//加个180度，反过来
+  }
+  ctx.lineTo(-5,-10);
+  ctx.lineTo(0,-5);
+  ctx.lineTo(5,-10);
+  ctx.lineTo(0,0);
+  ctx.fill(); //箭头是个封闭图形
+  ctx.restore();   //恢复到堆的上一个状态，其实这里没什么用。
+  ctx.closePath();
+}
+</script>
+
+</head>
+<body>
+	 <canvas id="myCanvas" width="2000px" height="1000px"></canvas>
+</body>
+</html>

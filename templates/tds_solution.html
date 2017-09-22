@@ -32,11 +32,8 @@
         });
         });
 
-        function jump_subsolution(event) {
-            //提取selector的内容
-            var obj = event.srcElement ? event.srcElement : event.target;
-            textinfo = $(obj)
-            solution_id = textinfo.children().children("p").text();
+        function jump_subsolution(from) {
+            var solution_id = $(from).children("p").text()
             console.log("solution_id:" + solution_id )
             if (solution_id != null && solution_id != "")
             {
@@ -46,10 +43,37 @@
                 {
                     $(".solution_infos").html(solution_data)
                 }
+                else
+                {
+                    alert("已经是叶子节点了");
+                }
                 });
                 event.preventDefault();
             }
         }
+
+        function checkurl(url){
+            console.log("url:"+url);
+            if (url == "" || url == null)
+            {
+                alert("当前还没有链接到指定wiki");
+                return false;
+            }
+            return true;
+        }
+
+        function view_solution(from) {
+            var solution_id = $(from).children("p").text()
+            console.log("solution_id:" + solution_id )
+            if (solution_id != null && solution_id != "")
+            {
+                //跳转到定位页面 ?username=zhangsan
+                next_location = '/solution_tree/?solutionid='+ solution_id;
+                console.log("执行了按钮"+ next_location);
+                location.href= next_location;
+            }
+        }
+
     </script>
 
     <title>{{mmlcmd}}</title>
@@ -70,27 +94,21 @@
         {% endif%}
     </div>
 
-    <div class="row solution_infos">
+    <div class="solution_infos">
         {% for solution in solutions0 %}
-            <div class="panel panel-default col-lg-3">
-                <div class="panel-body">
-                    <h3>{{solution.solutionname}}</h3>
-                    <p hidden="hidden">{{solution.id}}</p>
+            <div class="col-lg-2" style="margin:10px">
+                <div class="panel panel-primary solution-panel">
+                    {% if solution.is_question %}
+                    <div class="panel-heading btn-default" onclick="return view_solution(this)">查看该现象决策树<p hidden="hidden">{{solution.id}}</p></div>
+                    {% endif %}
+                    <div class="panel-body">
+                        <h3><a href="{{solution.url}}" onclick="return checkurl(this.title)" title="{{solution.url}}">{{solution.solutionname}}</a></h3>
+                        <p hidden="hidden">{{solution.id}}</p>
+                    </div>
+                    <div class="panel-footer btn-default btn-subsolutions" onclick="return jump_subsolution(this)">子决策点<p hidden="hidden">{{solution.id}}</p></div>
                 </div>
             </div>
-            <!--<div class="col-lg-3" >-->
-                <!--<div class="solution_card" >-->
-                    <!--<div class="solutioninfo" onclick="return jump_subsolution(event)" type="submit">-->
-                        <!--<div class="text">-->
-                            <!--<h3>{{solution.solutionname}}</h3>-->
-                            <!--<p hidden="hidden">{{solution.id}}</p>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-            <!--</div>-->
         {% endfor %}
-    </div>
-
 
 </body>
 </html>
