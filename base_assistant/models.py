@@ -11,6 +11,12 @@ class VersionInfo(models.Model):
     def __str__(self):
         return self.product + "(" + self.platform_ver + ")"
 
+#外部链接
+class OuterLink(models.Model):
+
+    link_title = models.CharField(max_length = 128)
+    introduce = models.URLField()
+
 #解决方法
 class Solution(models.Model):
     solutionname = models.CharField(max_length=200)
@@ -56,10 +62,19 @@ class ResponsibilityField(models.Model):
 class MMLCmdInfo(models.Model):
     #命令行
     cmdname = models.CharField(max_length=30)
+    #功能
+    cmd_func = models.CharField(max_length=300)
+    #注意事项
+    cmd_attention = models.CharField(max_length=500)
+    #备注
+    cmd_mark = models.CharField(max_length = 500)
     #所属责任田
     responsefield = models.ForeignKey("ResponsibilityField")
     #相关问题列表
     solutions = models.ManyToManyField("Solution", blank=True, null=True)
+    #相关链接列表
+    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
+
 
     def __str__(self):
         return self.cmdname

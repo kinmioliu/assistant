@@ -25,7 +25,7 @@ SECRET_KEY = 'iiav#@1)e3p$v(3=66naf81^@jtm9y)t$ho70r^!(xkld_lk8y'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
 
 # Application definition
@@ -72,9 +72,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'assistant.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -106,19 +103,6 @@ STATICFILES_DIRS = (
     os.path.abspath(os.path.join(ROOT_PATH, 'static')), # static is on root level
 )
 
-# TEMPLATE_DIRS = (
-# #    BASE_DIR + '/templates/',
-#     os.path.join(BASE_DIR, 'templates'),
-# )
-
-# TEMPLATE_LOADERS = (
-#     'django.template.loaders.filesystem.loader',
-#     'django.template.loaders.app_directories.loader',
-# )
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 

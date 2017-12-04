@@ -16,7 +16,8 @@ from itertools import chain
 import json
 import os
 import re
-
+from util.handle_mml import MMLParser
+from util import assistant_errcode
 
 
 def download_policy_excample(request):
@@ -865,64 +866,24 @@ class MakePolicy(LoginRequiredMixin, View):
 
         return render(request, "make_policy.html", paras)
 
-
-def check_mml_file(filepath):
-    output = dict()
+def check_mml_file(filepath, mml_records):
     print(filepath)
-    mml_file = open(filepath)
+    mml_file = open(filepath, 'r', encoding='UTF-8')
     lines = mml_file.readlines()
+    parser = MMLParser(lines=lines)
+    ret = parser.run(mml_records)
+    if ret != assistant_errcode.SUCCESS:
+        return ret
 
-    if len(lines) < 2:
-        output['errno'] = "0xffff"
-        output['errorinfo'] = "文件格式不对！！！"
-        return output
-
-    responsefield = lines[0];
-
-    print("responsefield:" + responsefield)
-    if len(responsefield) >= 2 and responsefield[0] != '#':
-        output['errno'] = "0xfff2"
-        output['errorinfo'] = "文件格式错误，责任领域前面需要加上'#'"
-        return output
-
-    print(responsefield[1:])
-    group = responsefield[1:].replace(' ','')
-
-    if len(group) < 3:
-        output['errno'] = "0xfff3"
-        output['errorinfo'] = "文件格式错误，责任领域错误"
-        return output
-
-    groups = ResponsibilityField.objects.filter(groupname__icontains=group[0:2])
-    print(groups)
-    if len(groups) == 0:
-        output['errno'] = "0xfff3"
-        output['errorinfo'] = "责任组" + responsefield + "不存在，请先创建"
-        return output
-
-    mmls = list()
-    count = 0
-    for line in lines:
-        count += 1
-        if count == 1:  #跳过责任田
-            continue
-
-        if len(line)>=2 and line[0] == ':':
-            mmls.append(line[1:])
-        else:
-            output['errno'] = "0xfff1"
-            output['errorinfo'] = "文件格式错误，命令行前面需要加上':'"
-            return output
-
-    output['errno'] = "0"
-    output['mmls'] = mmls
-    output['responsefield'] = responsefield[1:]
+    print(mml_records)
 
     mml_file.close()
 
-    return output
+    return assistant_errcode.SUCCESS
+
 
 def parse_mml_file(filepath):
+
     output = check_mml_file(filepath)
     if output['errno'] != "0":
         return 0xffff
@@ -956,12 +917,13 @@ def handle_mml_file(file):
         fileobj.close()
 
     print(filename)
-
-    output = check_mml_file(filename)
-
-    if output['errno'] != "0":
+    mml_records = dict()
+    ret = check_mml_file(filename, mml_records)
+    if ret != assistant_errcode.SUCCESS:
         #删除文件
         os.remove(filename)
+    output['errno'] = "0"
+    output['mmls'] = mml_records["mmls"]
     output['filename'] = file.name
     return output
 
@@ -983,6 +945,7 @@ class MakeMMLInfo(LoginRequiredMixin, View):
         if self.request.method == "POST":
             policy_file = MMLFileForm(self.request.POST, self.request.FILES)
             filename = request.POST.get('filename')
+            responsity = request.POST.get('responsityid')
             if policy_file.is_valid():
                 file = self.request.FILES.get('mml_file')
                 if file != None:
@@ -997,15 +960,11 @@ class MakeMMLInfo(LoginRequiredMixin, View):
                         uf = MMLFileForm()
                         paras['uf'] = uf;
                         mmls = output['mmls']
-
-                        print(output['filename'])
-
                         paras['filename'] = output['filename']
                         paras['mmls'] = mmls
-                        paras['responsefield'] = output['responsefield']
                         return render(request, "make_mml.html", paras)
             elif filename != None:
-                print(filename)
+                print(responsity)
                 base_dir = os.path.dirname(os.path.abspath(__name__))
                 textdir = os.path.join(base_dir, 'static', 'upload');
                 filepath = os.path.join(textdir, filename);
