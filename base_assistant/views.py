@@ -871,12 +871,12 @@ def check_mml_file(filepath, mml_records):
     mml_file = open(filepath, 'r', encoding='UTF-8')
     lines = mml_file.readlines()
     parser = MMLParser(lines=lines)
+#    records = list()
     ret = parser.run(mml_records)
     if ret != assistant_errcode.SUCCESS:
         return ret
 
-    print(mml_records)
-
+#    mml_records["mmls"] = records
     mml_file.close()
 
     return assistant_errcode.SUCCESS
@@ -917,13 +917,13 @@ def handle_mml_file(file):
         fileobj.close()
 
     print(filename)
-    mml_records = dict()
+    mml_records = list()
     ret = check_mml_file(filename, mml_records)
     if ret != assistant_errcode.SUCCESS:
         #删除文件
         os.remove(filename)
     output['errno'] = "0"
-    output['mmls'] = mml_records["mmls"]
+    output['mmls'] = mml_records
     output['filename'] = file.name
     return output
 
