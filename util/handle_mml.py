@@ -4,6 +4,7 @@ import json
 import os
 import re
 import string
+from base_assistant.models import MMLCmdInfo
 from util import assistant_errcode, conf
 
 class MMLRecord:
@@ -24,8 +25,8 @@ class MMLRecord:
     def __str__(self):
         return ("[" + self.name + "],["+ self.func +  "],[" + self.sample + "],["+self.attention + "],["+self.mark+"]")
 
-    def to_module(self):
-        return
+    def to_module(self, responsefield_obj):
+        return MMLCmdInfo(cmdname=self.name, cmd_func = self.func, cmd_sample = self.sample, cmd_attention = self.attention, cmd_mark = self.mark, responsefield=responsefield_obj)
 
 
 class MMLParser:

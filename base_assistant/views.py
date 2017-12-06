@@ -871,31 +871,27 @@ def check_mml_file(filepath, mml_records):
     mml_file = open(filepath, 'r', encoding='UTF-8')
     lines = mml_file.readlines()
     parser = MMLParser(lines=lines)
-#    records = list()
     ret = parser.run(mml_records)
     if ret != assistant_errcode.SUCCESS:
         return ret
-
-#    mml_records["mmls"] = records
     mml_file.close()
 
     return assistant_errcode.SUCCESS
 
 
-def parse_mml_file(filepath):
+def parse_mml_file(filepath, responsefield):
+    responsefield_obj = ResponsibilityField.objects.filter(groupname__icontains=responsefield)
+    if len(responsefield_obj) == 0:
+        os.remove(filepath)
+        return 0xffff
 
-    output = check_mml_file(filepath)
-    if output['errno'] != "0":
+    mml_records = list()
+    ret = check_mml_file(filepath, mml_records)
+    if ret != assistant_errcode.SUCCESS:
         return 0xffff
     else:
-        mmls = output['mmls']
-        responsefield = output['responsefield']
-        responsefield_obj = ResponsibilityField.objects.filter(groupname__icontains = responsefield[0:2])
-        if len(responsefield_obj) == 0:
-            return 0xffff
-
-        for mml in mmls:
-            mmlinfo_model = MMLCmdInfo(cmdname = mml, responsefield = responsefield_obj[0])
+        for mml in mml_records:
+            mmlinfo_model = mml.to_module(responsefield_obj[0])
             mmlinfo_model.save()
         return 0
 
@@ -905,7 +901,6 @@ def handle_mml_file(file):
     filename = os.path.join(textdir, file.name);
     output = dict()
 
-    #for test
     if os.path.exists(filename):
         output['errno'] = "0xfff1"
         output['errorinfo'] = "文件"+ file.name +"已存在"
@@ -968,7 +963,7 @@ class MakeMMLInfo(LoginRequiredMixin, View):
                 base_dir = os.path.dirname(os.path.abspath(__name__))
                 textdir = os.path.join(base_dir, 'static', 'upload');
                 filepath = os.path.join(textdir, filename);
-                result = parse_mml_file(filepath)
+                result = parse_mml_file(filepath, responsity)
                 paras = {'result':result}
                 return JsonResponse(paras)
 

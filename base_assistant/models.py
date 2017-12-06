@@ -64,6 +64,8 @@ class MMLCmdInfo(models.Model):
     cmdname = models.CharField(max_length=30)
     #功能
     cmd_func = models.CharField(max_length=300)
+    #例子
+    cmd_sample = models.CharField(max_length = 50)
     #注意事项
     cmd_attention = models.CharField(max_length=500)
     #备注
@@ -71,9 +73,9 @@ class MMLCmdInfo(models.Model):
     #所属责任田
     responsefield = models.ForeignKey("ResponsibilityField")
     #相关问题列表
-    solutions = models.ManyToManyField("Solution", blank=True, null=True)
+    solutions = models.ManyToManyField("Solution")
     #相关链接列表
-    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
+    out_links = models.ManyToManyField("OuterLink")
 
 
     def __str__(self):
