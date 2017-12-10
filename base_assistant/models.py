@@ -13,7 +13,6 @@ class VersionInfo(models.Model):
 
 #外部链接
 class OuterLink(models.Model):
-
     link_title = models.CharField(max_length = 128)
     introduce = models.URLField()
 
@@ -73,9 +72,9 @@ class MMLCmdInfo(models.Model):
     #所属责任田
     responsefield = models.ForeignKey("ResponsibilityField")
     #相关问题列表
-    solutions = models.ManyToManyField("Solution")
+    solutions = models.ManyToManyField("Solution", null=True)
     #相关链接列表
-    out_links = models.ManyToManyField("OuterLink")
+    out_links = models.ManyToManyField("OuterLink", null=True)
 
 
     def __str__(self):

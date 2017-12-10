@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag
+from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag, OuterLink
 
 class VerinfoAdmin(admin.ModelAdmin):
     list_display = ('product', 'platform_ver', 'product_ver', 'verinfo')
@@ -16,9 +16,13 @@ class MMLAdmin(admin.ModelAdmin):
 class HashTagAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
+class OutLinkAdmin(admin.ModelAdmin):
+    list_display = ('link_title', 'introduce')
+
 # Register your models here.
 admin.site.register(VersionInfo, VerinfoAdmin)
 admin.site.register(Solution, SolutionAdmin)
 admin.site.register(ResponsibilityField, ResponsibilityAdmin)
 admin.site.register(MMLCmdInfo, MMLAdmin)
 admin.site.register(HashTag, HashTagAdmin)
+admin.site.register(OuterLink, OutLinkAdmin)

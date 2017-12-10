@@ -987,23 +987,31 @@ class TDS(View):
         if mmlcmd != None:
             print("mml")
             mml_objs = MMLCmdInfo.objects.filter(cmdname=mmlcmd)
-            solution_map = list()
             paras = dict()
-            count = 0;
-            for mml_obj in mml_objs:
-                solutions = mml_obj.solutions.all()
-                for solution in solutions:
-                    solution_map.append(solution)
-                    count += 1
+            paras['title'] = mmlcmd
+            if len(mml_objs) != 0:
+                paras['result'] = "SUCCESS"
+            else:
+                paras['result'] = "FAIL"
+                return render(request, "mmlinfo_page.html",paras)
+
+            # solution_map = list()
+            # count = 0;
+            # for mml_obj in mml_objs:
+            #     solutions = mml_obj.solutions.all()
+            #     for solution in solutions:
+            #         solution_map.append(solution)
+            #         count += 1
                     #每4个放一组
      #               if count % 4 == 0:
                         #paras['solutions'+str(count/4)] = solution_map
                         #solution_map.clear()
-            print(count)
+            # print(count)
     #        if count < 4:
-            paras['solutions0'] = solution_map
-            paras['mmlcmd'] = mmlcmd
-            return render(request, "tds_solution.html", paras)
+    #         paras['solutions0'] = solution_map
+            paras['mmlcmd'] = mml_objs[0]
+            paras['out_links'] = mml_objs[0].out_links.all()
+            return render(request, "mmlinfo_page.html", paras)
 
         elif solutionid != None:
             print("solution")

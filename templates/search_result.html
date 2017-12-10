@@ -100,7 +100,7 @@
     <div class="col-lg-7 column cmdinfos" id="search_result">
         {% for cmdinfo in cmdinfos %}
         <div class="well searched_mmlinfo">
-            <span class="cmdname"><a href="/searchresult/?mml={{cmdinfo.cmdname}}">{{ cmdinfo.cmdname }}</a></span>
+            <span class="cmdname"><a href="/searchresult/?mml={{cmdinfo.cmdname}}">{{ cmdinfo.cmdname }}    {{ cmdinfo.cmd_func }}</a></span>
             <span class="groupname"><a href="{{cmdinfo.responsefield.introduce}}">{{ cmdinfo.responsefield.groupname }}</a></span>
         </div>
         {% endfor %}
