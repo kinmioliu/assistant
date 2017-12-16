@@ -79,3 +79,42 @@ class MMLCmdInfo(models.Model):
 
     def __str__(self):
         return self.cmdname
+
+class FileInfo(models.Model):
+    filename = models.CharField(max_length=30)
+    introduce = models.CharField(max_length=50)
+    path = models.CharField(max_length=100)
+    responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
+
+
+#资源信息
+class ResoureInfo(models.Model):
+    file = models.ForeignKey("FileInfo")
+    line = models.IntegerField()
+    name = models.CharField(max_length=30)
+    code = models.CharField(max_length=200)
+    #备注
+    cmd_mark = models.CharField(max_length = 500)
+    #所属责任田
+    responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
+    #相关问题列表
+    solutions = models.ManyToManyField("Solution", null=True)
+    #相关链接列表
+    out_links = models.ManyToManyField("OuterLink", null=True)
+
+    def __str__(self):
+        return self.file + self.name + self.code
+
+class ResoureInfoInt(ResoureInfo):
+    value = models.IntegerField()
+
+class ResourceInfoStr(ResoureInfo):
+    value = models.CharField(max_length = 50)
+
+class ResourceInfoRud(ResoureInfoInt):
+    domain = models.CharField(max_length = 30)
+
+class ResourceInfoModule(ResoureInfo):
+    introduct = models.CharField(max_length = 500)
+    out_link = models.URLField()
+

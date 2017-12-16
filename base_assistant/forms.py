@@ -22,3 +22,7 @@ class PolicyFileForm(forms.Form):
 class MMLFileForm(forms.Form):
     """策略"""
     mml_file = forms.FileField()
+
+class FileInfoFileForm(forms.Form):
+    """策略"""
+    file_info = forms.FileField()

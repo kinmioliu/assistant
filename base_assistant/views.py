@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core import serializers
 from django.shortcuts import render
 from django.views.generic import View
-from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm
+from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm, FileInfoFileForm
 from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField
 from django.template import Context
 from django.template.loader import render_to_string
@@ -120,6 +120,60 @@ def handle_verinfo_file(file):
     print(infos)
     infos2verinform(infos, verinfo_model)
     return verinfo_model
+
+class MakeFileInfo(LoginRequiredMixin, View):
+    """制作MML信息"""
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+    def get(self, request):
+        print("make file")
+        paras = dict()
+        uf = FileInfoFileForm()
+        paras['uf'] = uf;
+        return render(request, "make_fileinfo.html", paras)
+
+    def post(self, request):
+        print("post MMLFile")
+        paras = dict()
+        if self.request.method == "POST":
+            policy_file = MMLFileForm(self.request.POST, self.request.FILES)
+            filename = request.POST.get('filename')
+            responsity = request.POST.get('responsityid')
+            if policy_file.is_valid():
+                file = self.request.FILES.get('mml_file')
+                if file != None:
+                    ##解析文件
+                    output = handle_mml_file(file)
+                    if output['errno'] != "0":
+                        uf = MMLFileForm()
+                        paras['uf'] = uf;
+                        paras['errorinfo'] = output['errorinfo']
+                        return render(request, "make_mml.html", paras)
+                    else:
+                        uf = MMLFileForm()
+                        paras['uf'] = uf;
+                        mmls = output['mmls']
+                        paras['filename'] = output['filename']
+                        paras['mmls'] = mmls
+                        return render(request, "make_mml.html", paras)
+            elif filename != None:
+                print(responsity)
+                base_dir = os.path.dirname(os.path.abspath(__name__))
+                textdir = os.path.join(base_dir, 'static', 'upload');
+                filepath = os.path.join(textdir, filename);
+                result = parse_mml_file(filepath, responsity)
+                paras = {'result':result}
+                return JsonResponse(paras)
+
+        #提交空表单
+        else:
+            print("post MMLFile")
+            paras['uf'] = MMLFileForm()
+
+        return render(request, "make_mml.html", paras)
+
+
+
 
 # Create your views here.
 class TestAddContent(View):

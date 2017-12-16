@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage, RTN300, TestTDS, ContributeSolution, MakePolicy, download_policy_excample, MakeMMLInfo, download_mml_excample, TDS, SearchResultPage, SolutionTree
+from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage, RTN300, TestTDS, ContributeSolution, MakePolicy, download_policy_excample, MakeMMLInfo, download_mml_excample, TDS, SearchResultPage, SolutionTree, MakeFileInfo
 
 urlpatterns = [
     url(r'^rtn300/$', RTN300.as_view()),
@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'make-verinfo/$', MakePolicy.as_view()),
     url(r'download_verinfo/$', download_policy_excample),
     url(r'make-mml/$', MakeMMLInfo.as_view()),
+    url(r'make-fileinfo/$', MakeFileInfo.as_view()),
     url(r'download_mml/$', download_mml_excample),
     url(r'^rtn300/tds/$', TestTDS.as_view()),
     url(r'^admin/', admin.site.urls),

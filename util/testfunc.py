@@ -53,7 +53,8 @@ print(mml_records)
 for mml in mml_records:
     print(str(mml))
 
-
+#测试资源文件
+{"filename"}{}
 
 
 
