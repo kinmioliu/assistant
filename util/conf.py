@@ -27,10 +27,10 @@ MML_MARK_END = ']MARKEND'
 MML_PARSE_END = 'END'
 
 FILE_PATH_CONF = {
-    'frame': ['F:\Code\llvm\llvm\docs',
-              'F:\Code\llvm\llvm\docs\_static',],
-    'ker':['F:\Code\llvm\llvm\docs\_themes',
-           'F:\Code\llvm\llvm\docs\Proposals',],
-    'com':['F:\Code\llvm\llvm\lib\CodeGen',
-           'F:\Code\llvm\llvm\lib\Fuzzer',],
+    'frame': [
+              'llvm\llvm\docs\_static',],
+    'ker':['llvm\llvm\docs\_themes',
+           'llvm\llvm\docs\Proposals',],
+    'com':['llvm\llvm\lib\CodeGen',
+           'llvm\llvm\lib\Fuzzer',],
 }
