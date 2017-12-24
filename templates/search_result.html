@@ -30,6 +30,20 @@
         });
         });
 
+        $(function(){
+            console.info("agaga");
+                console.info($("#query_content").val());
+//                toRed($("#query_content").val());
+            });
+
+            function toRed(content){
+                var bodyHtml = $("body").html();
+                console.info(bodyHtml);
+                var x = bodyHtml.replace(new RegExp(content,"gm"),"<font color='red' >"+content+"</font>")
+                $("body").html(x);
+                console.info(x);
+            }
+
 
 
     $(document).ready(function ($) {
@@ -78,13 +92,12 @@
 
 </head>
 
+
 <body>
 
-    <img src="">
-
-
-    <div class="row" style="margin-top:20px">
-        <div class="col-lg-1"></div>
+    <div class="row" style="margin-top:30px">
+            <p id="query_content" hidden="hidden">{{query}}</p>
+        <div class="col-lg-1"><img src="/static/images/log.png" width="100px"></div>
         <div class="col-lg-4">
             <div class="input-group" id="remote-solution">
                 <input class="form-control typeahead" type="text" id="input_search" value="{{placeholder}}">
@@ -117,13 +130,26 @@
         </div>
         {% endif %}
 
+
+        {% if cmdinfos or solutions %}
         <ul class="pagination">
-            <li><a href="?q={{placeholder}}&page={{page}}">«</a></li>
-            {% for page in pages %}
+            {% if items.has_previous %}
+            <li><a href="?q={{placeholder}}&page={{items.previous_page_number}}">«</a></li>
+            {% endif %}
+            {% for page in page_range %}
+            {% if page == items.number %}
+            <li class="active"><a href="?q={{placeholder}}&page={{page}}">{{page}}</a></li>
+            {% else %}
             <li><a href="?q={{placeholder}}&page={{page}}">{{page}}</a></li>
+            {% endif %}
             {% endfor %}
-            <li><a href="#">»</a></li>
+            {% if items.has_next %}
+            <li><a href="?q={{placeholder}}&page={{items.next_page_number}}">»</a></li>
+            {% endif %}
+
         </ul>
+        {% endif %}
+
     </div>
 
 

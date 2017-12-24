@@ -249,7 +249,7 @@ class SearchResultPage(View):
             solution_objs |= hashtag.solution.all()
 
         combined_query_set = list(chain(cmdinfo_objs, solution_objs))
-        searched_paginator = Paginator(combined_query_set, 5)
+        searched_paginator = Paginator(combined_query_set, 3)
 
         try:
             items = searched_paginator.page(page)
@@ -270,12 +270,15 @@ class SearchResultPage(View):
         paras['solutions'] = solution_list
         paras['cmdinfos'] = cmdinfo_list
 
-        pagenums = searched_paginator.num_pages
-        pages = list()
-        for page in range(pagenums):
-            pages.append(page+1)
+        after_range_num = 2
+        before_range_num = 1
+        if items.number >= after_range_num:
+            page_range = searched_paginator.page_range[items.number - after_range_num:items.number + before_range_num]
+        else:
+            page_range = searched_paginator.page_range[0:items.number + before_range_num]
 
-        paras['pages'] = pages
+        paras['items'] = items
+        paras['page_range'] = page_range
 
         return render(request, "search_result.html", paras)
 
