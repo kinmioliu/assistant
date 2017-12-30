@@ -56,10 +56,12 @@ from util.handle_fileinfo import FileInfoParser
 
 #测试资源文件
 files = [
-    'F:\Code\llvm\llvm\bindings',
-    'llvm\llvm\docs\test1',
-    'llvm\llvm\docs\_static\test2',
+    'F:\Code\llvm\llvm\\bindings',
+    'llvm\llvm\docs\\test1',
+    'F:llvm\llvm\docs\_static\\test2',
     'llvm\llvm\docs\_themes\dlagla3',
+    'llvm\llvm\docs\_themes\dlagla4.txt',
+    'F:llvm\llvm\docs\_static\eeeest2.h',
 ]
 
 fileinfo_parser = FileInfoParser(lines=files)
@@ -67,4 +69,11 @@ file_records = list()
 fileinfo_parser.run(file_records)
 for fileinfo in file_records:
     print(str(fileinfo))
+
+for file in file_records:
+    file_model = file.to_module()
+    if file_model == None:
+        continue
+        file_model.save()
+
 
