@@ -84,7 +84,7 @@ class FileInfo(models.Model):
     filename = models.CharField(max_length=30)
     introduce = models.CharField(max_length=50)
     path = models.CharField(max_length=100)
-    responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
+    responsefield = models.ForeignKey("ResponsibilityField")
 
 
 #资源信息

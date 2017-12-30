@@ -70,10 +70,4 @@ fileinfo_parser.run(file_records)
 for fileinfo in file_records:
     print(str(fileinfo))
 
-for file in file_records:
-    file_model = file.to_module()
-    if file_model == None:
-        continue
-        file_model.save()
-
 

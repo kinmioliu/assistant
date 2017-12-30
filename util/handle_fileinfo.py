@@ -4,7 +4,8 @@ import os
 import re
 import string
 from util import assistant_errcode, conf
-from base_assistant.models import FileInfo, ResponsibilityField
+#from base_assistant.models import FileInfo, ResponsibilityField
+
 class FileRecord:
     def __init__(self, filename, introduce, path, responsefield):
         self.filename = filename
@@ -20,12 +21,6 @@ class FileRecord:
 
     def __str__(self):
         return self.filename + "  path:" + self.path + "  res:" + self.responsefield
-
-    class FileInfo(models.Model):
-        filename = models.CharField(max_length=30)
-        introduce = models.CharField(max_length=50)
-        path = models.CharField(max_length=100)
-        responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
 
     def to_module(self):
         responsefield_obj = ResponsibilityField.objects.filter(groupname__icontains=self.responsefield)
