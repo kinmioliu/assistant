@@ -34,25 +34,16 @@ FILE_PATH_CONF = {
     'com':['llvm\llvm\lib\CodeGen',
            'llvm\llvm\lib\Fuzzer',],
 }
-
-ResponsibilityField
-RESPONSIBILITY_FIELD_CONF =
-{
+RESPONSIBILITY_FIELD_CONF = [
     ['frame','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin223391'],
     ['srv','https://baike.baidu.com/item/SRV','chenxin223391'],
     ['ker','https://baike.baidu.com/item/内核','杨发森'],
     ['app','https://baike.baidu.com/item/手机软件/7973966?fromtitle=APP&fromid=6133292','fengxun'],
     ['com','https://baike.baidu.com/item/com/5662997','zhangkang'],
-    ['libm','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin223391'],
-    ['lim','https://baike.baidu.com/item/lim','chenxin223391'],
-    ['l1','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin223391'],
-    ['l2','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin223391'],
+    ['libm','http://sourceware.org/newlib/libm.html','licong'],
+    ['lim','https://baike.baidu.com/item/lim','chenxiangling'],
+    ['l2','https://baike.baidu.com/item/L2/3722623?fr=aladdin','chenxin223391'],
+    ['l3','https://baike.baidu.com/item/L1/5885107?fr=aladdin','wangxin'],
+    ['pkt','https://baike.baidu.com/item/PTN','zhangmi'],
+]
 
-    ['pkt','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin223391'],
-}
-
-#责任田
-class ResponsibilityField(models.Model):
-    groupname = models.CharField(max_length=50, unique=True)
-    introduce = models.URLField()
-    plname = models.CharField(max_length=50)
