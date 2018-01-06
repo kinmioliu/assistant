@@ -25,50 +25,25 @@
         });
         });
 
-        function save_mml() {
-            bt_text = $("#bt_save_mml").text();
+        function update_file_info() {
+            bt_text = $("#bt_update_file_info").text();
             console.log("bt_text" + bt_text);
-
-            if (bt_text =="继续制作mml信息")
-            {
-                location.href='/contribute/make-mml/'
+            $("#bt_update_file_info").text("正在更新……");
+            $("#bt_update_file_info").attr("disabled", true);
+            $.post('', {'func':'update_fileinfo'}, function(save_result){
+                console.log(save_result);
+                $("#bt_update_file_info").attr("disabled", false);
+                $("#bt_update_file_info").text("更新文件信息");
+                $("#created").html(save_result['created']);
+                $("#updated").html(save_result['updated']);
             }
-            else
-            {
-                filename = $("#filename").text();
-                console.log("开始保存数据" + filename);
-                if (filename == null || filename=="")
-                {
-                    alert("您已经保存过了！");
-                }
-                else
-                {
-                    $("#bt_save_mml").text("正在保存...");
-                  $("#bt_save_mml").attr("disabled", true);
-                    $.post('', {'filename':filename, 'responsityid':$("input[name='optionsRadios']:checked").val() }, function(save_result){
-                        console.log(save_result);
-                        result = save_result['result']
-                        console.log(result);
-                      $("#bt_save_mml").attr("disabled", false);
-                        if (result == 0)
-                        {
-                            $("#filename").text("");
-                            $("#bt_save_mml").text("继续制作mml信息");
-                            $("#mml-alert").text("保存mml成功，请前往后台数据库查看");
-                        }
-                        else
-                        {
-                            $("#bt_save_mml").text("重新保存");
-                            alert("保存失败，联系管理员！");
-                        }
-                    });
-                }
-             }
+            );
         }
+
     </script>
 
 
-    <title>制作MML信息</title>
+    <title>制作文件信息</title>
 </head>
 
 <body>
@@ -85,108 +60,16 @@
     <div style="padding-top:50px"></div>
 
     <div class="container">
-        <form class="form-horizontal" id="mml-form" enctype="multipart/form-data" method="post"action="" >
+        <button type="button" id="bt_update_file_info" class="btn btn-primary col-lg-2" onclick="update_file_info()">
             {% csrf_token %}
-            {{uf.as_p}}
-            <p class="help-block">文件内容格式参考<a href="download_fileinfo">example</a></p>
-            <div class="radio">
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_frame" value="frame" checked>
-                      框架领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_srv" value="srv">
-                      业务领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_app" value="app">
-                      应用领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_com" value="com">
-                      通信领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_ker" value="ker">
-                      内核领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_libm" value="libm">
-                      算法LIBM领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_lim" value="lim">
-                      算法LIM领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_l2" value="L2">
-                      数传L2领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_L3" value="L3">
-                      数传L3领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_pkt" value="PKT">
-                      数传PKT领域
-                  </label>
-                </div>
-                <div class="radio">
-                  <label>
-                    <input type="radio" name="optionsRadios" id="optionsRadios_eos" value="EOS">
-                      产品EOS领域
-                  </label>
-                </div>
-            </div>
-                <div style="padding-top:10px"></div>
-            <button type="submit" class="btn btn-default">生成文件信息</button>
-        </form>
-
-        {% if mmls %}
-            <div id = "mml-alert" class="alert alert-success">生成mml文件成功，信息如下</div>
-        {% endif%}
-
-        {% if mmls %}
-            <p>责任领域{{ responsefield }}</p>
-        {% endif%}
-
-        {% for mml in mmls %}
-        <p>{{ mml }}</p>
-        {% endfor %}
-
-        {% if mmls %}
-        <div class="row">
-            <button type="button" id="bt_save_mml" class="btn btn-primary col-lg-2" onclick="save_mml()">
-                {% csrf_token %}
-                保存mml信息到数据库
-            </button>
-            <p id = "filename" hidden="hidden">{{filename}}</p> <!-- 仅限demo无赖之举，存在严重的安全隐患 -->
-        </div>
-        {% endif%}
-        {% if errorinfo %}
-            <div class="alert alert-danger">{{errorinfo}}</div>
-        {% endif %}
-
+            更新文件信息
+        </button>
     </div>
+    <br>
+
+    <div id="created"></div>
+    <div id="updated"></div>
+
 
 </body>
 </html>

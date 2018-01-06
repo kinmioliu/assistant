@@ -32,16 +32,31 @@
 
         $(function(){
             console.info("agaga");
-                console.info($("#query_content").val());
-//                toRed($("#query_content").val());
+            console.info("hello" + $("#query_content").text());
+//                toRed($("#query_content").text());
             });
 
             function toRed(content){
-                var bodyHtml = $("body").html();
+/*                o = $("#search_result");
+                for(var i=0; i<.childNodes.length; i++){
+                    var o_=o.childNodes[i];
+                    var o_p=o_.parentNode;
+                    if(o_.nodeType==1) {
+                        fHl(o_, flag, rndColor, url);
+                     } else if (o_.nodeType==3) {
+                        if(!(o_p.nodeName=='A')){
+                            if(o_.data.search(re)==-1)continue;
+                            var temp=fEleA(o_.data, flag);
+                            o_p.replaceChild(temp, o_);
+                        }
+                    }
+                }
+
+                var bodyHtml = $("#search_result").html();
                 console.info(bodyHtml);
                 var x = bodyHtml.replace(new RegExp(content,"gm"),"<font color='red' >"+content+"</font>")
-                $("body").html(x);
-                console.info(x);
+                $("#search_result").html(x);
+                console.info(x);*/
             }
 
 
@@ -71,7 +86,7 @@
     $("#input_search").keyup(function(event){
         if(event.keyCode ==13){
             var query = $("#input_search").val()
-            //跳转到定位页面 ?username=zhangsan
+            //跳转到定位页面
             next_location = '/result/?q='+ query  + '&page=1';
             console.log("执行了按钮"+ next_location);
             location.href= next_location;
@@ -80,7 +95,7 @@
 
     $("#bt_search").click(function(e){
             var query = $("#input_search").val()
-            //跳转到定位页面 ?username=zhangsan
+            //跳转到定位页面
             next_location = '/result/?q='+ query  + '&page=1';
             console.log("执行了按钮"+ next_location);
             location.href= next_location;
@@ -96,7 +111,7 @@
 <body>
 
     <div class="row" style="margin-top:30px">
-            <p id="query_content" hidden="hidden">{{query}}</p>
+            <p id="query_content" hidden="hidden" >{{query}}</p>
         <div class="col-lg-1"><img src="/static/images/log.png" width="100px"></div>
         <div class="col-lg-4">
             <div class="input-group" id="remote-solution">
@@ -121,6 +136,14 @@
         {% for solution in solutions %}
         <div class="well searched_solution">
             <span class="solution_info"><a href="/searchresult/?solution={{solution.id}}">{{ solution.solutionname }}</a></span>
+        </div>
+        {% endfor %}
+
+        {% for file in fileinfos %}
+        <div class="well searched_solution">
+            <span class="file_info"><a href="/searchresult/?file={{file.filename}}">{{ file.filename }}</a></span>
+            <span class="file_info">{{ file.path }}</a></span>
+            <span class="groupname"><a href="{{file.responsefield.introduce}}">{{ file.responsefield.groupname }}</a></span>
         </div>
         {% endfor %}
 

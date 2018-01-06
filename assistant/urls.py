@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage, RTN300, TestTDS, ContributeSolution, MakePolicy, download_policy_excample, MakeMMLInfo, download_mml_excample, TDS, SearchResultPage, SolutionTree, MakeFileInfo
-from content_provider.views import MakeResponsibiltyField
+from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage, RTN300, TestTDS, ContributeSolution, MakePolicy, download_policy_excample, MakeMMLInfo, download_mml_excample, TDS, SearchResultPage, SolutionTree
+from content_provider.views import MakeResponsibiltyField, MakeFileInfo
 
 
 urlpatterns = [

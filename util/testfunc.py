@@ -70,4 +70,7 @@ fileinfo_parser.run(file_records)
 for fileinfo in file_records:
     print(str(fileinfo))
 
-
+mode = {'name':'frame'}
+defa = {'introduct':'daga'}
+mode.update(defa)
+print(mode)

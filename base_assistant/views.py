@@ -5,8 +5,8 @@ from django.conf import settings
 from django.core import serializers
 from django.shortcuts import render
 from django.views.generic import View
-from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm, FileInfoFileForm
-from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField
+from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm
+from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField, FileInfo
 from django.template import Context
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
@@ -238,6 +238,7 @@ class SearchResultPage(View):
 
         cmdinfo_objs = MMLCmdInfo.objects.filter(cmdname__icontains=query)
         hashtag_objs = HashTag.objects.filter(name__icontains = query)
+        fileinfo_objs = FileInfo.objects.filter(filename__icontains = query)
 
         solution_objs = Solution.objects.filter(solutionname = "ddd")
 
@@ -248,8 +249,8 @@ class SearchResultPage(View):
         for hashtag in hashtag_objs:
             solution_objs |= hashtag.solution.all()
 
-        combined_query_set = list(chain(cmdinfo_objs, solution_objs))
-        searched_paginator = Paginator(combined_query_set, 3)
+        combined_query_set = list(chain(cmdinfo_objs, solution_objs, fileinfo_objs))
+        searched_paginator = Paginator(combined_query_set, 10)
 
         try:
             items = searched_paginator.page(page)
@@ -261,14 +262,18 @@ class SearchResultPage(View):
         #分离
         cmdinfo_list = list()
         solution_list = list()
+        fileinfo_list = list()
         for item in items:
             if isinstance(item, MMLCmdInfo):
                 cmdinfo_list.append(item)
             elif isinstance(item, Solution):
                 solution_list.append(item)
+            elif isinstance(item, FileInfo):
+                fileinfo_list.append(item)
 
         paras['solutions'] = solution_list
         paras['cmdinfos'] = cmdinfo_list
+        paras['fileinfos'] = fileinfo_list
 
         after_range_num = 2
         before_range_num = 1
@@ -279,6 +284,7 @@ class SearchResultPage(View):
 
         paras['items'] = items
         paras['page_range'] = page_range
+        paras['query'] = query
 
         return render(request, "search_result.html", paras)
 

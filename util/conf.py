@@ -34,8 +34,9 @@ FILE_PATH_CONF = {
     'com':['llvm\llvm\lib\CodeGen',
            'llvm\llvm\lib\Fuzzer',],
 }
+
 RESPONSIBILITY_FIELD_CONF = [
-    ['frame','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin223391'],
+    ['frame','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin'],
     ['srv','https://baike.baidu.com/item/SRV','chenxin223391'],
     ['ker','https://baike.baidu.com/item/内核','杨发森'],
     ['app','https://baike.baidu.com/item/手机软件/7973966?fromtitle=APP&fromid=6133292','fengxun'],
@@ -46,4 +47,7 @@ RESPONSIBILITY_FIELD_CONF = [
     ['l3','https://baike.baidu.com/item/L1/5885107?fr=aladdin','wangxin'],
     ['pkt','https://baike.baidu.com/item/PTN','zhangmi'],
 ]
+
+FILES_PATH_DOC_NAME = 'files_path.txt'
+
 
