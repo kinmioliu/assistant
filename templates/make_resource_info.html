@@ -25,15 +25,15 @@
         });
         });
 
-        function update_responsibilty_field() {
-            bt_text = $("#bt_update_responsibilty_field").text();
+        function update_resource_info() {
+            bt_text = $("#bt_update_resource_info").text();
             console.log("bt_text" + bt_text);
-            $("#bt_update_responsibilty_field").text("正在更新……");
-            $("#bt_update_responsibilty_field").attr("disabled", true);
-            $.post('', {'func':'update_responsibilty_field'}, function(save_result){
+            $("#bt_update_resource_info").text("正在更新……");
+            $("#bt_update_resource_info").attr("disabled", true);
+            $.post('', {'func':'update_resource_info'}, function(save_result){
                 console.log(save_result);
-                $("#bt_update_responsibilty_field").attr("disabled", false);
-                $("#bt_update_responsibilty_field").text("更新责任田信息");
+                $("#bt_update_resource_info").attr("disabled", false);
+                $("#bt_update_resource_info").text("更新资源信息");
                 $("#created").html(save_result['created']);
                 $("#updated").html(save_result['updated']);
             }
@@ -42,7 +42,7 @@
     </script>
 
 
-    <title>制作责任田信息</title>
+    <title>制作资源信息</title>
 </head>
 
 <body>
@@ -51,7 +51,7 @@
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">TDS</a>
             </div>
-            <p class="navbar-text" style="margin-left:400px"> 制作责任田信息</p>
+            <p class="navbar-text" style="margin-left:400px"> 制作资源信息</p>
             <p class="navbar-text navbar-right"> <a href="/admin">User Profile Page</a></p>
         </div>
     </nav>
@@ -59,9 +59,9 @@
     <div style="padding-top:50px"></div>
 
     <div class="container">
-        <button type="button" id="bt_update_responsibilty_field" class="btn btn-primary col-lg-2" onclick="update_responsibilty_field()">
+        <button type="button" id="bt_update_resource_info" class="btn btn-primary col-lg-2" onclick="update_resource_info()">
             {% csrf_token %}
-            更新责任田信息
+            更新资源信息
         </button>
     </div>
     <br>

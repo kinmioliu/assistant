@@ -26,6 +26,9 @@ MML_MARK_BEGIN = 'MARKBEGIN:['
 MML_MARK_END = ']MARKEND'
 MML_PARSE_END = 'END'
 
+RESOURCE_PARSE_SUCCESS = 0
+RESOURCE_PARSE_FAIL = 20
+
 FILE_PATH_CONF = {
     'frame': [
               'llvm\llvm\docs\_static',],
@@ -50,4 +53,6 @@ RESPONSIBILITY_FIELD_CONF = [
 
 FILES_PATH_DOC_NAME = 'files_path.txt'
 
-
+#资源文件路径
+ResourceFilePath = 'upload/resource_file/'
+RESOURCE_FILE_TOKENS = 5

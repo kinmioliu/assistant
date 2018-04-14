@@ -13,6 +13,7 @@ from django.http import HttpResponse, JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db.models import QuerySet
 from util.make_responsibilty_field import ResponsibiltyFieldParser
+from util.handle_resoure_code import ResourceParserManager
 import os
 from util.handle_fileinfo import FileInfoParser
 
@@ -47,43 +48,6 @@ class MakeResponsibiltyField(LoginRequiredMixin, View):
 
         paras = dict()
         return render(request, "make_responsibilty_field.html", paras)
-
-
-class MakeResponsibiltyField(LoginRequiredMixin, View):
-    """制作责任田信息"""
-    login_url = '/admin/'
-    redirect_field_name = '/contribute/'
-
-    def get(self, request):
-        print("get make_responsibilty_field")
-        paras = dict()
-        return render(request, "make_responsibilty_field.html", paras)
-
-    def post(self, request):
-        print("post make_responsibilty_field")
-        # 获取前台参数
-        if self.request.method == "POST":
-            func = request.POST.get('func')
-            DUMP('func: ' + func)
-            if func != None:
-                parser = ResponsibiltyFieldParser()
-                result = parser.run()
-                paras = dict()
-                paras['created'] = render_to_string('partials/_json_data.html',
-                                                    {'text': 'created ' + str(len(result['created'])) + ' records'})
-                paras['updated'] = render_to_string('partials/_json_data.html',
-                                                    {'text': 'updated ' + str(len(result['updated'])) + ' records'})
-                return JsonResponse(paras)
-
-        # 提交空表单
-        else:
-            paras = {'result': 'err'}
-            return JsonResponse(paras)
-
-        paras = dict()
-        return render(request, "make_responsibilty_field.html", paras)
-
-
 
 class MakeFileInfo(LoginRequiredMixin, View):
     """制作责任田信息"""
@@ -127,3 +91,43 @@ class MakeFileInfo(LoginRequiredMixin, View):
 
         paras = dict()
         return render(request, "make_responsibilty_field.html", paras)
+
+
+
+class MakeResourceInfo(LoginRequiredMixin, View):
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+
+    def get(self, request):
+        print("get make_resourceinfo")
+        paras = dict()
+        return render(request, "make_resource_info.html", paras)
+
+    def post(self, request):
+        print("post make_resource_info")
+        # 获取前台参数
+        if self.request.method == "POST":
+            func = request.POST.get('func')
+            DUMP('func: ' + func)
+            if func != None:
+                base_dir = os.path.dirname(os.path.abspath(__name__))
+                textdir = os.path.join(base_dir, 'static', conf.ResourceFilePath);
+                parser = ResourceParserManager(file_path=textdir)
+                result = parser.run()
+                paras = dict()
+                """
+                paras['created'] = render_to_string('partials/_json_data.html',
+                                                    {'text': 'created ' + str(len(result['created'])) + ' records'})
+                paras['updated'] = render_to_string('partials/_json_data.html',                                                    
+                                                    {'text': 'updated ' + str(len(result['updated'])) + ' records'})
+              """
+                return JsonResponse(paras)
+
+
+        # 提交空表单
+        else:
+            paras = {'result': 'err'}
+            return JsonResponse(paras)
+
+        paras = dict()
+        return render(request, "make_resource_info.html", paras)

@@ -19,6 +19,10 @@ import re
 from util.handle_mml import MMLParser
 from util import assistant_errcode
 
+class AboutTDS(View):
+    def get(self, request):
+        return render(request, "about_tds.html")
+
 
 def download_policy_excample(request):
     """下载模板"""
@@ -171,9 +175,6 @@ class MakeFileInfo(LoginRequiredMixin, View):
             paras['uf'] = MMLFileForm()
 
         return render(request, "make_mml.html", paras)
-
-
-
 
 # Create your views here.
 class TestAddContent(View):
