@@ -115,12 +115,10 @@ class MakeResourceInfo(LoginRequiredMixin, View):
                 parser = ResourceParserManager(file_path=textdir)
                 result = parser.run()
                 paras = dict()
-                """
                 paras['created'] = render_to_string('partials/_json_data.html',
-                                                    {'text': 'created ' + str(len(result['created'])) + ' records'})
+                                                    {'text': 'created ' + str(parser.created_records) + ' records'})
                 paras['updated'] = render_to_string('partials/_json_data.html',                                                    
-                                                    {'text': 'updated ' + str(len(result['updated'])) + ' records'})
-              """
+                                                    {'text': 'updated ' + str(parser.updated_records) + ' records'})
                 return JsonResponse(paras)
 
 

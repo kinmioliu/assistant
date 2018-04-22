@@ -227,7 +227,19 @@ class TestHomePage(View):
         print("dddds")
         return render(request, "homepage.html")
 
+QUERYTYPE_ALL = 0xffffffff
+QUERYTYPE_CMD = 0x00000001
+QUERYTYPE_HASTAG = 0x00000002
+QUERYTYPE_FILEINFO = 0x00000004
+QUERYTYPE_RESOURCE = 0x00000008
+
+r'\b0x[0-9a-fA-F]+\b'
+
 class SearchResultPage(View):
+    def CalculateQueryType(self, QueryTxt):
+        if QueryTxt.isdigit() or QueryTxt:
+            return QUERYTYPE_RESOURCE
+
     def get(self, request):
         query = request.GET.get('q')
         page = request.GET.get('page')
@@ -240,6 +252,10 @@ class SearchResultPage(View):
         cmdinfo_objs = MMLCmdInfo.objects.filter(cmdname__icontains=query)
         hashtag_objs = HashTag.objects.filter(name__icontains = query)
         fileinfo_objs = FileInfo.objects.filter(filename__icontains = query)
+        QueryType =
+        #资源值
+        if (query.is_digit()):
+
 
         solution_objs = Solution.objects.filter(solutionname = "ddd")
 
