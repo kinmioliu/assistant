@@ -103,6 +103,10 @@
 
     });
 
+    function toHex(num){
+        return num<16?"0x0"+num.toString(16).toUpperCase():"0x"+num.toString(16).toUpperCase();
+    }
+
     </script>
 
 </head>
@@ -147,7 +151,17 @@
         </div>
         {% endfor %}
 
-        {% if not cmdinfos and not solutions %}
+        {% for intres in resourceint %}
+        <div class="well searched_solution">
+            <span class="file_info"><a href="/searchresult/?file={{intres.file}}">{{ intres.file.filename }}</a></span>
+            <span class="intres_name">{{ intres.name }}</a></span>
+            <span class="intres_value"> {{ intres.value }}</a></span>
+            <span class="intres_code"><a href="/searchresult/?resourceint={{intres.id}}">{{ intres.code }}</a></span>
+        </div>
+        {% endfor %}
+
+
+        {% if not cmdinfos and not solutions and not fileinfos and not resourceint%}
         <div class="well">
             <span> 没找到和{{query}}相关的结果.</span>
         </div>

@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm
 from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField, FileInfo
+from base_assistant.models import ResoureInfoInt, ResourceInfoRud, ResourceInfoStr
 from django.template import Context
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
@@ -18,6 +19,7 @@ import os
 import re
 from util.handle_mml import MMLParser
 from util import assistant_errcode
+
 
 class AboutTDS(View):
     def get(self, request):
@@ -227,50 +229,100 @@ class TestHomePage(View):
         print("dddds")
         return render(request, "homepage.html")
 
+QUERYTYPE_NONE = 0
 QUERYTYPE_ALL = 0xffffffff
 QUERYTYPE_CMD = 0x00000001
 QUERYTYPE_HASTAG = 0x00000002
 QUERYTYPE_FILEINFO = 0x00000004
 QUERYTYPE_RESOURCE = 0x00000008
+QUERYTYPE_SOLUTION = 0x00000010
 
-r'\b0x[0-9a-fA-F]+\b'
+
+HexPattern = r'(\b|\s.)0x[0-9a-fA-F]+(\b|\s.)'
 
 class SearchResultPage(View):
+
+    def MatchCondition(self, QueryTxt, Condition):
+        if (Condition == QUERYTYPE_RESOURCE):
+            if QueryTxt.isdigit() or re.match(HexPattern, QueryTxt):
+                return True
+        if (Condition == QUERYTYPE_FILEINFO):
+            if QueryTxt.find('.') != -1:
+                return True
+        if (Condition == QUERYTYPE_CMD):
+            return True
+        if (Condition == QUERYTYPE_HASTAG):
+            return True
+        if (Condition == QUERYTYPE_SOLUTION):
+            return True
+
+        return False
+
     def CalculateQueryType(self, QueryTxt):
-        if QueryTxt.isdigit() or QueryTxt:
-            return QUERYTYPE_RESOURCE
+        QueryType = QUERYTYPE_NONE
+        QueryTxt = QueryTxt.strip()
+        if self.MatchCondition(QueryTxt, QUERYTYPE_RESOURCE):
+            QueryType |= QUERYTYPE_RESOURCE
+        if self.MatchCondition(QueryTxt, QUERYTYPE_FILEINFO):
+            QueryType |= QUERYTYPE_FILEINFO
+        if self.MatchCondition(QueryTxt, QUERYTYPE_HASTAG):
+            QueryType |= QUERYTYPE_HASTAG
+        if self.MatchCondition(QueryTxt, QUERYTYPE_CMD):
+            QueryType |= QUERYTYPE_CMD
+        if self.MatchCondition(QueryTxt, QUERYTYPE_SOLUTION):
+            QueryType |= QUERYTYPE_SOLUTION
+        if self.MatchCondition(QueryTxt, QUERYTYPE_ALL):
+            QueryType |= QUERYTYPE_ALL
+
+        return QueryType
 
     def get(self, request):
-        query = request.GET.get('q')
-        page = request.GET.get('page')
-        print(query)
-        print(page)
+        QueryTxt = request.GET.get('q')
+        QueryPage = request.GET.get('page')
+        print(QueryTxt)
+        print(QueryPage)
+        QueryTxt = QueryTxt.strip()
+        RspParas = dict()
+        RspParas['placeholder'] = QueryTxt
+        QueryType = self.CalculateQueryType(QueryTxt)
 
-        paras = dict()
-        paras['placeholder'] = query
+        TmpObjs = []
+        CmdinfoObjs = iter(TmpObjs)
+        HashTagObjs = iter(TmpObjs)
+        FileinfoObjs = iter(TmpObjs)
+        ResourceObjsInt = iter(TmpObjs)
+        ResourceObjsRud = iter(TmpObjs)
+        SolutionObjs = iter(TmpObjs)
 
-        cmdinfo_objs = MMLCmdInfo.objects.filter(cmdname__icontains=query)
-        hashtag_objs = HashTag.objects.filter(name__icontains = query)
-        fileinfo_objs = FileInfo.objects.filter(filename__icontains = query)
-        QueryType =
-        #资源值
-        if (query.is_digit()):
+        if (QueryType & QUERYTYPE_CMD):
+            CmdinfoObjs = MMLCmdInfo.objects.filter(cmdname__icontains=QueryTxt)
+        if (QueryType & QUERYTYPE_HASTAG):
+            HashTagObjs = HashTag.objects.filter(name__icontains=QueryTxt)
+        if (QueryType & QUERYTYPE_FILEINFO):
+            FileinfoObjs = FileInfo.objects.filter(filename__icontains=QueryTxt)
+        if (QueryType & QUERYTYPE_RESOURCE):
+            IntResource = 0
+            if QueryTxt.isdigit():
+                IntResource = int(QueryTxt)
+            if re.match(HexPattern, QueryTxt):
+                IntResource = int(QueryTxt, 16)
+            ResourceObjsInt = ResoureInfoInt.objects.filter(value = IntResource)
+            ResourceObjsRud = ResourceInfoRud.objects.filter(value=IntResource)
+        if (QueryType & QUERYTYPE_SOLUTION):
+            SolutionObjs = Solution.objects.filter(solutionname__icontains=QueryTxt)
 
-
-        solution_objs = Solution.objects.filter(solutionname = "ddd")
-
-        if hashtag_objs.count() != 0:
-            solution_objs = hashtag_objs[0].solution.all()
+        if HashTagObjs.count() != 0:
+            SolutionObjs = HashTagObjs[0].solution.all()
 
         #合并结果
-        for hashtag in hashtag_objs:
-            solution_objs |= hashtag.solution.all()
+        for hashtag in HashTagObjs:
+            SolutionObjs |= hashtag.solution.all()
 
-        combined_query_set = list(chain(cmdinfo_objs, solution_objs, fileinfo_objs))
+        combined_query_set = list(chain(CmdinfoObjs, SolutionObjs, FileinfoObjs, ResourceObjsInt, ResourceObjsRud))
         searched_paginator = Paginator(combined_query_set, 10)
 
         try:
-            items = searched_paginator.page(page)
+            items = searched_paginator.page(QueryPage)
         except PageNotAnInteger:
             items = searched_paginator.page(1)
         except EmptyPage:
@@ -280,6 +332,9 @@ class SearchResultPage(View):
         cmdinfo_list = list()
         solution_list = list()
         fileinfo_list = list()
+        resourceint_list = list()
+        resourcerud_list = list()
+
         for item in items:
             if isinstance(item, MMLCmdInfo):
                 cmdinfo_list.append(item)
@@ -287,10 +342,16 @@ class SearchResultPage(View):
                 solution_list.append(item)
             elif isinstance(item, FileInfo):
                 fileinfo_list.append(item)
+            elif isinstance(item, ResoureInfoInt):
+                resourceint_list.append(item)
+            elif isinstance(item, ResourceObjsRud):
+                resourceint_list.append(item)
 
-        paras['solutions'] = solution_list
-        paras['cmdinfos'] = cmdinfo_list
-        paras['fileinfos'] = fileinfo_list
+        RspParas['solutions'] = solution_list
+        RspParas['cmdinfos'] = cmdinfo_list
+        RspParas['fileinfos'] = fileinfo_list
+        RspParas['resourceint'] = resourceint_list
+        RspParas['resourcerue'] = resourcerud_list
 
         after_range_num = 2
         before_range_num = 1
@@ -299,11 +360,11 @@ class SearchResultPage(View):
         else:
             page_range = searched_paginator.page_range[0:items.number + before_range_num]
 
-        paras['items'] = items
-        paras['page_range'] = page_range
-        paras['query'] = query
+        RspParas['items'] = items
+        RspParas['page_range'] = page_range
+        RspParas['query'] = QueryTxt
 
-        return render(request, "search_result.html", paras)
+        return render(request, "search_result.html", RspParas)
 
     def post(self, request):
         return render(request, "search_result.html")
