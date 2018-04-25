@@ -1117,24 +1117,66 @@ class MakeMMLInfo(LoginRequiredMixin, View):
 
 
 class TDS(View):
-    def get(self, request):
-        print("getTDS")
-        print(request)
-        mmlcmd = request.GET.get('mml')
-        print(mmlcmd)
-        solutionid = request.GET.get('solution')
-        print(solutionid)
 
-        if mmlcmd != None:
-            print("mml")
-            mml_objs = MMLCmdInfo.objects.filter(cmdname=mmlcmd)
-            paras = dict()
-            paras['title'] = mmlcmd
-            if len(mml_objs) != 0:
-                paras['result'] = "SUCCESS"
-            else:
-                paras['result'] = "FAIL"
-                return render(request, "mmlinfo_page.html",paras)
+    def GetDetailObjs(self, CurQueryKey, QueryObjId):
+        if (CurQueryKey == 'mml'):
+            return MMLCmdInfo.objects.filter(pk=QueryObjId)
+        if (CurQueryKey == 'solution'):
+            return iter([])
+        if (CurQueryKey == 'file'):
+            return FileInfo.objects.filter(pk=QueryObjId)
+        if (CurQueryKey == 'intres'):
+            return ResoureInfoInt.objects.filter(pk=QueryObjId)
+        if (CurQueryKey == 'rudres'):
+            return ResourceInfoRud.objects.filter(pk=QueryObjId)
+
+        return iter([])
+
+    def GetHtmlFileName(self, CurQueryKey):
+        if (CurQueryKey == 'mml'):
+            return "mmlinfo_page.html"
+        if (CurQueryKey == 'solution'):
+            return "query_err.html"
+        if (CurQueryKey == 'file'):
+            return "fileinfo_page.html"
+        if (CurQueryKey == 'intres'):
+            return "intresinfo_page.html"
+        if (CurQueryKey == 'rudres'):
+            return "rudresinfo_page.html"
+        return "query_err.html"
+
+    def get(self, request):
+        print(request)
+        MmlCmdId = request.GET.get('mml')
+        solutionid = request.GET.get('solution')
+        FileNameId = request.GET.get('file')
+
+        DetailQueryInfoKey = ['mml', 'solution', 'file', 'board', 'intres', 'rudres', 'modid']
+        QueryObjId = None
+        QueryTitle = None
+        CurQueryKey = ''
+        for QueryKey in DetailQueryInfoKey:
+            QueryObjId = request.GET.get(QueryKey)
+            if QueryObjId != None:
+                CurQueryKey = QueryKey
+                break
+
+        QueryTitle = request.GET.get('title')
+        if QueryObjId == None or (QueryObjId != None and not QueryObjId.isdigit()) or QueryTitle == None:
+            #此次查询无效，返回失败界面
+            return render(request, "query_err.html")
+
+        ResultObjs = self.GetDetailObjs(CurQueryKey, int(QueryObjId))
+        paras = dict()
+        paras['title'] = QueryTitle
+        if len(ResultObjs) == 0:
+            paras['result'] = "FAIL"
+        else:
+            paras['result'] = "SUCCESS"
+            paras['ObjInfo'] = ResultObjs[0]
+            paras['out_links'] = ResultObjs[0].out_links.all()
+
+        return render(request, self.GetHtmlFileName(CurQueryKey), paras)
 
             # solution_map = list()
             # count = 0;
@@ -1150,19 +1192,16 @@ class TDS(View):
             # print(count)
     #        if count < 4:
     #         paras['solutions0'] = solution_map
-            paras['mmlcmd'] = mml_objs[0]
-            paras['out_links'] = mml_objs[0].out_links.all()
-            return render(request, "mmlinfo_page.html", paras)
 
-        elif solutionid != None:
-            print("solution")
-            solutions = list()
-            solution = Solution.objects.filter(pk=int(solutionid))
-            paras = dict()
-            solutions.append(solution[0])
-            paras['solutions0'] = solutions
-            paras['mmlcmd'] = solution[0].solutionname
-            return render(request, "tds_solution.html", paras)
+        # elif solutionid != None:
+        #     print("solution")
+        #     solutions = list()
+        #     solution = Solution.objects.filter(pk=int(solutionid))
+        #     paras = dict()
+        #     solutions.append(solution[0])
+        #     paras['solutions0'] = solutions
+        #     paras['mmlcmd'] = solution[0].solutionname
+        #     return render(request, "tds_solution.html", paras)
 
     def post(self, request):
         print("postTDS")

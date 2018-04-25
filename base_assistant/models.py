@@ -72,9 +72,9 @@ class MMLCmdInfo(models.Model):
     #所属责任田
     responsefield = models.ForeignKey("ResponsibilityField")
     #相关问题列表
-    solutions = models.ManyToManyField("Solution", null=True)
+    solutions = models.ManyToManyField("Solution", blank=True, null=True)
     #相关链接列表
-    out_links = models.ManyToManyField("OuterLink", null=True)
+    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
 
 
     def __str__(self):
@@ -85,7 +85,10 @@ class FileInfo(models.Model):
     introduce = models.CharField(max_length=50)
     path = models.CharField(max_length=100)
     responsefield = models.ForeignKey("ResponsibilityField")
-
+    # 相关问题列表
+    solutions = models.ManyToManyField("Solution", blank=True, null=True)
+    # 相关链接列表
+    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
 
 #资源信息
 class ResoureInfo(models.Model):
@@ -98,15 +101,16 @@ class ResoureInfo(models.Model):
     #所属责任田
     responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
     #相关问题列表
-    solutions = models.ManyToManyField("Solution", null=True)
+    solutions = models.ManyToManyField("Solution", blank=True, null=True)
     #相关链接列表
-    out_links = models.ManyToManyField("OuterLink", null=True)
+    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
 
     def __str__(self):
-        return self.file + self.name + self.code
+        return self.file.filename + self.name + self.code
 
 class ResoureInfoInt(ResoureInfo):
     value = models.IntegerField()
+    hexval = models.CharField(max_length = 16)
 
 class ResourceInfoStr(ResoureInfo):
     value = models.CharField(max_length = 50)

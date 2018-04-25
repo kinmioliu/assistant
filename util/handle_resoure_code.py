@@ -74,7 +74,7 @@ class IntResouceRecord(ResoureRecord):
         if len(file_obj) == 0:
             return assistant_errcode.INVALID_FILE_INFO_NO_RES
 
-        defaults = {'line': self.line, 'name':self.name, 'value':self.value}
+        defaults = {'line': self.line, 'name':self.name, 'value':self.value, 'hexval':hex(self.value)}
         try:
             obj = ResoureInfoInt.objects.get(code=self.code)
             is_same = True
@@ -91,7 +91,7 @@ class IntResouceRecord(ResoureRecord):
             obj.save()
             return assistant_errcode.DB_UPDATED
         except ResoureInfoInt.DoesNotExist:
-            obj = ResoureInfoInt(file = file_obj[0], line = self.line, name = self.name, code = self.code, value = self.value)
+            obj = ResoureInfoInt(file = file_obj[0], line = self.line, name = self.name, code = self.code, value = self.value, hexval = hex(self.value))
             obj.save()
             return assistant_errcode.DB_CREATED
 

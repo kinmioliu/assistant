@@ -1,0 +1,52 @@
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <script src = "{% static 'jquery/jquery.js' %}"></script>
+    <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+
+    <link href="{% static 'cards-style.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'extcss/animate.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/carousel.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+    <link href="{% static 'extcss/tds.css' %}" rel="stylesheet" type="text/css">
+    <title>{{title}}</title>
+</head>
+
+<body>
+    <div style="padding-top:50px"></div>
+
+    <div class="container">
+
+        {% if result == 'FAIL' %}
+            <div id = "mml-alert" class="alert alert-warning">没有找到和{{title}}相关的信息</div>
+        {% endif%}
+
+        {% if result == 'SUCCESS' %}
+            <div class="alert alert-success">和{{title}}相关的信息如下所示</div>
+            <h2>{{ObjInfo.name}}</h2>
+            <h3>十进制:</h3>
+            <h4>{{ObjInfo.value}}</h4>
+            <h3>十六进制:</h3>
+            <h4>{{ObjInfo.hexval}}</h4>
+            <h3>所在文件&行号:</h3>
+            <h4><a href="/searchresult/?file={{ObjInfo.file.id}}&title={{ObjInfo.file.filename}}">{{ObjInfo.file.filename}}</a> line: {{ObjInfo.line}}</h4>
+            <h3>资源代码:</h3>
+            <h4>{{ObjInfo.code}}</h4>
+            <h3>备注:</h3>
+            <h4>{{ObjInfo.cmd_mark}}</h4>
+            <h3>责任领域:</h3>
+            <h4><a href="{{ObjInfo.responsefield.introduce}}">{{ObjInfo.responsefield.groupname}}</a></h4>
+            <h3>可能相关的问题列表:</h3>
+            {% for out_link in out_links %}
+            <h4><a href="{{out_link.introduce}}">{{out_link.link_title}}</a></h4>
+            {% endfor %}
+            {% if not out_links %}
+            <h4>没有搜索到和{{title}}相关的问题</h4>
+            {% endif %}
+        {% endif%}
+    </div>
+</body>
+</html>

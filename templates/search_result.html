@@ -103,10 +103,6 @@
 
     });
 
-    function toHex(num){
-        return num<16?"0x0"+num.toString(16).toUpperCase():"0x"+num.toString(16).toUpperCase();
-    }
-
     </script>
 
 </head>
@@ -132,7 +128,7 @@
     <div class="col-lg-7 column cmdinfos" id="search_result">
         {% for cmdinfo in cmdinfos %}
         <div class="well searched_mmlinfo">
-            <span class="cmdname"><a href="/searchresult/?mml={{cmdinfo.cmdname}}">{{ cmdinfo.cmdname }}    {{ cmdinfo.cmd_func }}</a></span>
+            <span class="cmdname"><a href="/searchresult/?mml={{cmdinfo.id}}&title={{cmdinfo.cmdname}}">{{ cmdinfo.cmdname }}    {{ cmdinfo.cmd_func }}</a></span>
             <span class="groupname"><a href="{{cmdinfo.responsefield.introduce}}">{{ cmdinfo.responsefield.groupname }}</a></span>
         </div>
         {% endfor %}
@@ -145,7 +141,7 @@
 
         {% for file in fileinfos %}
         <div class="well searched_solution">
-            <span class="file_info"><a href="/searchresult/?file={{file.filename}}">{{ file.filename }}</a></span>
+            <span class="file_info"><a href="/searchresult/?file={{file.id}}&title={{file.filename}}">{{ file.filename }}</a></span>
             <span class="file_info">{{ file.path }}</a></span>
             <span class="groupname"><a href="{{file.responsefield.introduce}}">{{ file.responsefield.groupname }}</a></span>
         </div>
@@ -153,10 +149,11 @@
 
         {% for intres in resourceint %}
         <div class="well searched_solution">
-            <span class="file_info"><a href="/searchresult/?file={{intres.file}}">{{ intres.file.filename }}</a></span>
+            <span class="file_info"><a href="/searchresult/?file={{intres.file.id}}&title={{intres.file.filename}}">{{ intres.file.filename }}</a></span>
             <span class="intres_name">{{ intres.name }}</a></span>
             <span class="intres_value"> {{ intres.value }}</a></span>
-            <span class="intres_code"><a href="/searchresult/?resourceint={{intres.id}}">{{ intres.code }}</a></span>
+            <span class="intres_value label-info">{{ intres.hexval }}</a></span>
+            <span class="intres_code"><a href="/searchresult/?intres={{intres.id}}&title={{intres.name}}">{{ intres.code }}</a></span>
         </div>
         {% endfor %}
 
