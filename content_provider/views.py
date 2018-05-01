@@ -16,6 +16,8 @@ from util.make_responsibilty_field import ResponsibiltyFieldParser
 from util.handle_resoure_code import ResourceParserManager
 import os
 from util.handle_fileinfo import FileInfoParser
+from util.handle_scrapy_info import WikiParserManager
+
 
 class MakeResponsibiltyField(LoginRequiredMixin, View):
     """制作责任田信息"""
@@ -93,7 +95,6 @@ class MakeFileInfo(LoginRequiredMixin, View):
         return render(request, "make_responsibilty_field.html", paras)
 
 
-
 class MakeResourceInfo(LoginRequiredMixin, View):
     login_url = '/admin/'
     redirect_field_name = '/contribute/'
@@ -129,3 +130,40 @@ class MakeResourceInfo(LoginRequiredMixin, View):
 
         paras = dict()
         return render(request, "make_resource_info.html", paras)
+
+
+class MakeWikiInfo(LoginRequiredMixin, View):
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+
+    def get(self, request):
+        print("get make_wikiinfo")
+        paras = dict()
+        return render(request, "make_wiki_info.html", paras)
+
+    def post(self, request):
+        print("post make_wiki_info")
+        # 获取前台参数
+        if self.request.method == "POST":
+            func = request.POST.get('func')
+            DUMP('func: ' + func)
+            if func != None:
+                base_dir = os.path.dirname(os.path.abspath(__name__))
+                textdir = os.path.join(base_dir, 'static', conf.WIKI_FILE_PATH);
+                parser = WikiParserManager(file_path=textdir)
+                result = parser.run()
+                paras = dict()
+                paras['created'] = render_to_string('partials/_json_data.html',
+                                                    {'text': 'created ' + str(parser.created_records) + ' records'})
+                paras['updated'] = render_to_string('partials/_json_data.html',
+                                                    {'text': 'updated ' + str(parser.updated_records) + ' records'})
+                return JsonResponse(paras)
+
+
+        # 提交空表单
+        else:
+            paras = {'result': 'err'}
+            return JsonResponse(paras)
+
+        paras = dict()
+        return render(request, "make_wiki_info.html", paras)

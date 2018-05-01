@@ -193,7 +193,6 @@ class ResourceParserManager:
         self.created_records = 0
         self.updated_records = 0
 
-
     def run(self):
 
         for file in self.files:

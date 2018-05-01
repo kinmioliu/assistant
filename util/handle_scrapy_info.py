@@ -4,43 +4,12 @@ import json
 import os
 import re
 import string
-from base_assistant.models import ResoureInfo, ResoureInfoInt, ResourceInfoStr, ResourceInfoModule, ResourceInfoRud, FileInfo
 from util import assistant_errcode, conf
+from util.common_parser import CommonRecord, CommonParser
 
-"""
-#cout << filename << "\t" << dec << line << "\t" << #var_name << "\t" << endl
-class ResoureInfo(models.Model):
-    file = models.ForeignKey("FileInfo")
-    line = models.IntegerField()
-    name = models.CharField(max_length=30)
-    code = models.CharField(max_length=200)
-    #备注
-    cmd_mark = models.CharField(max_length = 500)
-    #所属责任田
-    responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
-    #相关问题列表
-    solutions = models.ManyToManyField("Solution", null=True)
-    #相关链接列表
-    out_links = models.ManyToManyField("OuterLink", null=True)
-
-    def __str__(self):
-        return self.file + self.name + self.code
-        
-class ResoureInfoInt(ResoureInfo):
-    value = models.IntegerField()
-
-class ResourceInfoStr(ResoureInfo):
-    value = models.CharField(max_length = 50)
-
-class ResourceInfoRud(ResoureInfoInt):
-    domain = models.CharField(max_length = 30)
-
-class ResourceInfoModule(ResoureInfo):
-    introduct = models.CharField(max_length = 500)
-    out_link = models.URLField()
-    """
 """WIKILINKBEGIN[http://xgag0.HUAWEI.COM]WIKILINKENDWIKITITLEBEGIN[VxWORKTITLE0]WIKITITLEENDWIKIABSTRACTBEGIN[]WIKIABSTRACTENDWIKICLASSESBEGIN[GROUP[KERNEL]FEATURE[VOS]CLASSES[VOS]]WIKICLASSESEND"""
-class FileInfo(models.Model):
+"""
+class WikiInfo(models.Model):
     filename = models.CharField(max_length=30)
     introduce = models.CharField(max_length=50)
     path = models.CharField(max_length=100)
@@ -49,46 +18,29 @@ class FileInfo(models.Model):
     solutions = models.ManyToManyField("Solution", blank=True, null=True)
     # 相关链接列表
     out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
+"""
+class WikiRecord(CommonRecord):
+#    def __init__(self, Link, Title, Abstract, Group, Feature, Classes):
+    def __init__(self):
+        super(WikiRecord, self).__init__()
+        self.Link = ''
+        self.Title = ''
+        self.Abstract = ''
+        self.Group = ''
+        self.Feature = ''
+        self.Classes = ''
 
-class WikiInfo(models.Model):
-    Link = ;
-    Title = ;
-    Abstract = ;
-    Group = ;
-    Feature = ;
-    Classes = ;
+    def set_attr(self, attrs):
+        print(attrs)
+        return self.set_attr(attrs[0], attrs[1], attrs[2], attrs[3], attrs[4], attrs[5])
 
-
-
-class WikiRecord:
-    def __init__(self, Link, line, name, code):
-        self.WikiLink = Link
-        self.line = line
-        self.name = name
-        self.code = code
-
-    def set_attr(self, file, line, name, code):
-        self.file = file
-        self.line = line
-        self.name = name
-        self.code = code
-
-    def __str__(self):
-        return ("[" + self.file + "],["+ str(self.line) +  "],[" + self.name + "],["+self.code + "]")
-
-    def to_module(self):
-        return
-        #return MMLCmdInfo(cmdname=self.name, cmd_func = self.func, cmd_sample = self.sample, cmd_attention = self.attention, cmd_mark = self.mark, responsefield=responsefield_obj)
-
-
-class IntResouceRecord(ResoureRecord):
-    def __init__(self, file, line, name, code, value):
-        super(IntResouceRecord, self).__init__(file, line, name, code)
-        self.value = value
-
-    def set_attr(self, file, line, name, code, value):
-        super(IntResouceRecord, self).set_attr(file, line, name, code)
-        self.value = value
+    def set_attr(self, Link, Title, Abstract, Group, Feature, Classes):
+        self.Link = Link
+        self.Title = Title
+        self.Abstract = Abstract
+        self.Group = Group
+        self.Feature = Feature
+        self.Classes = Classes
 
     def update_or_create(self):
         file_obj = FileInfo.objects.filter(filename=self.file)
@@ -116,95 +68,31 @@ class IntResouceRecord(ResoureRecord):
             obj.save()
             return assistant_errcode.DB_CREATED
 
-    def to_module(self):
-        return ResoureInfoInt(file = self.file, line = self.line, name = self.name, code = self.code, value = self.value)
-
-class RudResouceRecord(IntResouceRecord):
-    def __init__(self, file, line, name, code, value, domain):
-        super(RudResouceRecord, self).__init__(file, line, name, code, value)
-        self.domain = domain
-
-    def set_attr(self, file, line, name, code, value, domain):
-        super(RudResouceRecord, self).set_attr(file, line, name, code, value)
-        self.domain = domain
+    def __str__(self):
+        return self.Title
 
     def to_module(self):
-        return ResourceInfoRud(file = self.file, line = self.line, name = self.name, code = self.code, value = self.value, domain = self.domain)
-
-class ModuleResouceRecord(IntResouceRecord):
-    def __init__(self, file, line, name, code, value):
-        super(IntResouceRecord, self).__init__(file, line, name, code, value)
-
-    def to_module(self):
-        return ResourceInfoModule(file = self.file, line = self.line, name = self.name, code = self.code, value = self.value, introduct = '')
-
-
-class StrResouceRecord(ResoureRecord):
-    def __init__(self, file, line, name, code, value):
-        super(ResoureRecord, self).__init__(file, line, name, code)
-        self.value = value
-
-    def set_attr(self, file, line, name, code, value):
-        super(ResoureRecord, self).set_attr(file, line, name, code)
-        self.value =  value
-
-    def to_module(self):
-        return ResourceInfoModule(file = self.file, line = self.line, name = self.name, code = self.code, value = self.value, introduct = '')
-
-class ResourceParser:
-
-    def __init__(self, lines):
-        self.lines = lines
-        self.len = len(lines)
-        self.created_records = list()
-        self.updated_records = list()
-
-    def update_or_create(self, info):
-
         return
 
-    #这个函数需要不停优化
-    def AllocResourceObj(self, ResourceFileName, line, name, code, value):
-        if ResourceFileName.find('rud'):
-            return RudResouceRecord(ResourceFileName, int(line), name, code, int(value), '')
-        if ResourceFileName == 'ne_modid':
-            return ModuleResouceRecord(ResourceFileName, int(line), name, code, int(value))
-        if value.isdigit():
-            return IntResouceRecord(ResourceFileName, int(line), name, code, int(value))
-        else:
-            return StrResouceRecord(ResourceFileName, int(line), name, code, value)
+#"""WIKILINKBEGIN[http://xgag0.HUAWEI.COM]WIKILINKENDWIKITITLEBEGIN[VxWORKTITLE0]WIKITITLEENDWIKIABSTRACTBEGIN[]WIKIABSTRACTENDWIKICLASSESBEGIN[GROUP[KERNEL]FEATURE[VOS]CLASSES[VOS]]WIKICLASSESEND"""
 
-        return None
+#WIKI_IDENTIFIERS = [r'WIKILINKBEGIN\[', r'\]WIKILINKENDWIKITITLEBEGIN\[', r'\]WIKITITLEENDWIKIABSTRACTBEGIN\[',r'\]WIKIABSTRACTENDWIKICLASSESBEGIN\[',r'\]WIKICLASSESEND',]
+WIKI_IDENTIFIERS = [r'WIKILINKBEGIN[', r']WIKILINKENDWIKITITLEBEGIN[', r']WIKITITLEENDWIKIABSTRACTBEGIN[',r']WIKIABSTRACTENDWIKICLASSESBEGIN[',r']WIKICLASSESEND',]
+WIKI_REGE_X
+class WikiParser(CommonParser):
+    def __init__(self, lines):
+        super(WikiParser, self).__init__(lines, WIKI_IDENTIFIERS, reg_ex)
 
-    def parser_one_record_from_oneline(self, line, record):
-        result = line.split('|')
-        conf.DUMP(result)
-        if len(result) != conf.RESOURCE_FILE_TOKENS:
-            return conf.RESOURCE_PARSE_FAIL
-        ResoureRecord = self.AllocResourceObj(result[0], result[1], result[2], result[4], result[3])
-        if ResoureRecord == None:
-            return conf.RESOURCE_PARSE_FAIL
-        return ResoureRecord.update_or_create()
+    def init_record(self):
+        record = WikiRecord()
+        return record
 
-    def Parser(self):
-        for line in self.lines:
-            result = self.parser_one_record_from_oneline(line = line, record='')
-            if (result != assistant_errcode.DB_CREATED
-                and result != assistant_errcode.DB_UPDATED
-                and result != assistant_errcode.DB_SAME):
-                return result
-
-            if result == assistant_errcode.DB_CREATED:
-                self.created_records.append(line)
-            if result == assistant_errcode.DB_UPDATED:
-                self.updated_records.append(line)
-        print(self.updated_records)
-        print(self.created_records)
-        return conf.RESOURCE_PARSE_SUCCESS
+    def run(self):
+        return super(WikiParser, self).run(False)
 
 
 
-class ResourceParserManager:
+class WikiParserManager:
     def __init__(self, file_path):
         self.file_path = file_path
         self.files = []
@@ -214,22 +102,20 @@ class ResourceParserManager:
         self.created_records = 0
         self.updated_records = 0
 
-
     def run(self):
-
         for file in self.files:
-            ResourceFile = open(self.file_path + file, 'r', encoding='UTF-8')
-            lines = ResourceFile.readlines()
-            parser = ResourceParser(lines=lines)
-            result = parser.Parser()
-            ResourceFile.close()
+            wikiinfo_file = open(self.file_path + file, 'r', encoding='UTF-8')
+            lines = wikiinfo_file.readlines()
+            print(lines)
+            parser = WikiParser(lines=lines)
+            result = parser.run()
+            wikiinfo_file.close()
             conf.DUMP('parser file' + self.file_path + file + ' ' + str(result))
-            if result != assistant_errcode.RESOURCE_PARSE_SUCCESS:
+            if result != assistant_errcode.WIKI_PARSE_SUCCESS:
                 return result
             print(parser.created_records)
             print(parser.updated_records)
             self.created_records += len(parser.created_records)
             self.updated_records += len(parser.updated_records)
 
-        print()
-        return assistant_errcode.RESOURCE_PARSE_SUCCESS
+        return assistant_errcode.WIKI_PARSE_SUCCESS
