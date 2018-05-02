@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag, OuterLink, FileInfo, ResoureInfoInt, ResourceInfoStr, ResourceInfoRud
+from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag, OuterLink, FileInfo, ResoureInfoInt, ResourceInfoStr, ResourceInfoRud, WikiInfo
 
 class VerinfoAdmin(admin.ModelAdmin):
     list_display = ('product', 'platform_ver', 'product_ver', 'verinfo')
@@ -19,6 +19,8 @@ class HashTagAdmin(admin.ModelAdmin):
 class OutLinkAdmin(admin.ModelAdmin):
     list_display = ('link_title', 'introduce')
 
+class WikiInfoAdmin(admin.ModelAdmin):
+    list_display = ('link', 'title', 'abstract', 'group', 'feature', 'classes')
 
 class FileInfoAdmin(admin.ModelAdmin):
     list_display = ("filename", "introduce", "path", "responsefield")
@@ -44,3 +46,4 @@ admin.site.register(FileInfo, FileInfoAdmin)
 admin.site.register(ResourceInfoStr, ResourceInfoStrAdmin)
 admin.site.register(ResoureInfoInt, ResourceInfoIntAdmin)
 admin.site.register(ResourceInfoRud, ResourceInfoRudAdmin)
+admin.site.register(WikiInfo, WikiInfoAdmin)

@@ -31,18 +31,6 @@ class Solution(models.Model):
     def __str__(self):
         return self.solutionname
 
-#标签
-class HashTag(models.Model):
-        """  HashTag model  """
-        name = models.CharField(max_length=64, unique=True)
-        solution = models.ManyToManyField(Solution)
-
-        def __unicode__(self):
-            return self.name
-
-        def __str__(self):
-            return self.name
-
 
 #责任田
 class ResponsibilityField(models.Model):
@@ -56,9 +44,15 @@ class ResponsibilityField(models.Model):
     def __str__(self):
         return self.groupname
 
+class SearchObj(models.Model):
+    """ 所有对象的基类"""
+    # 相关问题列表
+    solutions = models.ManyToManyField("Solution", blank=True, null=True)
+    # 相关链接列表
+    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
 
 #mml信息
-class MMLCmdInfo(models.Model):
+class MMLCmdInfo(SearchObj):
     #命令行
     cmdname = models.CharField(max_length=30)
     #功能
@@ -68,30 +62,22 @@ class MMLCmdInfo(models.Model):
     #注意事项
     cmd_attention = models.CharField(max_length=500)
     #备注
-    cmd_mark = models.CharField(max_length = 500)
+    cmd_mark = models.TextField()
     #所属责任田
     responsefield = models.ForeignKey("ResponsibilityField")
-    #相关问题列表
-    solutions = models.ManyToManyField("Solution", blank=True, null=True)
-    #相关链接列表
-    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
-
 
     def __str__(self):
         return self.cmdname
 
-class FileInfo(models.Model):
+class FileInfo(SearchObj):
     filename = models.CharField(max_length=30)
     introduce = models.CharField(max_length=50)
     path = models.CharField(max_length=100)
     responsefield = models.ForeignKey("ResponsibilityField")
-    # 相关问题列表
-    solutions = models.ManyToManyField("Solution", blank=True, null=True)
-    # 相关链接列表
-    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
+
 
 #资源信息
-class ResoureInfo(models.Model):
+class ResoureInfo(SearchObj):
     file = models.ForeignKey("FileInfo")
     line = models.IntegerField()
     name = models.CharField(max_length=30)
@@ -100,10 +86,6 @@ class ResoureInfo(models.Model):
     cmd_mark = models.CharField(max_length = 500)
     #所属责任田
     responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
-    #相关问题列表
-    solutions = models.ManyToManyField("Solution", blank=True, null=True)
-    #相关链接列表
-    out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
 
     def __str__(self):
         return self.file.filename + self.name + self.code
@@ -118,7 +100,55 @@ class ResourceInfoStr(ResoureInfo):
 class ResourceInfoRud(ResoureInfoInt):
     domain = models.CharField(max_length = 30)
 
-class ResourceInfoModule(ResoureInfo):
+class ResourceInfoModule(ResoureInfoInt):
     introduct = models.CharField(max_length = 500)
     out_link = models.URLField()
 
+
+#标签
+class HashTag(models.Model):
+    """  HashTag model  """
+    name = models.CharField(max_length=200, unique=True)
+#    mmls = models.ManyToManyField("MMLCmdInfo", blank=True, null=True)
+#    solutions = models.ManyToManyField("Solution", blank=True, null=True)
+#    wikis = models.ManyToManyField("WikiInfo", blank=True, null=True)
+#    intreses = models.ManyToManyField("ResoureInfoInt", blank=True, null=True)
+#    strreses = models.ManyToManyField("ResourceInfoStr", blank=True, null=True)
+#    rudreses =  models.ManyToManyField("ResourceInfoRud", blank=True, null=True)
+#    modulereses = models.ManyToManyField("ResourceInfoModule", blank=True, null=True)
+
+    def __unicode__(self):
+        return self.name
+
+    def __str__(self):
+        return self.name
+
+class WikiManager(models.Manager):
+    def get_or_create(self, **kwargs):
+        defaults = kwargs.pop('defaults', {})
+        tag_list = defaults.pop('taglist', {})
+        WikiInfo.tag_list = tag_list
+        kwargs.update(defaults)
+        wikiobj, created = super(WikiManager, self).get_or_create(**kwargs)
+        WikiInfo.ModifyFlag = created
+
+
+
+class WikiInfo(SearchObj):
+    link = models.URLField()    #pk
+    title = models.CharField(max_length = 100)
+    abstract = models.TextField()
+    group = models.CharField(max_length = 50)
+    feature = models.CharField(max_length = 50)
+    classes = models.CharField(max_length = 50)
+    tag_list = []
+    tags = models.ManyToManyField("HashTag", blank=True, null=True)
+    objects = WikiManager()
+    ModifyFlag = 0
+
+    def save(self, *args, **kwargs):
+        super(WikiInfo, self).save()
+        for tag in self.tag_list:
+            hashtag_obj, created = HashTag.objects.get_or_create(name= tag)
+            self.tags.add(hashtag_obj)
+        self.taglist = []

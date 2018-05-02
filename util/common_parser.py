@@ -22,10 +22,11 @@ class CommonRecord:
 
 
 class CommonParser:
-    def __init__(self, lines, identifiers):
+    def __init__(self, lines, identifiers, regex_str):
         self.lines = lines
         self.linecount = len(lines)
         self.split_identifiers = identifiers
+        self.regex_str = regex_str
         self.updated_records = 0
         self.created_records = 0
         self.same_records = 0
@@ -48,7 +49,7 @@ class CommonParser:
         locate = dict()
         locate[0] = assistant_errcode.SUCCESS
         locate[1] = begin
-        if begin > self.linecount:
+        if begin >= self.linecount:
             locate[0] = assistant_errcode.LOCATE_NEXT_RECORD_ERR
             return locate
         if self.lines[begin].find(self.split_identifiers[0]) < 0:
@@ -64,21 +65,7 @@ class CommonParser:
         return locate
 
     def get_record_from_oneline(self, line):
-        identifier_count = len(self.split_identifiers)
-        regex_cont = r'(.+?)'
-        regex_str = r''
-        for index, identifier in  enumerate(self.split_identifiers):
-            regex_str += self.split_identifiers[index]
-            if (index == identifier_count - 1):
-                break
-            regex_str += regex_cont
-        conf.DUMP(regex_str)
-#        regex_str = r'WIKILINKBEGIN[(. +?)]WIKILINKENDWIKITITLEBEGIN[(. +?)]WIKITITLEENDWIKIABSTRACTBEGIN[(. +?)]WIKIABSTRACTENDWIKICLASSESBEGIN[(. +?)]WIKICLASSESEND'
-        regex_str = r'WIKILINKBEGIN\[(. +?)\]WIKILINKENDWIKITITLEBEGIN\[(. +?)\]WIKITITLEENDWIKIABSTRACTBEGIN\[(. +?)\]WIKIABSTRACTENDWIKICLASSESBEGIN\[(. +?)\]WIKICLASSESEND'
-        ret =  re.findall(regex_str, line)
-        conf.DUMP(ret)
-        regex_str = r'WIKILINKBEGIN[(. +?)]WIKILINKENDWIKITITLEBEGIN[(. +?)]WIKITITLEENDWIKIABSTRACTBEGIN[(. +?)]WIKIABSTRACTENDWIKICLASSESBEGIN[(. +?)]WIKICLASSESEND'
-        return ret
+        return re.findall(self.regex_str, line)
     #        return re.findall(r'MMLBEGIN:\[(.+?)\]MMLEND\tFUNCBEGIN:\[(.+?)\]FUNCEND\tSAMPLEBEGIN:\[(.+?)\]SAMPLEEND\tATTENTIONBEGIN:\[(.+?)\]ATTENTIONEND\tMARKBEGIN:\[(.+?)\]MARKEND', self.lines[line])
 
     def parser_one_record_oneline(self, line):
@@ -111,7 +98,7 @@ class CommonParser:
         conf.DUMP(result)
         if (len(result) != 1):
             return assistant_errcode.PARSER_RECORD_ERR
-        record.set_attr(result[0])
+        record.set_attrs(result[0])
         return assistant_errcode.SUCCESS
 
     def init_record(self):
@@ -130,16 +117,16 @@ class CommonParser:
             ret = self.parser_one_record(begin=locate[1], end=locate[2], record=record)
             if ret != assistant_errcode.SUCCESS:
                 return ret
+
             if (update_or_create_flag == True):
                 ret = record.update_or_create()
                 if ret == assistant_errcode.DB_CREATED:
                     self.created_records += 1
-                if result == assistant_errcode.DB_UPDATED:
+                if ret == assistant_errcode.DB_UPDATED:
                     self.updated_records += 1
                 if ret == assistant_errcode.DB_SAME:
                     self.same_records += 1
-            if ret == assistant_errcode.SUCCESS:
-                records.append(record)
+
             #指向下一条记录
             locate = self.get_next_record_location(begin=locate[2] + 1)
 
