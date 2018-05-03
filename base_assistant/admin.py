@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag, OuterLink, FileInfo, ResoureInfoInt, ResourceInfoStr, ResourceInfoRud, WikiInfo
+from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag, OuterLink, FileInfo, ResoureInfoInt, ResourceInfoStr, ResourceInfoRud, WikiInfo, EVTCmdInfo
 
 class VerinfoAdmin(admin.ModelAdmin):
     list_display = ('product', 'platform_ver', 'product_ver', 'verinfo')
@@ -12,6 +12,10 @@ class ResponsibilityAdmin(admin.ModelAdmin):
 
 class MMLAdmin(admin.ModelAdmin):
     list_display = ('cmdname', 'responsefield')
+
+class EVTAdmin(admin.ModelAdmin):
+    list_display = ('cmdname', 'responsefield')
+
 
 class HashTagAdmin(admin.ModelAdmin):
     list_display = ('name',)
@@ -47,3 +51,4 @@ admin.site.register(ResourceInfoStr, ResourceInfoStrAdmin)
 admin.site.register(ResoureInfoInt, ResourceInfoIntAdmin)
 admin.site.register(ResourceInfoRud, ResourceInfoRudAdmin)
 admin.site.register(WikiInfo, WikiInfoAdmin)
+admin.site.register(EVTCmdInfo, EVTAdmin)

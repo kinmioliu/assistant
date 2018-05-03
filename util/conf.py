@@ -56,4 +56,5 @@ FILES_PATH_DOC_NAME = 'files_path.txt'
 #资源文件路径
 ResourceFilePath = 'upload/resource_file/'
 WIKI_FILE_PATH = 'upload/wikiinfo/'
+MMLEVT_FILE_PATH = 'upload/mmlevtinfo/'
 RESOURCE_FILE_TOKENS = 5

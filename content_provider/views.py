@@ -17,6 +17,7 @@ from util.handle_resoure_code import ResourceParserManager
 import os
 from util.handle_fileinfo import FileInfoParser
 from util.handle_scrapy_info import WikiParserManager
+from util.handle_mmlevt_new import MMLEVTParserManager
 
 
 class MakeResponsibiltyField(LoginRequiredMixin, View):
@@ -167,3 +168,41 @@ class MakeWikiInfo(LoginRequiredMixin, View):
 
         paras = dict()
         return render(request, "make_wiki_info.html", paras)
+
+
+
+class MakeMMLEVTInfo(LoginRequiredMixin, View):
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+
+    def get(self, request):
+        print("get make_mmlevtinfo")
+        paras = dict()
+        return render(request, "make_mmlevt_info_new.html", paras)
+
+    def post(self, request):
+        print("post make_mmlevt_info")
+        # 获取前台参数
+        if self.request.method == "POST":
+            func = request.POST.get('func')
+            DUMP('func: ' + func)
+            if func != None:
+                base_dir = os.path.dirname(os.path.abspath(__name__))
+                textdir = os.path.join(base_dir, 'static', conf.MMLEVT_FILE_PATH);
+                parser = MMLEVTParserManager(file_path=textdir)
+                result = parser.run()
+                paras = dict()
+                paras['created'] = render_to_string('partials/_json_data.html',
+                                                    {'text': 'created ' + str(parser.created_records) + ' records'})
+                paras['updated'] = render_to_string('partials/_json_data.html',
+                                                    {'text': 'updated ' + str(parser.updated_records) + ' records'})
+                return JsonResponse(paras)
+
+
+        # 提交空表单
+        else:
+            paras = {'result': 'err'}
+            return JsonResponse(paras)
+
+        paras = dict()
+        return render(request, "make_mmlevt_info_new.html", paras)

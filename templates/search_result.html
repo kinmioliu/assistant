@@ -133,6 +133,13 @@
         </div>
         {% endfor %}
 
+        {% for evtinfo in evtinfos %}
+        <div class="well searched_cmdinfo">
+            <span class="cmdname"><a href="/searchresult/?mml={{evtinfo.id}}&title={{evtinfo.cmdname}}">{{ evtinfo.cmdname }}    {{ evtinfo.cmd_func }}</a></span>
+            <span class="groupname"><a href="{{evtinfo.responsefield.introduce}}">{{ evtinfo.responsefield.groupname }}</a></span>
+        </div>
+        {% endfor %}
+
         {% for solution in solutions %}
         <div class="well searched_solution">
             <span class="solution_info"><a href="/searchresult/?solution={{solution.id}}">{{ solution.solutionname }}</a></span>
@@ -157,15 +164,22 @@
         </div>
         {% endfor %}
 
+        {% for wiki in wikiinfo %}
+        <div class="well searched_solution">
+            <span class="wiki_info"><a href="{{wiki.link}}">{{ wiki.title }}</a></span><br>
+            <span class="wiki_abstract">{{ wiki.abstract }}</a></span><br>
+            <span class="wiki_class"> 分类:{{ wiki.group }}>{{ wiki.feature }}>{{ wiki.classes }}></a></span>
+        </div>
+        {% endfor %}
 
-        {% if not cmdinfos and not solutions and not fileinfos and not resourceint%}
+        {% if not cmdinfos and not solutions and not fileinfos and not resourceint and not wikiinfo and not evtinfos%}
         <div class="well">
             <span> 没找到和{{query}}相关的结果.</span>
         </div>
         {% endif %}
 
 
-        {% if cmdinfos or solutions %}
+        {% if cmdinfos or solutions or fileinfos or resourceint or wikiinfo or evtinfos%}
         <ul class="pagination">
             {% if items.has_previous %}
             <li><a href="?q={{placeholder}}&page={{items.previous_page_number}}">«</a></li>

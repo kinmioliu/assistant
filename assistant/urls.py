@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage, RTN300, TestTDS, ContributeSolution, MakePolicy, download_policy_excample, MakeMMLInfo, download_mml_excample, TDS, SearchResultPage, SolutionTree, AboutTDS
-from content_provider.views import MakeResponsibiltyField, MakeFileInfo,MakeResourceInfo,MakeWikiInfo
+from content_provider.views import MakeResponsibiltyField, MakeFileInfo,MakeResourceInfo,MakeWikiInfo, MakeMMLEVTInfo
 
 
 urlpatterns = [
@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'download_policy/$', download_policy_excample),
     url(r'make-verinfo/$', MakePolicy.as_view()),
     url(r'download_verinfo/$', download_policy_excample),
-    url(r'make-mml/$', MakeMMLInfo.as_view()),
+    url(r'make-mml/$', MakeMMLEVTInfo.as_view()),
     url(r'make-fileinfo/$', MakeFileInfo.as_view()),
     url(r'make-responsibilityfield/$', MakeResponsibiltyField.as_view()),
     url(r'download_mml/$', download_mml_excample),

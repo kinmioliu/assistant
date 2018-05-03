@@ -89,6 +89,7 @@ class CommonParser:
         for index in range(begin, end + 1):
             comb_line += self.lines[index]
         conf.DUMP(comb_line)
+        comb_line = comb_line.replace('\n', '')
         return self.get_record_from_oneline(comb_line)
 
     #'MMLBEGIN:[cfg-delay-time1]MMLEND	FUNCBEGIN:[执行延时操作1]FUNCEND	SAMPLEBEGIN:[cfg-delay-time:1]SAMPLEEND	ATTENTIONBEGIN:[无1]ATTENTIONEND	MARKBEGIN:[无1]MARKEND',

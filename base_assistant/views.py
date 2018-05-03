@@ -8,6 +8,7 @@ from django.views.generic import View
 from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm
 from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField, FileInfo
 from base_assistant.models import ResoureInfoInt, ResourceInfoRud, ResourceInfoStr
+from base_assistant.models import WikiInfo, EVTCmdInfo
 from django.template import Context
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
@@ -293,7 +294,8 @@ class SearchResultPage(View):
         ResourceObjsInt = iter(TmpObjs)
         ResourceObjsRud = iter(TmpObjs)
         SolutionObjs = iter(TmpObjs)
-
+        WikiInfoObjs = iter([])
+        EvtinfoObjs = iter([])
         if (QueryType & QUERYTYPE_CMD):
             CmdinfoObjs = MMLCmdInfo.objects.filter(cmdname__icontains=QueryTxt)
         if (QueryType & QUERYTYPE_HASTAG):
@@ -312,13 +314,17 @@ class SearchResultPage(View):
             SolutionObjs = Solution.objects.filter(solutionname__icontains=QueryTxt)
 
         if HashTagObjs.count() != 0:
-            SolutionObjs = HashTagObjs[0].solution.all()
+            WikiInfoObjs = HashTagObjs[0].wikiinfo_set.all()
+            EvtinfoObjs = HashTagObjs[0].evtcmdinfo_set.all()
 
         #合并结果
-        for hashtag in HashTagObjs:
-            SolutionObjs |= hashtag.solution.all()
+        for index, hashtag in enumerate(HashTagObjs):
+            print(index)
+            WikiInfoObjs |= HashTagObjs[index].wikiinfo_set.all()
+            EvtinfoObjs |= HashTagObjs[index].evtcmdinfo_set.all()
 
-        combined_query_set = list(chain(CmdinfoObjs, SolutionObjs, FileinfoObjs, ResourceObjsInt, ResourceObjsRud))
+
+        combined_query_set = list(chain(CmdinfoObjs, SolutionObjs, FileinfoObjs, ResourceObjsInt, ResourceObjsRud, WikiInfoObjs, EvtinfoObjs))
         searched_paginator = Paginator(combined_query_set, 10)
 
         try:
@@ -334,6 +340,8 @@ class SearchResultPage(View):
         fileinfo_list = list()
         resourceint_list = list()
         resourcerud_list = list()
+        wikiinfo_list = list()
+        evtinfo_list = list()
 
         for item in items:
             if isinstance(item, MMLCmdInfo):
@@ -344,14 +352,20 @@ class SearchResultPage(View):
                 fileinfo_list.append(item)
             elif isinstance(item, ResoureInfoInt):
                 resourceint_list.append(item)
-            elif isinstance(item, ResourceObjsRud):
+            elif isinstance(item, ResourceInfoRud):
                 resourceint_list.append(item)
+            elif isinstance(item, WikiInfo):
+                wikiinfo_list.append(item)
+            elif isinstance(item, EVTCmdInfo):
+                evtinfo_list.append(item)
 
         RspParas['solutions'] = solution_list
         RspParas['cmdinfos'] = cmdinfo_list
         RspParas['fileinfos'] = fileinfo_list
         RspParas['resourceint'] = resourceint_list
         RspParas['resourcerue'] = resourcerud_list
+        RspParas['wikiinfo'] = wikiinfo_list
+        RspParas['evtinfos'] = evtinfo_list
 
         after_range_num = 2
         before_range_num = 1

@@ -51,24 +51,6 @@ class SearchObj(models.Model):
     # 相关链接列表
     out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
 
-#mml信息
-class MMLCmdInfo(SearchObj):
-    #命令行
-    cmdname = models.CharField(max_length=30)
-    #功能
-    cmd_func = models.CharField(max_length=300)
-    #例子
-    cmd_sample = models.CharField(max_length = 50)
-    #注意事项
-    cmd_attention = models.CharField(max_length=500)
-    #备注
-    cmd_mark = models.TextField()
-    #所属责任田
-    responsefield = models.ForeignKey("ResponsibilityField")
-
-    def __str__(self):
-        return self.cmdname
-
 class FileInfo(SearchObj):
     filename = models.CharField(max_length=30)
     introduce = models.CharField(max_length=50)
@@ -152,3 +134,42 @@ class WikiInfo(SearchObj):
             hashtag_obj, created = HashTag.objects.get_or_create(name= tag)
             self.tags.add(hashtag_obj)
         self.taglist = []
+
+
+#mml信息
+class MMLCmdInfo(SearchObj):
+    #命令行
+    cmdname = models.CharField(max_length=30)
+    #功能
+    cmd_func = models.CharField(max_length=300)
+    #例子
+    cmd_sample = models.CharField(max_length = 50)
+    #注意事项
+    cmd_attention = models.CharField(max_length=500)
+    #备注
+    cmd_mark = models.TextField()
+    #所属责任田
+    responsefield = models.ForeignKey("ResponsibilityField")
+    #tag
+    tags = models.ManyToManyField("HashTag", blank=True, null=True)
+
+    def __str__(self):
+        return self.cmdname
+
+#mml信息
+class EVTCmdInfo(SearchObj):
+    #命令行
+    cmdname = models.CharField(max_length=30)
+    #功能
+    cmd_func = models.CharField(max_length=300)
+    #注意事项
+    cmd_attention = models.CharField(max_length=500)
+    #备注
+    cmd_mark = models.TextField()
+    #所属责任田
+    responsefield = models.ForeignKey("ResponsibilityField")
+    #tag
+    tags = models.ManyToManyField("HashTag", blank=True, null=True)
+
+    def __str__(self):
+        return self.cmdname
