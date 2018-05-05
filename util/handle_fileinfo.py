@@ -50,22 +50,25 @@ class FileInfoParser:
         pos = abspath.rfind('\\')
         if pos > -1:
             name = abspath[pos+1:]
- #           conf.DUMP(name)
             return name
         else:
             return abspath
 
     def parser_one_line(self, line, record):
+        name = self.get_file_or_dir_name(line)
         for responsefield in conf.FILE_PATH_CONF:
             for pathconf in conf.FILE_PATH_CONF[responsefield]:
                 pos = line.find(pathconf)
-#                conf.DUMP(pos)
                 if pos > -1:
-                    name = self.get_file_or_dir_name(line)
                     record.set_attr(name, "", line[pos:], responsefield)
                     return assistant_errcode.SUCCESS
 
-        return assistant_errcode.INVALID_FORMAT
+        pos = line.find(conf.FILE_PATH_CONF)
+        if (pos > -1):
+            record.set_attr(name, "", line[pos:], conf.UNKNOW_RESPONSIBILITY)
+        else:
+            record.set_attr(name, "", line, conf.UNKNOW_RESPONSIBILITY)
+        return assistant_errcode.SUCCESS
 
     def update_or_create(self, record):
         responsefield_obj = ResponsibilityField.objects.filter(groupname=record.get_responsefield())

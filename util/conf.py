@@ -38,6 +38,8 @@ FILE_PATH_CONF = {
            'llvm\llvm\lib\Fuzzer',],
 }
 
+FILE_PATH_ROOT_DIR = 'llvm'
+
 RESPONSIBILITY_FIELD_CONF = [
     ['frame','https://baike.baidu.com/item/FRAME/1867206?fr=aladdin','chenxin'],
     ['srv','https://baike.baidu.com/item/SRV','chenxin223391'],
@@ -49,7 +51,10 @@ RESPONSIBILITY_FIELD_CONF = [
     ['l2','https://baike.baidu.com/item/L2/3722623?fr=aladdin','chenxin223391'],
     ['l3','https://baike.baidu.com/item/L1/5885107?fr=aladdin','wangxin'],
     ['pkt','https://baike.baidu.com/item/PTN','zhangmi'],
+    ['unknow','https://baike.baidu.com/item/PTN','zhangmi'],
 ]
+
+UNKNOW_RESPONSIBILITY = 'unknow'
 
 FILES_PATH_DOC_NAME = 'files_path.txt'
 

@@ -135,7 +135,7 @@
 
         {% for evtinfo in evtinfos %}
         <div class="well searched_cmdinfo">
-            <span class="cmdname"><a href="/searchresult/?mml={{evtinfo.id}}&title={{evtinfo.cmdname}}">{{ evtinfo.cmdname }}    {{ evtinfo.cmd_func }}</a></span>
+            <span class="cmdname"><a href="/searchresult/?evt={{evtinfo.id}}&title={{evtinfo.cmdname}}">{{ evtinfo.cmdname }}    {{ evtinfo.cmd_func }}</a></span>
             <span class="groupname"><a href="{{evtinfo.responsefield.introduce}}">{{ evtinfo.responsefield.groupname }}</a></span>
         </div>
         {% endfor %}

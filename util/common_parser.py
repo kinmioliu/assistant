@@ -41,6 +41,12 @@ class CommonParser:
                 return line
         return assistant_errcode.LOCATE_FIRST_RECORD_ERR
 
+    def locate_to_next(self, begin):
+        for line in range(begin, self.linecount):
+            if self.lines[line].find(self.split_identifiers[0]) >= 0:
+                return line
+        return assistant_errcode.LOCATE_FIRST_RECORD_ERR
+
     #返回下一条记录的位置(开始+结束)
     # locate[0]：成功或失败
     # locate[1]：起始行号
@@ -108,7 +114,6 @@ class CommonParser:
 
     def run(self, update_or_create_flag):
         curline = self.locate_to_first()
-        conf.DUMP("curline" + hex(curline))
         if curline == assistant_errcode.LOCATE_FIRST_RECORD_ERR:
             return assistant_errcode.LOCATE_FIRST_RECORD_ERR
         locate = self.get_next_record_location(begin=curline)
@@ -123,13 +128,20 @@ class CommonParser:
                 ret = record.update_or_create()
                 if ret == assistant_errcode.DB_CREATED:
                     self.created_records += 1
+                    conf.DUMP("createed " + record.__str__() + "\t\t\t OK")
                 if ret == assistant_errcode.DB_UPDATED:
                     self.updated_records += 1
+                    conf.DUMP("updated " + record.__str__() + "\t\t\t OK")
                 if ret == assistant_errcode.DB_SAME:
                     self.same_records += 1
+                    conf.DUMP("aready exist " + record.__str__() + "\t\t\t OK")
 
+            begin  = locate_to_next(locate[2] + 1)
+            if begin == assistant_errcode.LOCATE_FIRST_RECORD_ERR:
+                #最后一条记录了，返回成功
+                return assistant_errcode.SUCCESS
             #指向下一条记录
-            locate = self.get_next_record_location(begin=locate[2] + 1)
+            locate = self.get_next_record_location(begin=begin)
 
 #        mml_records["mmls"] = records
         return assistant_errcode.SUCCESS

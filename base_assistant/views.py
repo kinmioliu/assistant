@@ -1135,6 +1135,8 @@ class TDS(View):
     def GetDetailObjs(self, CurQueryKey, QueryObjId):
         if (CurQueryKey == 'mml'):
             return MMLCmdInfo.objects.filter(pk=QueryObjId)
+        if (CurQueryKey == 'evt'):
+            return EVTCmdInfo.objects.filter(pk=QueryObjId)
         if (CurQueryKey == 'solution'):
             return iter([])
         if (CurQueryKey == 'file'):
@@ -1149,6 +1151,8 @@ class TDS(View):
     def GetHtmlFileName(self, CurQueryKey):
         if (CurQueryKey == 'mml'):
             return "mmlinfo_page.html"
+        if (CurQueryKey == 'evt'):
+            return "evtinfo_page.html"
         if (CurQueryKey == 'solution'):
             return "query_err.html"
         if (CurQueryKey == 'file'):
@@ -1165,7 +1169,7 @@ class TDS(View):
         solutionid = request.GET.get('solution')
         FileNameId = request.GET.get('file')
 
-        DetailQueryInfoKey = ['mml', 'solution', 'file', 'board', 'intres', 'rudres', 'modid']
+        DetailQueryInfoKey = ['mml', 'evt', 'solution', 'file', 'board', 'intres', 'rudres', 'modid']
         QueryObjId = None
         QueryTitle = None
         CurQueryKey = ''
