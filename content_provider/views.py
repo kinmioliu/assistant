@@ -18,7 +18,7 @@ import os
 from util.handle_fileinfo import FileInfoParser
 from util.handle_scrapy_info import WikiParserManager
 from util.handle_mmlevt_new import MMLEVTParserManager
-
+from util.build_index import IndexBuilder
 
 class MakeResponsibiltyField(LoginRequiredMixin, View):
     """制作责任田信息"""
@@ -196,6 +196,42 @@ class MakeMMLEVTInfo(LoginRequiredMixin, View):
                                                     {'text': 'created ' + str(parser.created_records) + ' records'})
                 paras['updated'] = render_to_string('partials/_json_data.html',
                                                     {'text': 'updated ' + str(parser.updated_records) + ' records'})
+                return JsonResponse(paras)
+
+
+        # 提交空表单
+        else:
+            paras = {'result': 'err'}
+            return JsonResponse(paras)
+
+        paras = dict()
+        return render(request, "make_mmlevt_info_new.html", paras)
+
+
+
+class MakeIndexInfo(LoginRequiredMixin, View):
+    login_url = '/admin/'
+    redirect_field_name = '/contribute/'
+
+    def get(self, request):
+        print("get make_indexinfo")
+        paras = dict()
+        return render(request, "make_index.html", paras)
+
+    def post(self, request):
+        print("post make_indexinfo")
+        # 获取前台参数
+        if self.request.method == "POST":
+            func = request.POST.get('func')
+            DUMP('func: ' + func)
+            if func != None:
+                builder = IndexBuilder()
+                result = builder.run()
+                paras = dict()
+                paras['created'] = render_to_string('partials/_json_data.html',
+                                                    {'text': 'created ' + str(builder.created_records) + ' records'})
+                paras['updated'] = render_to_string('partials/_json_data.html',
+                                                    {'text': 'updated ' + str(builder.updated_records) + ' records'})
                 return JsonResponse(paras)
 
 

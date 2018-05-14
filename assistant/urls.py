@@ -13,10 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url,include
 from django.contrib import admin
+from django.conf import settings
 from base_assistant.views import TestHomePage, TestAssistant,TestTDSPage, RTN300, TestTDS, ContributeSolution, MakePolicy, download_policy_excample, MakeMMLInfo, download_mml_excample, TDS, SearchResultPage, SolutionTree, AboutTDS
-from content_provider.views import MakeResponsibiltyField, MakeFileInfo,MakeResourceInfo,MakeWikiInfo, MakeMMLEVTInfo
+from content_provider.views import MakeResponsibiltyField, MakeFileInfo,MakeResourceInfo,MakeWikiInfo, MakeMMLEVTInfo,MakeIndexInfo
 
 
 urlpatterns = [
@@ -41,4 +42,9 @@ urlpatterns = [
     url(r'^about/$',AboutTDS.as_view()),
     url(r'make-resource/$',MakeResourceInfo.as_view()),
     url(r'make-wiki/$', MakeWikiInfo.as_view()),
+    url(r'make-index/$', MakeIndexInfo.as_view()),
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns.append(url(r'^__debug__/', include(debug_toolbar.urls)))

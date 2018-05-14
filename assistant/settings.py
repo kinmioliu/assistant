@@ -26,7 +26,7 @@ SECRET_KEY = 'iiav#@1)e3p$v(3=66naf81^@jtm9y)t$ho70r^!(xkld_lk8y'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
-
+INTERNAL_IPS = ('127.0.0.1', )
 
 # Application definition
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'base_assistant',
     'bootstrap3',
     'content_provider',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'assistant.urls'
@@ -120,3 +122,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+DEBUG_TOOLBAR_CONFIG = {'JQUERY_URL': r"/static/js/jquery-1.12.4.min.js"}
