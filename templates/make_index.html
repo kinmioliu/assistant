@@ -1,0 +1,76 @@
+<html lang="en">
+{% load staticfiles %}
+
+<head>
+<meta charset="UTF-8">
+    <script src = "{% static 'jquery/jquery.js' %}"></script>
+    <script src = "{% static 'jquery/jquery-ui.min.js' %}"></script>
+    <script src = "{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" media="screen">
+
+    <script>
+
+        function getCookie(name) 
+        { 
+        var arr,reg=new RegExp("(^| )"+name+"=([^;]*)(;|$)"); 
+        if(arr=document.cookie.match(reg))
+            return unescape(arr[2]); 
+        else 
+            return null; 
+        } 
+
+        $(function () {
+        $.ajaxSetup({
+            headers: { "X-CSRFToken": getCookie("csrftoken") }
+        });
+        });
+
+        function update_index_info() {
+            bt_text = $("#bt_update_index_info").text();
+            console.log("bt_text" + bt_text);
+            $("#bt_update_index_info").text("正在更新……");
+            $("#bt_update_index_info").attr("disabled", true);
+            $.post('', {'func':'update_index_info'}, function(save_result){
+                console.log(save_result);
+                $("#bt_update_index_info").attr("disabled", false);
+                $("#bt_update_index_info").text("更新索引信息");
+                $("#created").html(save_result['created']);
+                $("#updated").html(save_result['updated']);
+            }
+            );
+        }
+    </script>
+
+    <title>制作索引信息</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-default navbar-fixed-top"  role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">TDS</a>
+            </div>
+            <p class="navbar-text" style="margin-left:400px"> 制作索引信息</p>
+            <p class="navbar-text navbar-right"> <a href="/admin">User Profile Page</a></p>
+        </div>
+    </nav>
+
+    <div style="padding-top:50px"></div>
+
+    <div class="container">
+        <button type="button" id="bt_update_index_info" class="btn btn-primary col-lg-2" onclick="update_index_info()">
+            {% csrf_token %}
+            更新index信息
+        </button>
+    </div>
+    <br>
+
+    <div id="created"></div>
+    <div id="updated"></div>
+
+
+
+
+
+</body>
+</html>
