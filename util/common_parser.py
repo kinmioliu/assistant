@@ -95,7 +95,7 @@ class CommonParser:
         for index in range(begin, end + 1):
             comb_line += self.lines[index]
         conf.DUMP(comb_line)
-        comb_line = comb_line.replace('\n', '')
+        comb_line = comb_line.replace('\n', '<br>')
         return self.get_record_from_oneline(comb_line)
 
     #'MMLBEGIN:[cfg-delay-time1]MMLEND	FUNCBEGIN:[执行延时操作1]FUNCEND	SAMPLEBEGIN:[cfg-delay-time:1]SAMPLEEND	ATTENTIONBEGIN:[无1]ATTENTIONEND	MARKBEGIN:[无1]MARKEND',
@@ -136,7 +136,7 @@ class CommonParser:
                     self.same_records += 1
                     conf.DUMP("aready exist " + record.__str__() + "\t\t\t OK")
 
-            begin  = locate_to_next(locate[2] + 1)
+            begin  = self.locate_to_next(locate[2] + 1)
             if begin == assistant_errcode.LOCATE_FIRST_RECORD_ERR:
                 #最后一条记录了，返回成功
                 return assistant_errcode.SUCCESS

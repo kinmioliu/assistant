@@ -1,5 +1,11 @@
 import re
 import os
+from ctypes import *
+
+test = cdll.LoadLibrary(r"F:\pyhton\project\site\assistant\util\IndexDLL.dll")
+#test = WinDLL(r"F:\pyhton\project\site\assistant\util\IndexDLL.dll")
+print(test)
+print(test.add(1,2))
 
 HexPattern = r'(\b|\s.)0x[0-9a-fA-F]+(\b|\s.)'
 HexPattern = r'(\b|\s.)0x[0-9a-fA-F]+(\b|\s.)'

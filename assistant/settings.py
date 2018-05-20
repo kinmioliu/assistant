@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-
+from ctypes import *
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -124,3 +124,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 DEBUG_TOOLBAR_CONFIG = {'JQUERY_URL': r"/static/js/jquery-1.12.4.min.js"}
+
+IndexDllObj = cdll.LoadLibrary(r"F:\pyhton\project\site\assistant\util\IndexDLL.dll")

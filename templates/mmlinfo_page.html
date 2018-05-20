@@ -25,10 +25,10 @@
         {% endif%}
 
         {% if result == 'SUCCESS' %}
-            <div class="alert alert-success">和{{title}}相关的信息如下所示</div>
-            <h2>{{ObjInfo.cmdname}}</h2>
+            <div class="alert alert-success">和{{title}}相关的信息下所示</div>
+            <h2>{{ObjInfo.cmdname| truncatewords:"1"}}</h2>
             <h3>功能:</h3>
-            <h4>{{ObjInfo.cmd_func}}</h4>
+            <h4>{{ObjInfo.cmd_func | escape | truncatewords:"1" }}</h4>
             <h3>例子:</h3>
             <h4>{{ObjInfo.cmd_sample}}</h4>
             <h3>注意事项:</h3>
@@ -36,7 +36,7 @@
             <h3>备注:</h3>
             <h4>{{ObjInfo.cmd_mark}}</h4>
             <h3>责任领域:</h3>
-            <h4><a href="{{mmlcmd.responsefield.introduce}}">{{ObjInfo.responsefield.groupname}}</a></h4>
+            <h4><a href="{{mmlcmd.responsefield.introduce}}">{{ObjInfo.responsefield.groupname | truncatewords:"1"}}</a></h4>
             <h3>可能相关的问题列表:</h3>
             {% for out_link in out_links %}
             <h4><a href="{{out_link.introduce}}">{{out_link.link_title}}</a></h4>

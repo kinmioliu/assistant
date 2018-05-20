@@ -20,7 +20,8 @@ import os
 import re
 from util.handle_mml import MMLParser
 from util import assistant_errcode
-
+from ctypes import *
+from assistant.settings import IndexDllObj
 
 class AboutTDS(View):
     def get(self, request):
@@ -283,9 +284,12 @@ class SearchResultPage(View):
         print(QueryTxt)
         print(QueryPage)
         QueryTxt = QueryTxt.strip()
+        result = IndexDllObj.add(7,6)
+        print(result)
         RspParas = dict()
         RspParas['placeholder'] = QueryTxt
         QueryType = self.CalculateQueryType(QueryTxt)
+
 
         TmpObjs = []
         CmdinfoObjs = iter(TmpObjs)
@@ -322,6 +326,7 @@ class SearchResultPage(View):
             print(index)
             WikiInfoObjs |= HashTagObjs[index].wikiinfo_set.all()
             EvtinfoObjs |= HashTagObjs[index].evtcmdinfo_set.all()
+
 
 
         combined_query_set = list(chain(CmdinfoObjs, SolutionObjs, FileinfoObjs, ResourceObjsInt, ResourceObjsRud, WikiInfoObjs, EvtinfoObjs))
@@ -1192,6 +1197,7 @@ class TDS(View):
         else:
             paras['result'] = "SUCCESS"
             paras['ObjInfo'] = ResultObjs[0]
+            print(ResultObjs[0].cmd_func)
             paras['out_links'] = ResultObjs[0].out_links.all()
 
         return render(request, self.GetHtmlFileName(CurQueryKey), paras)
