@@ -125,4 +125,4 @@ STATIC_URL = '/static/'
 
 DEBUG_TOOLBAR_CONFIG = {'JQUERY_URL': r"/static/js/jquery-1.12.4.min.js"}
 
-IndexDllObj = cdll.LoadLibrary(r"F:\pyhton\project\site\assistant\util\IndexDLL.dll")
+IndexDllObj = cdll.LoadLibrary(r"F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.dll")

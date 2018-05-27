@@ -22,6 +22,7 @@ from util.handle_mml import MMLParser
 from util import assistant_errcode
 from ctypes import *
 from assistant.settings import IndexDllObj
+from ctypes import *
 
 class AboutTDS(View):
     def get(self, request):
@@ -286,6 +287,12 @@ class SearchResultPage(View):
         QueryTxt = QueryTxt.strip()
         result = IndexDllObj.add(7,6)
         print(result)
+
+        test = cdll.LoadLibrary(r"F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.dll")
+        # test = WinDLL(r"F:\pyhton\project\site\assistant\util\IndexDLL.dll")
+        print(test)
+        print(test.add(1, 2))
+
         RspParas = dict()
         RspParas['placeholder'] = QueryTxt
         QueryType = self.CalculateQueryType(QueryTxt)

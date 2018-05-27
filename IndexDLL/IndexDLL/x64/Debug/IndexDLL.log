@@ -1,4 +1,4 @@
 ﻿  createdll.cpp
-    正在创建库 F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.lib 和对象 F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.exp
+f:\pyhton\project\site\assistant\indexdll\indexdll\createdll.cpp(81): warning C4101: “tmpstr”: 未引用的局部变量
   IndexDLL.vcxproj -> F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.dll
   IndexDLL.vcxproj -> F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.pdb (Partial PDB)

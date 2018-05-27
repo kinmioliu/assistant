@@ -1,5 +1,17 @@
-#pragma once
+ï»¿#pragma once
 
-//_declspec(dllexport) int add(int x, int y);/*_declspec(dllexport)ÉùÃ÷Ò»¸öµ¼³öº¯Êı£¬ÊÇËµÕâ¸öº¯ÊıÒª´Ó±¾DLLµ¼³ö,ÎÒÒª¸ø±ğÈËÓÃ¡£*/
-int add(int x, int y);  //ÇóºÍº¯Êı
+using namespace std;
+
+
+//_declspec(dllexport) int add(int x, int y);/*_declspec(dllexport)å£°æ˜ä¸€ä¸ªå¯¼å‡ºå‡½æ•°ï¼Œæ˜¯è¯´è¿™ä¸ªå‡½æ•°è¦ä»æœ¬DLLå¯¼å‡º,æˆ‘è¦ç»™åˆ«äººç”¨ã€‚*/
+int add(int x, int y);  //æ±‚å’Œå‡½æ•°
+
+						//
+						//  main.cpp
+						//  IndexMng
+						//
+						//  Created by åˆ˜è¿›è°‹ on 2018/5/22.
+						//  Copyright Â© 2018å¹´ åˆ˜è¿›è°‹. All rights reserved.
+						//
+
 

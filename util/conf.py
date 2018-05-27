@@ -62,4 +62,5 @@ FILES_PATH_DOC_NAME = 'files_path.txt'
 ResourceFilePath = 'upload/resource_file/'
 WIKI_FILE_PATH = 'upload/wikiinfo/'
 MMLEVT_FILE_PATH = 'upload/mmlevtinfo/'
+STOP_WORDS_LIST_PATH = 'upload/stopwords/tds_stopwords_list.txt'
 RESOURCE_FILE_TOKENS = 5
