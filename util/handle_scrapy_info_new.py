@@ -34,29 +34,29 @@ class WikiRecord(CommonRecord):
         self.Classes = ''
 
     def set_attrs(self, attrs):
-        tags = attrs[4].split(',')
+        tags = attrs[3].split(',')
         classes_regex = r'GROUP\[(.+?)\]FEATURE\[(.+?)\]classes\[(.+?)\]'
-        classes = re.findall(classes_regex, attrs[5])
+        classes = re.findall(classes_regex, attrs[4])
         if len(classes) != 1:
             conf.DUMP(attrs)
             return assistant_errcode.INVALID_WIKI_FORMAT
 
-        return self.set_attr(attrs[0], attrs[1], attrs[2], attrs[3], tags, classes[0][0], classes[0][1], classes[0][2])
+        return self.set_attr(attrs[0], attrs[1], attrs[2], tags, classes[0][0], classes[0][1], classes[0][2])
 
     def set_attr(self, Link, Title, Content, Abstract, tags ,Group, Feature, Classes):
         self.Link = Link
         self.Title = Title
-        self.Content = Content
         self.Abstract = Abstract
         self.tags = tags
         self.Group = Group
         self.Feature = Feature
         self.Classes = Classes
+        self.Content = Content
         conf.DUMP(self.__str__())
 
     def update_or_create(self):
 
-        defaults = {'link': self.Link, 'title': self.Title, 'content':self.Content, 'abstract': self.Abstract, 'group': self.Group,
+        defaults = {'link': self.Link, 'title': self.Title, 'abstract': self.Abstract, 'group': self.Group,
                 'feature': self.Feature, 'classes': self.Classes, 'taglist':self.tags}
         link = self.Link
         WikiInfo.objects.get_or_create(link = link, defaults = defaults)
@@ -107,7 +107,7 @@ class WikiRecord(CommonRecord):
 
 #WIKILINKBEGIN[http://xgag4.HUAWEI.COM]WIKILINKENDWIKITITLEBEGIN[VxWORKTITLE0]WIKITITLEENDWIKIABSTRACTBEGIN[sg]WIKIABSTRACTENDWIKITAGBEGIN[tag4]WIKITAGENDWIKICLASSESBEGIN[GROUP[KERNEL]FEATURE[VOS]classes[VOS]]WIKICLASSESEND
 #WIKILINKBEGIN[http://xgag5.HUAWEI.COM]WIKILINKENDWIKITITLEBEGIN[产品注册差异文档整理-传送软件开发社区（内源&软件能力中心）-3ms知识管理社区]WIKITITLEENDWIKIABSTRACTBEGIN[Summary:框架模块mml和适配层注册产品过多，如RTN产品类型繁多……]WIKIABSTRACTENDWIKITAGBEGIN[MML,适配层]WIKITAGENDWIKICLASSESBEGIN[GROUP[KERNEL]FEATURE[VOS]classes[VOS]]WIKICLASSESEND
-WIKI_IDENTIFIERS = [r'WIKILINKBEGIN[', r']WIKILINKENDWIKITITLEBEGIN[', r']WIKITITLEENDWIKICONTENTBEGIN[',']WIKICONTENTENDWIKIABSTRACTBEGIN[', r']WIKIABSTRACTENDWIKITAGBEGIN[',r']WIKITAGENDWIKICLASSESBEGIN[', r']WIKICLASSESEND',]
+WIKI_IDENTIFIERS = [r'WIKILINKBEGIN[', r']WIKILINKENDWIKITITLEBEGIN[', r']WIKITITLEENDWIKIABSTRACTBEGIN[',r']WIKIABSTRACTENDWIKITAGBEGIN[',r']WIKITAGENDWIKICLASSESBEGIN[', r']WIKICLASSESEND',]
 WIKI_REGEX_STR = r'WIKILINKBEGIN\[(.+?)\]WIKILINKENDWIKITITLEBEGIN\[(.+?)\]WIKITITLEENDWIKIABSTRACTBEGIN\[(.+?)\]WIKIABSTRACTENDWIKITAGBEGIN\[(.+?)\]WIKITAGENDWIKICLASSESBEGIN\[(.+?)\]WIKICLASSESEND'
 class WikiParser(CommonParser):
     def __init__(self, lines):
@@ -117,18 +117,14 @@ class WikiParser(CommonParser):
         record = WikiRecord()
         return record
 
-
     def parser_one_record_multiline(self, begin, end):
-        conf.DUMP(begin)
-        conf.DUMP(end)
         tag = list()
         next_begin_line = begin
         search_eof_file = False
         for ident in self.split_identifiers:
-            conf.DUMP(ident)
             if search_eof_file == True:
                 break
-            for search_line in range(next_begin_line, end + 1):
+            for search_line in range(next_begin_line, end):
                 if search_line >= self.linecount:
                     conf.DUMP("error")
                     return assistant_errcode.PARSER_RECORD_ERR
@@ -136,29 +132,13 @@ class WikiParser(CommonParser):
                     tag.append(search_line)
                     #本次搜索结束，查找下一个Ident
                     next_begin_line = search_line + 1
-                    conf.DUMP(next_begin_line)
                     if next_begin_line >= self.linecount:
                         search_eof_file = True
                     break
+
         print(tag)
-        if len(tag) != len(self.split_identifiers):
-            return assistant_errcode.PARSER_RECORD_ERR
+        return 0x5555
 
-        result = list()
-        tmp_content = ''
-        content_begin = tag[0]
-        for content_end in tag:
-            if content_end == content_begin:
-                continue
-            tmp_content = ''.join(self.lines[content_begin + 1:content_end])
-            # conf.DUMP(tmp_content)
-            result.append(tmp_content)
-            content_begin = content_end
-
-        ret_result = list()
-        ret_result.append(result)
-        print(result)
-        return ret_result
 
     def run(self):
         return super(WikiParser, self).run(True)

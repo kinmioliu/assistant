@@ -24,7 +24,7 @@ class OutLinkAdmin(admin.ModelAdmin):
     list_display = ('link_title', 'introduce')
 
 class WikiInfoAdmin(admin.ModelAdmin):
-    list_display = ('link', 'title', 'abstract', 'group', 'feature', 'classes')
+    list_display = ('link', 'title', 'content', 'abstract', 'group', 'feature', 'classes')
 
 class FileInfoAdmin(admin.ModelAdmin):
     list_display = ("filename", "introduce", "path", "responsefield")

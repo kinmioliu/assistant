@@ -239,8 +239,9 @@ QUERYTYPE_HASTAG = 0x00000002
 QUERYTYPE_FILEINFO = 0x00000004
 QUERYTYPE_RESOURCE = 0x00000008
 QUERYTYPE_SOLUTION = 0x00000010
-
-
+QUERYTYPE_EVT = 0x00000020
+QUERYTYPE_WIKI = 0x00000040
+QUERYTYPE_RANDOM = 0x00000080
 HexPattern = r'(\b|\s.)0x[0-9a-fA-F]+(\b|\s.)'
 
 class SearchResultPage(View):
@@ -261,7 +262,18 @@ class SearchResultPage(View):
 
         return False
 
-    def CalculateQueryType(self, QueryTxt):
+    def CalculateQueryType(self, query_class,  QueryTxt):
+        if query_class == 'mml_evt':
+            return QUERYTYPE_CMD|QUERYTYPE_EVT
+        if query_class == 'wiki':
+            return QUERYTYPE_WIKI
+        if query_class == 'res':
+            return QUERYTYPE_RESOURCE
+        if query_class == 'file':
+            return QUERYTYPE_FILEINFO
+        if query_class == 'random':
+            return QUERYTYPE_RANDOM
+
         QueryType = QUERYTYPE_NONE
         QueryTxt = QueryTxt.strip()
         if self.MatchCondition(QueryTxt, QUERYTYPE_RESOURCE):
@@ -280,10 +292,12 @@ class SearchResultPage(View):
         return QueryType
 
     def get(self, request):
+        query_class = request.GET.get('cla')
         QueryTxt = request.GET.get('q')
         QueryPage = request.GET.get('page')
         print(QueryTxt)
         print(QueryPage)
+        print(query_class)
         QueryTxt = QueryTxt.strip()
         result = IndexDllObj.add(7,6)
         print(result)
@@ -295,8 +309,7 @@ class SearchResultPage(View):
 
         RspParas = dict()
         RspParas['placeholder'] = QueryTxt
-        QueryType = self.CalculateQueryType(QueryTxt)
-
+        QueryType = self.CalculateQueryType(query_class, QueryTxt)
 
         TmpObjs = []
         CmdinfoObjs = iter(TmpObjs)
@@ -309,6 +322,8 @@ class SearchResultPage(View):
         EvtinfoObjs = iter([])
         if (QueryType & QUERYTYPE_CMD):
             CmdinfoObjs = MMLCmdInfo.objects.filter(cmdname__icontains=QueryTxt)
+        if (QueryType & QUERYTYPE_EVT):
+            EvtinfoObjs = EVTCmdInfo.objects.filter(cmdname__icontains=QueryTxt)
         if (QueryType & QUERYTYPE_HASTAG):
             HashTagObjs = HashTag.objects.filter(name__icontains=QueryTxt)
         if (QueryType & QUERYTYPE_FILEINFO):

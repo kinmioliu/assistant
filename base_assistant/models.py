@@ -119,6 +119,7 @@ class WikiManager(models.Manager):
 class WikiInfo(SearchObj):
     link = models.URLField()    #pk
     title = models.CharField(max_length = 100)
+    content = models.TextField()
     abstract = models.TextField()
     group = models.CharField(max_length = 50)
     feature = models.CharField(max_length = 50)
