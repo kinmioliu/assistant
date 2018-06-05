@@ -244,6 +244,12 @@ QUERYTYPE_WIKI = 0x00000040
 QUERYTYPE_RANDOM = 0x00000080
 HexPattern = r'(\b|\s.)0x[0-9a-fA-F]+(\b|\s.)'
 
+class StructResutlPointer(Structure):
+    _fields_ =[('ResultCnts', c_uint),
+               ('PageCnt', c_uint),
+               ('Result1', c_uint),
+               ('Result2', c_uint)]
+
 class SearchResultPage(View):
 
     def MatchCondition(self, QueryTxt, Condition):
@@ -299,13 +305,21 @@ class SearchResultPage(View):
         print(QueryPage)
         print(query_class)
         QueryTxt = QueryTxt.strip()
-        result = IndexDllObj.add(7,6)
-        print(result)
+        IndexDllObj.QueryDocIdByTokens.restype = POINTER(StructResutlPointer)
+        #p = POINTER(StructResutlPointer)
+        p = IndexDllObj.QueryDocIdByTokens(0, 3, 4, 8, 0,
+                      0, 0, 0, 4, 0,
+                       0, 0, 0 , 0, 0,
+                       0, 0, 0, 0, 0,
+                        1,3);
 
-        test = cdll.LoadLibrary(r"F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.dll")
-        # test = WinDLL(r"F:\pyhton\project\site\assistant\util\IndexDLL.dll")
-        print(test)
-        print(test.add(1, 2))
+        #print(hex(p))
+
+        print(p.contents.ResultCnts)
+        print(p.contents.PageCnt)
+        print(p.contents.Result1)
+        print(p.contents.Result2)
+
 
         RspParas = dict()
         RspParas['placeholder'] = QueryTxt
@@ -345,7 +359,6 @@ class SearchResultPage(View):
 
         #合并结果
         for index, hashtag in enumerate(HashTagObjs):
-            print(index)
             WikiInfoObjs |= HashTagObjs[index].wikiinfo_set.all()
             EvtinfoObjs |= HashTagObjs[index].evtcmdinfo_set.all()
 

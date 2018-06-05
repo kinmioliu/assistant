@@ -4,7 +4,7 @@ from util.conf import *
 from base_assistant.models import HashTag
 import os
 from util import conf
-from assistant.settings import IndexDllObj
+#from assistant.settings import IndexDllObj
 from ctypes import *
 
 WIKI_TYPE =  0x01000000
@@ -32,8 +32,8 @@ class IndexBuilder:
             return 0
         str = c_wchar_p(token)
         print(str)
-        ret = IndexDllObj.UpdateOrCreateIndexInfo(str, len(token), docid)
-        print(ret)
+        #ret = IndexDllObj.UpdateOrCreateIndexInfo(str, len(token), docid)
+        #print(ret)
         return 0
 
     def allocate_docid(self, doc_type, dbid):
@@ -50,7 +50,7 @@ class IndexBuilder:
             splits = jieba.cut_for_search(tag_name)
             for obj in splits:
                 self.update_or_create_indexinfo(obj, self.allocate_docid(WIKI_TYPE, tag.id))
-        ret = IndexDllObj.InitIndexInfoFromFile()
-        print(ret)
+        #ret = IndexDllObj.InitIndexInfoFromFile()
+        #print(ret)
         DUMP("Build Index End")
         return 0

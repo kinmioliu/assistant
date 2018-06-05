@@ -55,12 +55,12 @@ class FileInfo(SearchObj):
     filename = models.CharField(max_length=30)
     introduce = models.CharField(max_length=50)
     path = models.CharField(max_length=100)
-    responsefield = models.ForeignKey("ResponsibilityField")
+    responsefield = models.ForeignKey("ResponsibilityField", on_delete = models.PROTECT)
 
 
 #资源信息
 class ResoureInfo(SearchObj):
-    file = models.ForeignKey("FileInfo")
+    file = models.ForeignKey("FileInfo", on_delete = models.PROTECT)
     line = models.IntegerField()
     name = models.CharField(max_length=30)
     code = models.CharField(max_length=200)
@@ -150,7 +150,7 @@ class MMLCmdInfo(SearchObj):
     #备注
     cmd_mark = models.TextField()
     #所属责任田
-    responsefield = models.ForeignKey("ResponsibilityField")
+    responsefield = models.ForeignKey("ResponsibilityField", on_delete = models.PROTECT)
     #tag
     tags = models.ManyToManyField("HashTag", blank=True, null=True)
 
@@ -168,7 +168,7 @@ class EVTCmdInfo(SearchObj):
     #备注
     cmd_mark = models.TextField()
     #所属责任田
-    responsefield = models.ForeignKey("ResponsibilityField")
+    responsefield = models.ForeignKey("ResponsibilityField",on_delete = models.PROTECT)
     #tag
     tags = models.ManyToManyField("HashTag", blank=True, null=True)
 
