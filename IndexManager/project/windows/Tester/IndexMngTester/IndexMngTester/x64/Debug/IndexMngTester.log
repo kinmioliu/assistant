@@ -1,0 +1,4 @@
+﻿  IndexMngTester.cpp
+f:\pyhton\project\site\assistant\indexmanager\pubh\indexmng.h : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  IndexMngTester.vcxproj -> F:\pyhton\project\site\assistant\IndexManager\project\windows\Tester\IndexMngTester\x64\Debug\IndexMngTester.exe
+  IndexMngTester.vcxproj -> F:\pyhton\project\site\assistant\IndexManager\project\windows\Tester\IndexMngTester\x64\Debug\IndexMngTester.pdb (Partial PDB)

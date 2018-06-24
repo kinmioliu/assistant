@@ -190,26 +190,11 @@ int QueryDocIdByTokensImpl_V2(vector<unsigned int> &Tokens, unsigned int Page, u
         {
             TmpDocId = IndexIter->second.DocIDList[i];
             DocVectorSpace[TmpDocId].Weights[TokenIndexInQPMap - 1] = IndexIter->second.Weight[i];
-            /*map<unsigned int, VectorSpaceDocInfo>::iterator DocVSItr = DocVectorSpace.find(TmpDocId);
-            if (DocVSItr != DocVectorSpace.end())
-            {
-                //说明之前计算过,设置 该单词 在 该文档中的 权重
-                DocVSItr->second.Weights[TokenIndexInQPMap] = IndexIter->second.Weight[i];
-
-            }
-            else
-            {
-                //没有计算过，设置一个值
-                DocVectorSpace[TmpDocId] = VectorSpaceDocInfo();
-            }
-            */
         }
     }
     unsigned int TokenCount = QWordPostInfo.size();
     
-    //计算Consine 相似性
-    
-    
+    //计算Consine 相似性        
     map<unsigned int, VectorSpaceDocInfo>::iterator AimDocItr = DocVectorSpace.begin();
     for (; AimDocItr != DocVectorSpace.end(); AimDocItr++)
     {
@@ -218,7 +203,7 @@ int QueryDocIdByTokensImpl_V2(vector<unsigned int> &Tokens, unsigned int Page, u
         double divisor = 0;
         for( int i = 0; i < TokenCount; i++)
         {
-            dividend += (AimDocItr->second.Weights[i] * )
+            //dividend += (AimDocItr->second.Weights[i] * )
         }
     }
     /*
@@ -298,6 +283,7 @@ StructResutlPointer QueryDocIdByTokens(unsigned int Docid1, unsigned int Docid2,
     return st;
 }
 
+/*
 int main(int argc, const char * argv[])
 {
     ExcuteTfIDF();
@@ -316,6 +302,6 @@ int main(int argc, const char * argv[])
     std::cout << "Hello, World!\n";
     return 0;
 }
-
+*/
 
 

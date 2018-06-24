@@ -8,6 +8,8 @@
 
 #include <stdio.h>
 #include "IndexMng.h"
+#include <stdarg.h>
+
 map<unsigned int, PostingList> Index;
 
 class IndexInitializer

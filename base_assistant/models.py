@@ -50,6 +50,8 @@ class SearchObj(models.Model):
     solutions = models.ManyToManyField("Solution", blank=True, null=True)
     # 相关链接列表
     out_links = models.ManyToManyField("OuterLink", blank=True, null=True)
+    class Meta:
+        abstract = True
 
 class FileInfo(SearchObj):
     filename = models.CharField(max_length=30)
@@ -72,17 +74,24 @@ class ResoureInfo(SearchObj):
     def __str__(self):
         return self.file.filename + self.name + self.code
 
-class ResoureInfoInt(ResoureInfo):
+    class Meta:
+        abstract = True
+
+class ResourceInfoInt(ResoureInfo):
     value = models.IntegerField()
     hexval = models.CharField(max_length = 16)
 
 class ResourceInfoStr(ResoureInfo):
     value = models.CharField(max_length = 50)
 
-class ResourceInfoRud(ResoureInfoInt):
+class ResourceInfoRud(ResoureInfo):
+    value = models.IntegerField()
+    hexval = models.CharField(max_length = 16)
     domain = models.CharField(max_length = 30)
 
-class ResourceInfoModule(ResoureInfoInt):
+class ResourceInfoModule(ResoureInfo):
+    value = models.IntegerField()
+    hexval = models.CharField(max_length = 16)
     introduct = models.CharField(max_length = 500)
     out_link = models.URLField()
 
@@ -94,7 +103,7 @@ class HashTag(models.Model):
 #    mmls = models.ManyToManyField("MMLCmdInfo", blank=True, null=True)
 #    solutions = models.ManyToManyField("Solution", blank=True, null=True)
 #    wikis = models.ManyToManyField("WikiInfo", blank=True, null=True)
-#    intreses = models.ManyToManyField("ResoureInfoInt", blank=True, null=True)
+#    intreses = models.ManyToManyField("ResourceInfoInt", blank=True, null=True)
 #    strreses = models.ManyToManyField("ResourceInfoStr", blank=True, null=True)
 #    rudreses =  models.ManyToManyField("ResourceInfoRud", blank=True, null=True)
 #    modulereses = models.ManyToManyField("ResourceInfoModule", blank=True, null=True)
@@ -113,7 +122,6 @@ class WikiManager(models.Manager):
         kwargs.update(defaults)
         wikiobj, created = super(WikiManager, self).get_or_create(**kwargs)
         WikiInfo.ModifyFlag = created
-
 
 
 class WikiInfo(SearchObj):
@@ -174,3 +182,6 @@ class EVTCmdInfo(SearchObj):
 
     def __str__(self):
         return self.cmdname
+
+class IndexInfo(SearchObj):
+    word = models.CharField(max_length = 50, unique=True)

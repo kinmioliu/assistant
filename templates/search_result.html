@@ -30,6 +30,15 @@
         });
         });
 
+        //此js用于将搜索分类标签高亮
+        $(function(){
+            var query_classid = "#" + $("#query_class").text();
+            search_tag = $(query_classid);
+            search_tag.css("color","black");
+            search_tag.css("font-weight", "bold");
+        });
+
+
         $(function(){
             console.info("agaga");
             console.info("hello" + $("#query_content").text());
@@ -61,6 +70,7 @@
 
 
 
+    //该函数用于监控搜索输入事件，用于提供搜索关键字
     $(document).ready(function ($) {
     //远程数据源
     var remote_solutions = new Bloodhound({
@@ -81,32 +91,24 @@
     });
     });
 
-
     $(document).ready(function(){
+    //该函数用于监控keyup，触发搜索
     $("#input_search").keyup(function(event){
         if(event.keyCode ==13){
             var query = $("#input_search").val()
-            //跳转到定位页面
-            next_location = '/result/?q='+ query  + '&page=1';
-            console.log("执行了按钮"+ next_location);
+            var query_cla = $("#query_class").text()
+            next_location = '/result/?cla='+ query_cla + '&q='+ query  + '&page=1';
             location.href= next_location;
          }
     });
 
+    //该函数用于监控搜索按钮点击事件，触发搜索
     $("#bt_search").click(function(e){
             var query = $("#input_search").val()
-            //跳转到定位页面
-            next_location = '/result/?q='+ query  + '&page=1';
+            var query_cla = $("#query_class").text()
+            next_location = '/result/?cla='+ query_cla + '&q='+ query  + '&page=1';
             location.href= next_location;
     });
-
-    $("#bt_search").click(function(e){
-            var query = $("#input_search").val()
-            //跳转到定位页面
-            next_location = '/result/?q='+ query  + '&page=1';
-            location.href= next_location;
-    });
-
     });
 
     </script>
@@ -117,7 +119,9 @@
 <body>
 
     <div class="row" style="margin-top:30px">
-            <p id="query_content" hidden="hidden" >{{query}}</p>
+        <p id="query_content" hidden="hidden" >{{query}}</p>
+        <p id="query_class" hidden="hidden" >{{query_class}}</p>
+
         <div class="col-lg-1"><img src="/static/images/log.png" width="100px"></div>
         <div class="col-lg-4">
             <div class="input-group" id="remote-solution">
@@ -129,15 +133,17 @@
     <div class="row" style="margin-top:5px">
         <div class="col-lg-1"></div>
         <div class="col-lg-4">
-            <a class="col-lg-1" href='/result/?cla=all&q={{query}}&page=1' id = "all_link">ALL</a>
-            <a class="col-lg-2" href='/result/?cla=mml_evt&q={{query}}&page=1' id = "mml_evet_link">MML&EVT</a>
-            <a class="col-lg-1" href='/result/?cla=wiki&q={{query}}&page=1'>WIKI</a>
-            <a class="col-lg-1" href='/result/?cla=res&q={{query}}&page=1'>RES</a>
-            <a class="col-lg-2" href='/result/?cla=file&q={{query}}&page=1'>FILE_NAME</a>
-            <a class="col-lg-1" href='/result/?cla=random&q={{query}}&page=1'>RANDOM</a>
+            <a id = "cla_all" class="col-lg-1" href='/result/?cla=cla_all&q={{query}}&page=1' id = "all_link">ALL</a>
+            <a id = "cla_mml_evt" class="col-lg-2" href='/result/?cla=cla_mml_evt&q={{query}}&page=1' id = "mml_evet_link">MML&EVT</a>
+            <a id = "cla_wiki" class="col-lg-1" href='/result/?cla=cla_wiki&q={{query}}&page=1'>WIKI</a>
+            <a id = "cla_res" class="col-lg-1" href='/result/?cla=cla_res&q={{query}}&page=1'>RES</a>
+            <a id = "cla_file" class="col-lg-2" href='/result/?cla=cla_file&q={{query}}&page=1'>FILE_NAME</a>
+            <a id = "cla_random" class="col-lg-1" href='/result/?cla=cla_random&q={{query}}&page=1'>RANDOM</a>
+        </div>
+        <div class="col-log-1">
+            <a data-toggle="tooltip" data-placement="bottom" title="MML_EVT:搜索平台的命令行&事件手册 WIKI:搜索UTS内源WIKI RES:搜索NW_USP/include NW_USP/usp/pubh/resource中的资源 FILE_NAME:搜索NW_USP中的文件名 RANDOM:随机搜索">Tip</a>
         </div>
     </div>
-
 
     <br>
     <br>

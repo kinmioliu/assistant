@@ -56,7 +56,7 @@ RESPONSIBILITY_FIELD_CONF = [
 
 UNKNOW_RESPONSIBILITY = 'unknow'
 
-FILES_PATH_DOC_NAME = 'files_path.txt'
+FILES_PATH_DOC_NAME = 'filepathinfo/files_path.txt'
 
 #资源文件路径
 ResourceFilePath = 'upload/resource_file/'

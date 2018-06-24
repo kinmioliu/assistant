@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import platform
 from ctypes import *
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -125,4 +126,12 @@ STATIC_URL = '/static/'
 
 DEBUG_TOOLBAR_CONFIG = {'JQUERY_URL': r"/static/js/jquery-1.12.4.min.js"}
 
-IndexDllObj = cdll.LoadLibrary("libIndexMng.so")
+#IndexDllObj = cdll.LoadLibrary("/IndexDLL/Debug/IndexDLL.dll")
+if (platform.system() == "Windows"):
+    IndexDllObj = cdll.LoadLibrary("IndexMng.dll")
+    print("windows")
+    print(IndexDllObj.sum(1,5))
+else:
+    IndexDllObj = cdll.LoadLibrary("libIndexMng.so")
+    print("linux")
+    print(IndexDllObj.sum(1,5))

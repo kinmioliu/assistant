@@ -4,41 +4,9 @@ import json
 import os
 import re
 import string
-from base_assistant.models import ResoureInfo, ResoureInfoInt, ResourceInfoStr, ResourceInfoModule, ResourceInfoRud, FileInfo
+from base_assistant.models import ResoureInfo, ResourceInfoInt, ResourceInfoStr, ResourceInfoModule, ResourceInfoRud, FileInfo
 from util import assistant_errcode, conf
 
-"""
-#cout << filename << "\t" << dec << line << "\t" << #var_name << "\t" << endl
-class ResoureInfo(models.Model):
-    file = models.ForeignKey("FileInfo")
-    line = models.IntegerField()
-    name = models.CharField(max_length=30)
-    code = models.CharField(max_length=200)
-    #备注
-    cmd_mark = models.CharField(max_length = 500)
-    #所属责任田
-    responsefield = models.ManyToManyField("ResponsibilityField", blank=True, null=True)
-    #相关问题列表
-    solutions = models.ManyToManyField("Solution", null=True)
-    #相关链接列表
-    out_links = models.ManyToManyField("OuterLink", null=True)
-
-    def __str__(self):
-        return self.file + self.name + self.code
-        
-class ResoureInfoInt(ResoureInfo):
-    value = models.IntegerField()
-
-class ResourceInfoStr(ResoureInfo):
-    value = models.CharField(max_length = 50)
-
-class ResourceInfoRud(ResoureInfoInt):
-    domain = models.CharField(max_length = 30)
-
-class ResourceInfoModule(ResoureInfo):
-    introduct = models.CharField(max_length = 500)
-    out_link = models.URLField()
-    """
 class ResoureRecord:
     def __init__(self, file, line, name, code):
         self.file = file
@@ -76,7 +44,7 @@ class IntResouceRecord(ResoureRecord):
 
         defaults = {'line': self.line, 'name':self.name, 'value':self.value, 'hexval':hex(self.value)}
         try:
-            obj = ResoureInfoInt.objects.get(code=self.code)
+            obj = ResourceInfoInt.objects.get(code=self.code)
             is_same = True
             for key, value in defaults.items():
                 if (getattr(obj, key) != value):
@@ -90,13 +58,13 @@ class IntResouceRecord(ResoureRecord):
                 return assistant_errcode.DB_SAME
             obj.save()
             return assistant_errcode.DB_UPDATED
-        except ResoureInfoInt.DoesNotExist:
-            obj = ResoureInfoInt(file = file_obj[0], line = self.line, name = self.name, code = self.code, value = self.value, hexval = hex(self.value))
+        except ResourceInfoInt.DoesNotExist:
+            obj = ResourceInfoInt(file = file_obj[0], line = self.line, name = self.name, code = self.code, value = self.value, hexval = hex(self.value))
             obj.save()
             return assistant_errcode.DB_CREATED
 
     def to_module(self):
-        return ResoureInfoInt(file = self.file, line = self.line, name = self.name, code = self.code, value = self.value)
+        return ResourceInfoInt(file = self.file, line = self.line, name = self.name, code = self.code, value = self.value)
 
 class RudResouceRecord(IntResouceRecord):
     def __init__(self, file, line, name, code, value, domain):

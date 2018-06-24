@@ -7,7 +7,7 @@ from django.shortcuts import render
 from django.views.generic import View
 from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm
 from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField, FileInfo
-from base_assistant.models import ResoureInfoInt, ResourceInfoRud, ResourceInfoStr
+from base_assistant.models import ResourceInfoInt, ResourceInfoRud, ResourceInfoStr
 from base_assistant.models import WikiInfo, EVTCmdInfo
 from django.template import Context
 from django.template.loader import render_to_string
@@ -232,6 +232,11 @@ class TestHomePage(View):
         print("dddds")
         return render(request, "homepage.html")
 
+WIKI_TYPE =  0x01000000
+MML_TYPE = 0x02000000
+EVT_TYPE = 0x03000000
+INTRES_TYPE = 0x04000000
+
 QUERYTYPE_NONE = 0
 QUERYTYPE_ALL = 0xffffffff
 QUERYTYPE_CMD = 0x00000001
@@ -248,7 +253,16 @@ class StructResutlPointer(Structure):
     _fields_ =[('ResultCnts', c_uint),
                ('PageCnt', c_uint),
                ('Result1', c_uint),
-               ('Result2', c_uint)]
+               ('Result2', c_uint)
+               ('Result3', c_uint)
+               ('Result4', c_uint)
+               ('Result5', c_uint)
+               ('Result6', c_uint)
+               ('Result7', c_uint)
+               ('Result8', c_uint)
+               ('Result9', c_uint)
+               ('Result10', c_uint)
+               ]
 
 class SearchResultPage(View):
 
@@ -305,20 +319,22 @@ class SearchResultPage(View):
         print(QueryPage)
         print(query_class)
         QueryTxt = QueryTxt.strip()
+        print(IndexDllObj)
+        IndexDllObj.sum(1,2)
         IndexDllObj.QueryDocIdByTokens.restype = POINTER(StructResutlPointer)
-        #p = POINTER(StructResutlPointer)
+        print(IndexDllObj)
+        p = POINTER(StructResutlPointer)
         p = IndexDllObj.QueryDocIdByTokens(0, 3, 4, 8, 0,
-                      0, 0, 0, 4, 0,
-                       0, 0, 0 , 0, 0,
-                       0, 0, 0, 0, 0,
-                        1,3);
-
-        #print(hex(p))
+		                                    0, 0, 0, 4, 0,
+                                            0, 0, 0, 0, 0,
+                                            0, 0, 0, 0, 0,
+                                            1, 3,0x2000000);
 
         print(p.contents.ResultCnts)
         print(p.contents.PageCnt)
         print(p.contents.Result1)
         print(p.contents.Result2)
+
 
 
         RspParas = dict()
@@ -348,7 +364,7 @@ class SearchResultPage(View):
                 IntResource = int(QueryTxt)
             if re.match(HexPattern, QueryTxt):
                 IntResource = int(QueryTxt, 16)
-            ResourceObjsInt = ResoureInfoInt.objects.filter(value = IntResource)
+            ResourceObjsInt = ResourceInfoInt.objects.filter(value = IntResource)
             ResourceObjsRud = ResourceInfoRud.objects.filter(value=IntResource)
         if (QueryType & QUERYTYPE_SOLUTION):
             SolutionObjs = Solution.objects.filter(solutionname__icontains=QueryTxt)
@@ -390,7 +406,7 @@ class SearchResultPage(View):
                 solution_list.append(item)
             elif isinstance(item, FileInfo):
                 fileinfo_list.append(item)
-            elif isinstance(item, ResoureInfoInt):
+            elif isinstance(item, ResourceInfoInt):
                 resourceint_list.append(item)
             elif isinstance(item, ResourceInfoRud):
                 resourceint_list.append(item)
@@ -417,11 +433,13 @@ class SearchResultPage(View):
         RspParas['items'] = items
         RspParas['page_range'] = page_range
         RspParas['query'] = QueryTxt
-
+        RspParas['query_class'] = query_class
         return render(request, "search_result.html", RspParas)
 
     def post(self, request):
-        return render(request, "search_result.html")
+        RspParas = dict()
+        RspParas['query_class'] = 'cla_all'
+        return render(request, "search_result.html",RspParas)
 
 
 class TestTDSPage(View):
@@ -1182,7 +1200,7 @@ class TDS(View):
         if (CurQueryKey == 'file'):
             return FileInfo.objects.filter(pk=QueryObjId)
         if (CurQueryKey == 'intres'):
-            return ResoureInfoInt.objects.filter(pk=QueryObjId)
+            return ResourceInfoInt.objects.filter(pk=QueryObjId)
         if (CurQueryKey == 'rudres'):
             return ResourceInfoRud.objects.filter(pk=QueryObjId)
 

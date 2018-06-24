@@ -63,7 +63,7 @@ class FileInfoParser:
                     record.set_attr(name, "", line[pos:], responsefield)
                     return assistant_errcode.SUCCESS
 
-        pos = line.find(conf.FILE_PATH_CONF)
+        pos = line.find(conf.FILE_PATH_ROOT_DIR)
         if (pos > -1):
             record.set_attr(name, "", line[pos:], conf.UNKNOW_RESPONSIBILITY)
         else:
