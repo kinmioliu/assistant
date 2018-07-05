@@ -6,11 +6,11 @@ import os
 from util import conf
 #from assistant.settings import IndexDllObj
 from ctypes import *
-
+#0001 0010 0100 1000
 WIKI_TYPE =  0x01000000
 MML_TYPE = 0x02000000
-EVT_TYPE = 0x03000000
-INTRES_TYPE = 0x04000000
+EVT_TYPE = 0x04000000
+INTRES_TYPE = 0x08000000
 
 class PostingInfo:
     def __init__(self, tf):
@@ -47,6 +47,8 @@ class PostingList:
             new_str += str(self.postinginfo[postinfo].tf)
         return new_str
 
+
+
 class IndexBuilder:
     def __init__(self):
         self.created_records = 0
@@ -55,6 +57,7 @@ class IndexBuilder:
         stopwords_filepath = os.path.join(base_dir, 'static', conf.STOP_WORDS_LIST_PATH);
         self.stopwords = self.load_stop_words(stopwords_filepath)
         self.InvertedMap = dict()
+        self.DocTable = dict()
 
     def invertedmap_to_txt(self):
         inverted_file = open('inverted_file.txt', 'w', encoding='utf-8')
@@ -67,12 +70,25 @@ class IndexBuilder:
             print(new_str)
             inverted_file.write(new_str)
 
+        #TODO 需要按照文档的类别进行一次分类
+        all_doc_cont = len(self.DocTable)
+        new_str = 'const unsigned int MMLDocCounts = ' + str(all_doc_cont) + ' ;'
+        #inverted_file.write(new_str)
+
+        for doc in self.DocTable:
+            new_str = 'DocInfoTable[' + hex(doc) + '] = ' + str(self.DocTable[doc]) + ' ;\n'
+            inverted_file.write(new_str)
+
         inverted_file.close()
 
 
     def load_stop_words(self, filepath):
         stopwords = [line.strip() for line in open(filepath, 'r', encoding='utf-8').readlines()]
         return stopwords
+
+    def update_doc_len(self, docid, doclen):
+        self.DocTable[docid] = doclen
+        pass
 
     def update_or_create_indexinfo(self, token, docid):
         if token in self.stopwords:
@@ -111,8 +127,10 @@ class IndexBuilder:
             mml_mark = mmlcmdinfo.cmd_mark
             content = mml_name + ' ' + mml_func + ' ' + mml_mark
             words = jieba.cut_for_search(content)
+            docid = self.allocate_docid(MML_TYPE, mml_id)
+            self.update_doc_len(docid, len(content))
             for word in words:
-                self.update_or_create_indexinfo(word, self.allocate_docid(MML_TYPE, mml_id))
+                self.update_or_create_indexinfo(word, docid)
         DUMP("Build Index for MML CMD End")
 
         self.invertedmap_to_txt()

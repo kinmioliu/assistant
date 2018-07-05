@@ -1,5 +1,5 @@
 from django.contrib import admin
-from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag, OuterLink, FileInfo, ResourceInfoInt, ResourceInfoStr, ResourceInfoRud, WikiInfo, EVTCmdInfo
+from base_assistant.models import VersionInfo, Solution, ResponsibilityField, MMLCmdInfo, HashTag, OuterLink, FileInfo, ResourceInfoInt, ResourceInfoStr, ResourceInfoRud, WikiInfo, EVTCmdInfo, IndexInfo
 
 class VerinfoAdmin(admin.ModelAdmin):
     list_display = ('product', 'platform_ver', 'product_ver', 'verinfo')
@@ -38,6 +38,9 @@ class ResourceInfoIntAdmin(admin.ModelAdmin):
 class ResourceInfoRudAdmin(admin.ModelAdmin):
     list_display = ("file", "line", "name", "code", "cmd_mark", "value", "domain")
 
+class IndexInfoAdmin(admin.ModelAdmin):
+    list_display = ("word", )
+
 
 # Register your models here.
 admin.site.register(VersionInfo, VerinfoAdmin)
@@ -52,3 +55,4 @@ admin.site.register(ResourceInfoInt, ResourceInfoIntAdmin)
 admin.site.register(ResourceInfoRud, ResourceInfoRudAdmin)
 admin.site.register(WikiInfo, WikiInfoAdmin)
 admin.site.register(EVTCmdInfo, EVTAdmin)
+admin.site.register(IndexInfo, IndexInfoAdmin)

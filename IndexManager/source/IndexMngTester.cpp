@@ -1,8 +1,9 @@
 #include <iostream>
 #include "IndexMng.h"
 using namespace std;
-
+#ifdef _WIN64
 #pragma comment(lib,"IndexMng.lib")
+#endif
 
 int main()
 {
@@ -11,13 +12,16 @@ int main()
     testdll = sum(5, 6);
 	cout << testdll << endl;
 
-	StructResutlPointer p = QueryDocIdByTokens(0, 3, 4, 8, 0,
-		0, 0, 0, 4, 0,
+	StructResutlPointer p = QueryDocIdByTokens(1, 2, 0, 0, 0,
 		0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0,
-		1, 3,0x02000000);
+		0, 0, 0, 0, 0,
+		1, 10, 0x02000000);
 	cout << p->PageCnt << " " << p->ResultCnts << endl;
 
+#ifdef _WIN64
 	system("pause");
+#endif
+    
 	return 0;
 }

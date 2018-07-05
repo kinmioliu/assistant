@@ -35,8 +35,6 @@ public:
     }
 };
 
-
-
 typedef struct StructResut
 {
     unsigned int ResultCnts;

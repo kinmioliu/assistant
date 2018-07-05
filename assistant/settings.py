@@ -132,6 +132,6 @@ if (platform.system() == "Windows"):
     print("windows")
     print(IndexDllObj.sum(1,5))
 else:
-    IndexDllObj = cdll.LoadLibrary("libIndexMng.so")
+    IndexDllObj = cdll.LoadLibrary("IndexMng.so")
     print("linux")
     print(IndexDllObj.sum(1,5))

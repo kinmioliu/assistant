@@ -8,7 +8,7 @@ from django.views.generic import View
 from base_assistant.forms import VersionFileForm, VerinfoFileFormModel, SearchForm, PolicyFileForm, MMLFileForm
 from base_assistant.models import VersionInfo, Solution, MMLCmdInfo, HashTag, ResponsibilityField, FileInfo
 from base_assistant.models import ResourceInfoInt, ResourceInfoRud, ResourceInfoStr
-from base_assistant.models import WikiInfo, EVTCmdInfo
+from base_assistant.models import WikiInfo, EVTCmdInfo, IndexInfo
 from django.template import Context
 from django.template.loader import render_to_string
 from django.http import HttpResponse, JsonResponse
@@ -23,6 +23,7 @@ from util import assistant_errcode
 from ctypes import *
 from assistant.settings import IndexDllObj
 from ctypes import *
+import jieba
 
 class AboutTDS(View):
     def get(self, request):
@@ -231,11 +232,13 @@ class TestHomePage(View):
         print("post")
         print("dddds")
         return render(request, "homepage.html")
-
+ERR_TYPE = 0
+ALL_TYPE = 0xff000000
 WIKI_TYPE =  0x01000000
 MML_TYPE = 0x02000000
-EVT_TYPE = 0x03000000
-INTRES_TYPE = 0x04000000
+EVT_TYPE = 0x04000000
+INTRES_TYPE = 0x08000000
+FILE_TYPE = 0x10000000
 
 QUERYTYPE_NONE = 0
 QUERYTYPE_ALL = 0xffffffff
@@ -253,15 +256,15 @@ class StructResutlPointer(Structure):
     _fields_ =[('ResultCnts', c_uint),
                ('PageCnt', c_uint),
                ('Result1', c_uint),
-               ('Result2', c_uint)
-               ('Result3', c_uint)
-               ('Result4', c_uint)
-               ('Result5', c_uint)
-               ('Result6', c_uint)
-               ('Result7', c_uint)
-               ('Result8', c_uint)
-               ('Result9', c_uint)
-               ('Result10', c_uint)
+               ('Result2', c_uint),
+               ('Result3', c_uint),
+               ('Result4', c_uint),
+               ('Result5', c_uint),
+               ('Result6', c_uint),
+               ('Result7', c_uint),
+               ('Result8', c_uint),
+               ('Result9', c_uint),
+               ('Result10', c_uint),
                ]
 
 class SearchResultPage(View):
@@ -281,6 +284,22 @@ class SearchResultPage(View):
             return True
 
         return False
+
+    def ConvertQueryType(self, query_type):
+        if query_type == 'cla_all':
+            return ALL_TYPE
+        if query_type == 'cla_mml_evt':
+            return MML_TYPE | EVT_TYPE
+        if query_type == 'cla_wiki':
+            return WIKI_TYPE
+        if query_type == 'cla_file':
+            return FILE_TYPE
+        if query_type == 'cla_random':
+            return ALL_TYPE
+        if query_type == 'cla_res':
+            return INTRES_TYPE
+
+        return ERR_TYPE
 
     def CalculateQueryType(self, query_class,  QueryTxt):
         if query_class == 'mml_evt':
@@ -311,6 +330,24 @@ class SearchResultPage(View):
 
         return QueryType
 
+    def get_all_query_result(self, result_list, query_type):
+        all_result = []
+        for docid in result_list:
+            if docid & 0xff000000 == WIKI_TYPE:
+                objs = WikiInfo.objects.filter(pk = (docid & 0xffffff))
+                if objs.count() != 0:
+                    all_result.append(objs[0])
+            if docid & 0xff000000 == MML_TYPE:
+                objs = MMLCmdInfo.objects.filter(pk=(docid & 0xffffff))
+                if objs.count() != 0:
+                    all_result.append(objs[0])
+            if docid & 0xff000000 == EVT_TYPE:
+                objs = EVTCmdInfo.objects.filter(pk=(docid & 0xffffff))
+                if objs.count() != 0:
+                    all_result.append(objs[0])
+
+        return all_result
+
     def get(self, request):
         query_class = request.GET.get('cla')
         QueryTxt = request.GET.get('q')
@@ -319,22 +356,77 @@ class SearchResultPage(View):
         print(QueryPage)
         print(query_class)
         QueryTxt = QueryTxt.strip()
-        print(IndexDllObj)
-        IndexDllObj.sum(1,2)
+
+        query_type = self.ConvertQueryType(query_class)
+
+        if (not QueryPage.isdigit()) or (query_type == ERR_TYPE):
+            RspParas = dict()
+            RspParas['query_class'] = 'cla_all'
+            return render(request, "search_result.html", RspParas)
+
+
+
+        #step1 先将query次转换成token
+        words = jieba.cut(QueryTxt)
+        query_wordid_list = []
+        for word in words:
+            print(word)
+            indexs = IndexInfo.objects.filter(word = word)
+            if (indexs.count() != 0):
+                print(indexs[0].id)
+                query_wordid_list.append(indexs[0].id)
+
+        #再填充 20 个
+        for i in range(20):
+            query_wordid_list.append(0)
+
+        print("query word id list:")
+        for wordid in query_wordid_list:
+            print(wordid)
+
+        print("querytype:")
+        print(hex(query_type))
+
         IndexDllObj.QueryDocIdByTokens.restype = POINTER(StructResutlPointer)
-        print(IndexDllObj)
         p = POINTER(StructResutlPointer)
-        p = IndexDllObj.QueryDocIdByTokens(0, 3, 4, 8, 0,
-		                                    0, 0, 0, 4, 0,
-                                            0, 0, 0, 0, 0,
-                                            0, 0, 0, 0, 0,
-                                            1, 3,0x2000000);
+        p = IndexDllObj.QueryDocIdByTokens(query_wordid_list[0], query_wordid_list[1], query_wordid_list[2], query_wordid_list[3], query_wordid_list[4],
+                                           query_wordid_list[5], query_wordid_list[6], query_wordid_list[7],
+                                           query_wordid_list[8], query_wordid_list[9],
+                                           query_wordid_list[10], query_wordid_list[11], query_wordid_list[12],
+                                           query_wordid_list[13], query_wordid_list[14],
+                                           query_wordid_list[15], query_wordid_list[16], query_wordid_list[17],
+                                           query_wordid_list[18], query_wordid_list[19],
+                                           int(QueryPage), 10, query_type);
 
         print(p.contents.ResultCnts)
         print(p.contents.PageCnt)
         print(p.contents.Result1)
         print(p.contents.Result2)
 
+        #将查询结果转换成python 中的list
+        #总共查询出的结果
+        query_result_total_cnts = p.contents.ResultCnts
+        query_result_size = p.contents.PageCnt
+        query_result_list = []
+        query_result_list.append(p.contents.Result1)
+        query_result_list.append(p.contents.Result2)
+        query_result_list.append(p.contents.Result3)
+        query_result_list.append(p.contents.Result4)
+        query_result_list.append(p.contents.Result5)
+        query_result_list.append(p.contents.Result6)
+        query_result_list.append(p.contents.Result7)
+        query_result_list.append(p.contents.Result8)
+        query_result_list.append(p.contents.Result9)
+        query_result_list.append(p.contents.Result10)
+
+        print("#查询结果")
+        for q in query_result_list:
+            print(hex(q))
+        #显示查询结果
+        query_result = self.get_all_query_result(query_result_list, query_type)
+
+        for re in query_result:
+            print(re)
 
 
         RspParas = dict()
@@ -342,53 +434,6 @@ class SearchResultPage(View):
         QueryType = self.CalculateQueryType(query_class, QueryTxt)
 
         TmpObjs = []
-        CmdinfoObjs = iter(TmpObjs)
-        HashTagObjs = iter(TmpObjs)
-        FileinfoObjs = iter(TmpObjs)
-        ResourceObjsInt = iter(TmpObjs)
-        ResourceObjsRud = iter(TmpObjs)
-        SolutionObjs = iter(TmpObjs)
-        WikiInfoObjs = iter([])
-        EvtinfoObjs = iter([])
-        if (QueryType & QUERYTYPE_CMD):
-            CmdinfoObjs = MMLCmdInfo.objects.filter(cmdname__icontains=QueryTxt)
-        if (QueryType & QUERYTYPE_EVT):
-            EvtinfoObjs = EVTCmdInfo.objects.filter(cmdname__icontains=QueryTxt)
-        if (QueryType & QUERYTYPE_HASTAG):
-            HashTagObjs = HashTag.objects.filter(name__icontains=QueryTxt)
-        if (QueryType & QUERYTYPE_FILEINFO):
-            FileinfoObjs = FileInfo.objects.filter(filename__icontains=QueryTxt)
-        if (QueryType & QUERYTYPE_RESOURCE):
-            IntResource = 0
-            if QueryTxt.isdigit():
-                IntResource = int(QueryTxt)
-            if re.match(HexPattern, QueryTxt):
-                IntResource = int(QueryTxt, 16)
-            ResourceObjsInt = ResourceInfoInt.objects.filter(value = IntResource)
-            ResourceObjsRud = ResourceInfoRud.objects.filter(value=IntResource)
-        if (QueryType & QUERYTYPE_SOLUTION):
-            SolutionObjs = Solution.objects.filter(solutionname__icontains=QueryTxt)
-
-        if HashTagObjs.count() != 0:
-            WikiInfoObjs = HashTagObjs[0].wikiinfo_set.all()
-            EvtinfoObjs = HashTagObjs[0].evtcmdinfo_set.all()
-
-        #合并结果
-        for index, hashtag in enumerate(HashTagObjs):
-            WikiInfoObjs |= HashTagObjs[index].wikiinfo_set.all()
-            EvtinfoObjs |= HashTagObjs[index].evtcmdinfo_set.all()
-
-
-
-        combined_query_set = list(chain(CmdinfoObjs, SolutionObjs, FileinfoObjs, ResourceObjsInt, ResourceObjsRud, WikiInfoObjs, EvtinfoObjs))
-        searched_paginator = Paginator(combined_query_set, 10)
-
-        try:
-            items = searched_paginator.page(QueryPage)
-        except PageNotAnInteger:
-            items = searched_paginator.page(1)
-        except EmptyPage:
-            items = searched_paginator.page(searched_paginator.num_pages)
 
         #分离
         cmdinfo_list = list()
@@ -399,7 +444,7 @@ class SearchResultPage(View):
         wikiinfo_list = list()
         evtinfo_list = list()
 
-        for item in items:
+        for item in query_result:
             if isinstance(item, MMLCmdInfo):
                 cmdinfo_list.append(item)
             elif isinstance(item, Solution):
@@ -423,15 +468,15 @@ class SearchResultPage(View):
         RspParas['wikiinfo'] = wikiinfo_list
         RspParas['evtinfos'] = evtinfo_list
 
-        after_range_num = 2
-        before_range_num = 1
-        if items.number >= after_range_num:
-            page_range = searched_paginator.page_range[items.number - after_range_num:items.number + before_range_num]
-        else:
-            page_range = searched_paginator.page_range[0:items.number + before_range_num]
+        # after_range_num = 2
+        # before_range_num = 1
+        # if items.number >= after_range_num:
+        #     page_range = searched_paginator.page_range[items.number - after_range_num:items.number + before_range_num]
+        # else:
+        #     page_range = searched_paginator.page_range[0:items.number + before_range_num]
 
-        RspParas['items'] = items
-        RspParas['page_range'] = page_range
+        #RspParas['items'] = items
+        # RspParas['page_range'] = page_range
         RspParas['query'] = QueryTxt
         RspParas['query_class'] = query_class
         return render(request, "search_result.html", RspParas)
