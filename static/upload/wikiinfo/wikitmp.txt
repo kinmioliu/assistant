@@ -1,36 +1,959 @@
 
 
 WIKILINKBEGIN[
-http://xgag1.HUAWEI.COM
+http://xgag1.CSDN.COM
 ]WIKILINKENDWIKITITLEBEGIN[
-产品注册差异文档整理-传送软件开发社区（内源&软件能力中心）-3ms知识管理社区
-dga
-daga
+【C++】类和对象概念及定义
 ]WIKITITLEENDWIKICONTENTBEGIN[
-1这个是wikiend
-2这个是wikiend
+类和对象的定义
+
+面向对象面向对象是一种程序设计范型，同时也是程序开发的一种方法。
+对象是指类的实例，将对象作为程序的基本单元，将程序和数据封装其中，以提高软件的重用性、灵活性和扩展性。
+
+需要明确的是：C语言是面向过程语言，而C++不是纯粹的面向对象语言，而是基于面向对象的语言，因为C++包含C语言的部分。
+
+面向对象的三大特性：封装、继承、多态
+
+三种访问限定符：public（公有）、protected（保护）、private（私有）
+public成员可以从类外部直接访问，private可以被派生类的函数调用，private和protected成员都不能从类外访问
+每个限定符在类体中可使用多次，作用域是从限定符出现开始到下一限定符之前或类体结束前
+类体中如果没有定义限定符，编译器会默认为protected（结构体默认为public）
+类的访问限定符体现了面向对象的封装性。
+
+类的作用域分为局部域、全局域、类域、名字空间域四种
+每个类都有自己的作用域，类的成员（成员函数、成员变量）都在类的作用域中，成员函数内可任意访问成员变量和其他成员函数
+对象可以通过，直接访问公有成员，指向对象的指针通过 -> 也可以直接访问对象的公有成员
+在类体外定义成员，需要使用 :: 作用域解析符指明成员属于哪个类域
+
+类类型的声明
+
+class 类名
+{
+  private:
+    私有变量和成员函数;
+  public:
+    公有变量和函数;
+};
+
+例：
+
+声明对象的方法有三种：先声明类类型，再定义对象；在声明类型的同时定义对象；不出现类名，直接定义对象。
+
+成员函数的定义和声明
+
+在类内定义成员函数
+Class Student
+{
+private:
+     int age;
+     char sex;
+
+public:
+     void display()
+     {
+          cout << "Age is:" << age << endl;
+          cout << "Sex is:" << sex << endl;
+     }
+};
+在类外定义成员函数
+class Student
+{
+private:
+     int age;
+     char* sex;
+     char* name;
+public:
+     void display();
+};
+void Student::display()
+{
+     cout << age << "-" << sex << "-" << name << endl;
+}
+
+类内和类外定义有什么区别呢？
+类内定义：在函数调用的时候编译器会当做内联函数处理，在调用点将代码展开
+类外定义：函数调用时和普通函数一样进行栈帧的开辟和回退。
+
+具体的在后面内联函数会详细解释。
+
+类实例化对象
+
+类只是模型式的，限定了类的成员，定义出一个类，但是并没有分配出实际的内存空间来存储它
+一个类可以实例化出多个对象，实例化出的对象占用实际的物理空间存储类的成员变量
+类就像建筑设计图，只有设计，实例化出的对象才是建筑物，能实际存储数据，占用物理空间。
+
+类对象存储模型
+
+所以每个对象的大小为类中所有成员变量的大小之和，也遵循对齐原则。
+
+结构体内存对齐规则：
+第一个成员在与结构体变量偏移量为0的地址处
+其他成员变量要对齐到某个数字（对齐数）的整数倍的地址处
+结构体总大小为最大对齐数（每个成员变量除了第一个成员都有一个对齐数）的整数倍
+如果嵌套了结构体的情况，嵌套的结构体对齐到自己的最大对齐数的整数倍处，结构体的整体大小就是所有最大对齐数（含嵌套结构体的对齐数）的整数倍。
+
+class和C语言中的struct看起来很相似，但其实不同：
+struct Node是一个类型，在C语言中这样定义struct Node a；定义了一个结构体类型的a变量；在C++中，结构体定义对象可以写成Node a
+空的结构体在C语言中编译通不过，会报错；在C++中可以得到大小为1，在Linux环境下大小为0；空的类（C++）大小也为1
 ]WIKICONTENTENDWIKIABSTRACTBEGIN[
-Summary:框架模块mml和适配层注册产品过多，如RTN产品类型繁多……
+面向对象面向对象是一种程序设计范型，同时也是程序开发的一种方法。
+对象是指类的实例，将对象作为程序的基本单元，将程序和数据封装其中，以提高软件的重用性、灵活性和扩展性。
 ]WIKIABSTRACTENDWIKITAGBEGIN[
-MML,适配层
+类,对象
 ]WIKITAGENDWIKICLASSESBEGIN[
 GROUP[KERNEL]FEATURE[VOS]classes[VOS]
 ]WIKICLASSESEND
 
 
 WIKILINKBEGIN[
-http://xgag2.HUAWEI.COM
+http://xgag2.CSDN.COM
 ]WIKILINKENDWIKITITLEBEGIN[
-产品注册差异文档整理-传送软件开发社区（内源&软件能力中心）-3ms知识管理社区
-dga
-daga
+5、并发编程基础-多线程设计模式
 ]WIKITITLEENDWIKICONTENTBEGIN[
-1这个是wikiend
-2这个是wikiend
+并行设计模式属于设计优化的一部分，它是对一些常用的多线程结果的总结和抽象。与串行程序相比，并行程序的结构通常更为复杂。因此合理的使用并行模式在多线程开发中更具有意义。
+在这里主要介绍三种常用模式： 
+1. Future设计模式 
+2. Master-Worker 
+3. 生产者-消费者模型
+
+1、Future设计模式（异步操作原理）
+Future模式有点类似于商品订单。比如在网够时，当我们看到某一件商品时，就可以提交订单，当订单处理完成后，在家里等待商品送货上门即可。或者说更形象的我们发送Ajax请求的时候，页面是异步的进行后台处理，用户 
+无须一直等待请求的结果，可以继续浏览或者操作其他内容。
+流程如下：
+
+模拟示例代码：
+1）、启动Future客户端
+public class Main {
+
+    public static void main(String[] args) throws InterruptedException {
+
+        FutureClient fc = new FutureClient();
+
+        //异步去做操作
+        Data data = fc.request("请求参数");
+
+        //此处省略做其他事情的操作业务代码。意思就是上面的方法在执行的过程中完全不影响程序在做其他业务
+        System.out.println("请求发送成功!");
+        System.out.println("做其他的事情...");
+
+        //因为里面代码使用 wait() 和 notify() 实现，如果数据没有封装好，那么就会进行等待，如果已经封装好，那么数据就会直接返回。
+        String result = data.getRequest();
+        System.out.println(result);
+
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+2）、Future客户端
+public class FutureClient {
+
+    public Data request(final String queryStr) {
+        //1 我想要一个代理对象（Data接口的实现类）先返回给发送请求的客户端，告诉他请求已经接收到，可以做其他的事情
+        final FutureData futureData = new FutureData();
+        //2 启动一个新的线程，去加载真实的数据，传递给这个代理对象
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //3 这个新的线程可以去慢慢的加载真实对象，然后传递给代理对象。模拟查询数据库业务......
+                RealData realData = new RealData(queryStr);
+                futureData.setRealData(realData);
+            }
+        }).start();
+        return futureData;
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+3）、FutureData包装类
+/**
+ * @author lyl
+ */
+public class FutureData implements Data{
+
+    private RealData realData ;
+
+    private boolean isReady = false;
+
+    public synchronized void setRealData(RealData realData) {
+        //如果已经装载完毕了，就直接返回
+        if(isReady){
+            return;
+        }
+        //如果没装载，进行装载真实对象
+        this.realData = realData;
+        isReady = true;
+        //唤醒等待的程序，但是并没有把锁释放，notify方法是不释放锁的。
+        this.notify();
+    }
+
+    @Override
+    public synchronized String getRequest() {
+        //如果没装载好 程序就一直处于阻塞状态
+        while(!isReady){
+            try {
+                //等待唤醒
+                this.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        //装载好直接获取数据即可
+        return this.realData.getRequest();
+    }
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+4）、RealData 数据，模拟一个数据库操作
+public class RealData implements Data{
+
+    private String result ;
+
+    //这里模拟一个dao数据库操作
+    public RealData (String queryStr){
+        System.out.println("根据" + queryStr + "进行查询，这是一个很耗时的操作..");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("操作完毕，获取结果");
+        result = "查询结果";
+    }
+
+    @Override
+    public String getRequest() {
+        return result;
+    }
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+5）、业务接口
+public interface Data {
+    String getRequest();
+}
+1
+2
+3
+备注：项目实践使用不需要自己这样实现那么麻烦，可以直接实现并发包下的 java.util.concurrent.future 即可。但是Future异步操作原理必须得掌握。
+2、Master-Worker设计模式
+Master-Worker模式是常用的并行模式，主要作用就是就是对子任务进行归纳和总结。它的核心思想是系统由两类进程协作工作：Master进程和Worker进程。Master负责接收和分配任务，Worker负责处理子任务。
+当各个Worker子进程处理完后，会将结果返回给Master,由Master做归纳和总结。其好处是能将一个大任务分解成若干个小任务，并执行，从而提高系统的吞吐量。
+Master-Worker模式的工作模式如下图：
+
+示列代码如下：
+1）、启动线程
+import java.util.Random;
+
+public class Main {
+
+    public static void main(String[] args) {
+        //创建master,并且在master内部装置20个worker线程
+        Master master = new Master(new Worker(), 20);
+        Random r = new Random();
+        for(int i = 1; i <= 100; i++){
+            Task t = new Task();
+            t.setId(i);
+            t.setPrice(r.nextInt(1000));
+            master.submit(t);
+        }
+        master.execute();
+        long start = System.currentTimeMillis();
+
+        while(true){
+            if(master.isComplete()){
+                long end = System.currentTimeMillis() - start;
+                int priceResult = master.getResult();
+                System.out.println("最终结果：" + priceResult + ", 执行时间：" + end);
+                break;
+            }
+        }
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+2）、master对象
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class Master {
+
+    //1 有一个盛放任务的容器
+    private ConcurrentLinkedQueue<Task> workQueue = new ConcurrentLinkedQueue<Task>();
+
+    //2 需要有一个盛放worker的集合
+    private HashMap<String, Thread> workers = new HashMap<String, Thread>();
+
+    //3 需要有一个盛放每一个worker执行任务的结果集合
+    private ConcurrentHashMap<String, Object> resultMap = new ConcurrentHashMap<String, Object>();
+
+    //4 构造方法
+    public Master(Worker worker , int workerCount){
+        worker.setWorkQueue(this.workQueue);
+        worker.setResultMap(this.resultMap);
+
+        for(int i = 0; i < workerCount; i ++){
+            this.workers.put(Integer.toString(i), new Thread(worker));
+        }
+
+    }
+
+    //5 需要一个提交任务的方法
+    public void submit(Task task){
+        this.workQueue.add(task);
+    }
+
+    //6 需要有一个执行的方法，启动所有的worker方法去执行任务
+    public void execute(){
+        for(Map.Entry<String, Thread> me : workers.entrySet()){
+            me.getValue().start();
+        }
+    }
+
+    //7 判断是否运行结束的方法
+    public boolean isComplete() {
+        for(Map.Entry<String, Thread> me : workers.entrySet()){
+            if(me.getValue().getState() != Thread.State.TERMINATED){
+                return false;
+            }
+        }       
+        return true;
+    }
+
+    //8 计算结果方法(Master核心要做的事情)
+    public int getResult() {
+
+        //汇总逻辑.......
+        int priceResult = 0;
+        for(Map.Entry<String, Object> me : resultMap.entrySet()){
+            priceResult += (Integer)me.getValue();
+        }
+        return priceResult;
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+3）、Worker线程对象
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+public class Worker implements Runnable {
+
+    private ConcurrentLinkedQueue<Task> workQueue;
+    private ConcurrentHashMap<String, Object> resultMap;
+
+    public void setWorkQueue(ConcurrentLinkedQueue<Task> workQueue) {
+        this.workQueue = workQueue;
+    }
+
+    public void setResultMap(ConcurrentHashMap<String, Object> resultMap) {
+        this.resultMap = resultMap;
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            Task input = this.workQueue.poll();
+            if(input == null) break;
+            Object output = handle(input);
+            this.resultMap.put(Integer.toString(input.getId()), output);
+        }
+    }
+
+    private Object handle(Task input) {
+        Object output = null;
+        try {
+            //处理任务的耗时。。 比如说进行操作数据库。。。
+            Thread.sleep(500);
+            output = input.getPrice();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return output;
+    }
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+4）、Worker处理的任务对象
+public class Task {
+    private int id;
+    private int price ;
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+    public int getPrice() {
+        return price;
+    }
+    public void setPrice(int price) {
+        this.price = price;
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+这种设计模式经常，当一个比较大的任务需要统计汇总时。如果只有一个线程去操作效率会比较低，那么就需要把他分配给不同的子项目去执行，然后主线程在子线程都执行完毕后进行汇总。
+我在实践中，数据库做了分库，当时业务清单保存到了不同的8个库中。当时一个线程处理比较慢，后来就是开了8个线程对不同的库进行操作，然后主线程进行了汇总。
+3、生产者-消费者模型
+生产和消费者模式存在多种模式，一般分为
+1、一个生产者，对应一个消费者 
+2、一个生产者，对应多个消费者 
+3、多个生产者，对应多一个消费者 
+4、多个生产者，对应多个消费者 
+
+实际开发中要根据业务的吞吐量，结合并行容器的特性，控制生产速度和消费的速度，做出正确的选择。 
+同时我们也会选择使用Disruptor做高并发框架，这个框架很强大支持各种形状的生产消费模式，是一个环形结构的，又或者RabbitMQ、ActiveMQ、ZeroMQ、Kafka等MQ中间件去做生产和消费。
+1）、Main 线程入口
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+        //内存缓冲区
+        BlockingQueue<Data> queue = new LinkedBlockingQueue<Data>(10);
+
+        //生产者
+        Provider p1 = new Provider(queue);
+        Provider p2 = new Provider(queue);
+        Provider p3 = new Provider(queue);
+
+        //消费者
+        Consumer c1 = new Consumer(queue);
+        Consumer c2 = new Consumer(queue);
+        Consumer c3 = new Consumer(queue);
+        //创建线程池运行,这是一个缓存的线程池，可以创建无穷大的线程，没有任务的时候不创建线程。空闲线程存活时间为60s（默认值）
+
+        ExecutorService cachePool = Executors.newCachedThreadPool();
+        cachePool.execute(p1);
+        cachePool.execute(p2);
+        cachePool.execute(p3);
+        cachePool.execute(c1);
+        cachePool.execute(c2);
+        cachePool.execute(c3);
+
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        p1.stop();
+        p2.stop();
+        p3.stop();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }       
+//      cachePool.shutdown(); 
+//      cachePool.shutdownNow();
+
+
+    }
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+2）、生产者
+import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class Provider implements Runnable{
+
+    //共享缓存区
+    private BlockingQueue<Data> queue;
+    //多线程间是否启动变量，有强制从主内存中刷新的功能。即时返回线程的状态
+    private volatile boolean isRunning = true;
+    //id生成器
+    private static AtomicInteger count = new AtomicInteger();
+    //随机对象
+    private static Random r = new Random(); 
+
+    public Provider(BlockingQueue queue){
+        this.queue = queue;
+    }
+
+    @Override
+    public void run() {
+        while(isRunning){
+            try {
+                //随机休眠0 - 1000 毫秒 表示获取数据(产生数据的耗时) 
+                Thread.sleep(r.nextInt(1000));
+                //获取的数据进行累计...
+                int id = count.incrementAndGet();
+                //比如通过一个getData方法获取了
+                Data data = new Data(Integer.toString(id), "数据" + id);
+                System.out.println("当前线程:" + Thread.currentThread().getName() + ", 获取了数据，id为:" + id + ", 进行装载到公共缓冲区中...");
+                if(!this.queue.offer(data, 2, TimeUnit.SECONDS)){
+                    System.out.println("提交缓冲区数据失败....");
+                    //do something... 比如重新提交
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void stop(){
+        this.isRunning = false;
+    }
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+3）、消费者
+import java.util.Random;
+import java.util.concurrent.BlockingQueue;
+
+public class Consumer implements Runnable{
+
+    private BlockingQueue<Data> queue;
+
+    public Consumer(BlockingQueue queue){
+        this.queue = queue;
+    }
+
+    //随机对象
+    private static Random r = new Random(); 
+
+    @Override
+    public void run() {
+        while(true){
+            try {
+                //获取数据
+                Data data = this.queue.take();
+                //进行数据处理。休眠0 - 1000毫秒模拟耗时
+                Thread.sleep(r.nextInt(1000));
+                System.out.println("当前消费线程：" + Thread.currentThread().getName() + "， 消费成功，消费数据为id: " + data.getId());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+4）、数据类
+public final class Data {
+
+    private String id;
+    private String name;
+
+    public Data(String id, String name){
+        this.id = id;
+        this.name = name;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString(){
+        return "{id: " + id + ", name: " + name + "}";
+    }
+
+}
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
 ]WIKICONTENTENDWIKIABSTRACTBEGIN[
-Summary:框架模块mml和适配层注册产品过多，如RTN产品类型繁多……
+并行设计模式属于设计优化的一部分，它是对一些常用的多线程结果的总结和抽象。与串行程序相比，并行程序的结构通常更为复杂。因此合理的使用并行模式在多线程开发中更具有意义。
+在这里主要介绍三种常用模式： 
 ]WIKIABSTRACTENDWIKITAGBEGIN[
-MML,适配层
+1. Future设计模式,2. Master-Worker ,3. 生产者-消费者模型
 ]WIKITAGENDWIKICLASSESBEGIN[
 GROUP[KERNEL]FEATURE[VOS]classes[VOS]
 ]WIKICLASSESEND
@@ -38,36 +961,2544 @@ GROUP[KERNEL]FEATURE[VOS]classes[VOS]
 
 
 WIKILINKBEGIN[
-http://xgag3.HUAWEI.COM
+http://xgag3.CSDN.COM
 ]WIKILINKENDWIKITITLEBEGIN[
-产品注册差异文档整理-传送软件开发社区（内源&软件能力中心）-3ms知识管理社区
-dga
-daga
+C++类和对象的概念及定义
 ]WIKITITLEENDWIKICONTENTBEGIN[
-1这个是wikiend
-2这个是wikiend
+一. 什么是面向对象？
+1. 面向对象的定义
+        面向对象是软件开发的一种方法，它的主要思想就是：把整个世界看做是具有行为活动各种对象组成的。把数据以及对数据的操作方法放在一起，作为一个相互依存的整体——对象。对同类对象抽象其共性形成类。所以，对象也就可以看做是类的具体实例，我们就可以把类看做建房子的图纸，对象就可以看做建出来的房子。将对象作为程序的基本单元，将程序和数据封装在其中，以提高软件的重用性、灵活性、扩展性。
+
+        要注意的是：C++不是纯面向对象的语言，而是基于面向对象的语言。因为C++包含C的部分，C是面向过程的语言。
+2. 面向对象的三大特性
+        封装、继承、多态
+（1）封装性
+        把数据和方法封装到一起，其中方法一般用函数实现。数据表示类的属性，函数则表示类的行为。而类的访问限定符public、private、protected等限定了访问的权限，达到封装的目的。
+（2）继承性
+        通过继承，一个对象可以获得另一个对象的属性（包括函数），并且可以向其中加入一些自己的特征。通过继承得到的新类我们叫做“子类”或者“派生类”，被继承的类叫做“父类”或“基类”。
+（3）多态性
+        多态就是指一个类实例的相同方法在不同情形有不同表现形式。多态机制使具有不同内部结构的对象可以共享相同的外部接口。这意味着，虽然针对不同对象的具体操作不同，但通过一个公共的类，它们（那些操作）可以通过相同的方式予以调用。
+二. 类的声明及定义
+1. 关键字class/struct
+
+        类可以通过class/struct去声明。但是对于class声明的类，它的默认属性为私有的（private）;但对于struct声明的类，它的默认属性是公有的（public）。
+        编写struct测试代码如下：
+
+#include <iostream>
+
+using namespace std;
+
+ 
+
+struct Person1
+
+{
+
+    int b;
+
+    void Display()
+
+    {
+
+        cout<<b<<endl;
+
+    }
+
+};                                                                                                                                                    
+
+ 
+
+int main()
+
+{
+
+    Person1 p1;
+
+    p1.b = 6;
+
+    p1.Display();
+
+    return 0;
+
+}
+        运行结果如下：
+
+        编写class测试代码如下：
+
+#include <iostream>
+
+using namespace std;
+
+ 
+
+class Person
+
+{                                                                                                                                                     
+
+    int a;
+
+    void Display()
+
+    {
+
+        cout<<a<<endl;
+
+    }
+
+};
+
+ 
+
+int main()
+
+{
+
+    Person p;
+
+    p.a = 5;
+
+    p.Display();
+
+    return 0;
+
+}
+        运行结果如下：
+
+        可以看到未指明访问限定符时，class声明的类中都是默认私有的属性，在类外无法访问私有变量及私有函数。
+2. C++的数据类型
+
+3. 三种访问限定符
+
+（1）public的成员可以从类外直接访问，private和protected属性的成员不可以从类外直接访问；
+（2）每个访问限定符可以在类内出现多次，它的作用域是从该限定符开始到下一个限定符出现或到类体结束；
+（3）类体中若没有访问限定符，根据声明的关键字是class/struct决定默认属性是private/public；
+（4）类的访问限定符体现了面向对象的封装性。
+4. 作用域
+
+（1）每个类都定义了自己的作用域。类的成员（成员函数、成员变量）都在类的作用域中，成员函数可以任意访问成员变量和其他成员函数；
+（2）对象可以通过“.”直接访问类的公有成员，指向对象的指针也可以通过“->”直接访问对象的公有成员；
+（3）在类外定义成员，需要使用“::”作用域解析符指明成员属于哪个类域。
+5. 定义一个简单的类
+（1）类内定义成员变量
+
+#include <iostream>                                                                                                                                   
+
+using namespace std;
+
+ 
+
+class Person                                                                                                                                          
+
+{
+
+    public:
+
+        void Display()//成员函数
+
+        {
+
+            cout<<_name<<"-"<<_sex<<"-"<<_age<<endl;
+
+        }
+
+    public://成员变量
+
+        char* _name;
+
+        char* _sex;
+
+        int _age;
+
+};
+
+int main()
+
+{
+
+    //将类实例化为一个对象
+
+    Person p;
+
+    p._name = "YoungJack";
+
+    p._sex = "男";
+
+    p._age = 25;
+
+    p.Display();
+
+ 
+
+    //可以通过指针修改
+
+    Person* ptr = &p;
+
+    ptr->_name = "满舒克";
+
+    ptr->_sex = "男";                                                                                                                                 
+
+    ptr->_age = 28;
+
+    ptr->Display();
+
+ 
+
+    return 0;
+
+}
+（2）类外定义成员函数
+
+#include <iostream>                                                                                                                                   
+
+using namespace std;
+
+ 
+
+class Person
+
+{
+
+    public:
+
+        void Display();//成员函数
+
+    public://成员变量
+
+        char* _name;
+
+        char* _sex;
+
+        int _age;
+
+};
+
+void Person::Display()
+
+{
+
+    cout<<_name<<"-"<<_sex<<"-"<<_age<<endl;
+
+}
+
+ 
+
+int main()
+
+{
+
+    //将类实例化为一个对象
+
+    Person p;
+
+    p._name = "YoungJack";
+
+    p._sex = "男";
+
+    p._age = 25;
+
+    p.Display();
+
+ 
+
+    //可以通过指针修改
+
+    Person* ptr = &p;
+
+    ptr->_name = "满舒克";
+
+    ptr->_sex = "男";
+
+    ptr->_age = 28;                                                                                                                                   
+
+    ptr->Display();
+
+ 
+
+    return 0;
+
+}
+       两种方式的运行结果都一样，如下：
+
+三. 类的大小
+1. 类的大小
+        每个对象的大小为类中所有成员变量的大小之和并且遵循内存对齐原则。这里成员函数（不包括虚函数）并不计入对象的大小之中。因为，类的成员函数在被实例化的对象调用时，它是为所有对象公用，通过this指针和类的实例相关联，在编译时由编译器直接调用，与普通函数并没有什么区别，代码编译之后根本不在类的实例中，所以不占空间。
+2. 为什么要内存对齐？
+        具体原理如下图所示：
+
+3. 类的大小的计算
+        对于遵循内存对齐的原则，要遵循的规则在之前的结构体相关博客已经介绍过了，这里不再介绍，直接看代码：
+
+#include <iostream>
+
+using namespace std;
+
+ 
+
+class A
+
+{
+
+    char ch; 
+
+    double d;
+
+};
+
+ 
+
+class B
+
+{
+
+    char ch; 
+
+    A a;
+
+    char ch2;
+
+};
+
+ 
+
+int main()
+
+{
+
+    int size1 = sizeof(A);
+
+    int size2 = sizeof(B);
+
+    cout<<size1<<endl;
+
+    cout<<size2<<endl;
+
+    return 0;
+
+}                
+        运行结果为：
+
+（1）对于类A，分析过程如下：
+    1）首先ch占一个字节；
+    2）Linux下的默认对齐数为4，所以要空3字节，对齐到4的1倍处，此时共4字节；
+    3）然后d占8字节，刚好在4的整数倍处，此时共12字节；
+    4）12字节刚好是最大对齐数4的整数倍，所以类A的大小为12字节。
+
+（2）对于类B，分析过程如下：
+    1）首先ch占一个字节；
+    2）Linux下的默认对齐数为4，所以要空3字节，对齐到4的1倍处，此时共4字节；
+    3）然后类A的对象大小为12字节，刚好是4的整数倍，此时共16字节；
+    4）然后ch2占1字节，再补3字节的空，使其对齐在4的整数倍处，此时共20字节；
+    4）20字节刚好是最大对齐数4的整数倍，所以类B的大小为20字节。
+4. 空类的大小
+        空类的大小为1字节，验证如下：
+
+#include <iostream>
+
+using namespace std;
+
+ 
+
+class A
+
+{
+
+ 
+
+};                                                                                                                                                    
+
+ 
+
+int main()
+
+{
+
+    cout<<sizeof(A)<<endl;
+
+    return 0;       
+
+}        
+
+        可能大家会有疑问，空类的大小不应该是0字节吗？怎么会是1字节呢？它其实是起到一个“占位”的作用，用来表示该类存在过
 ]WIKICONTENTENDWIKIABSTRACTBEGIN[
-Summary:框架模块mml和适配层注册产品过多，如RTN产品类型繁多……
+一. 什么是面向对象？
+1. 面向对象的定义
+        面向对象是软件开发的一种方法，它的主要思想就是：把整个世界看做是具有行为活动各种对象组成的。把数据以及对数据的操作方法放在一起，作为一个相互依存的整体——对象。对同类对象抽象其共性形成类。所以，对象也就可以看做是类的具体实例，我们就可以把类看做建房子的图纸，对象就可以看做建出来的房子。将对象作为程序的基本单元，将程序和数据封装在其中，以提高软件的重用性、灵活性、扩展性。
+
+        要注意的是：C++不是纯面向对象的语言，而是基于面向对象的语言。因为C++包含C的部分，C是面向过程的语言。
 ]WIKIABSTRACTENDWIKITAGBEGIN[
-MML,适配层
+        封装,继承,多态
 ]WIKITAGENDWIKICLASSESBEGIN[
 GROUP[KERNEL]FEATURE[VOS]classes[VOS]
 ]WIKICLASSESEND
 
 
 WIKILINKBEGIN[
-http://xgag4.HUAWEI.COM
+http://xgag4.CSDN.COM
 ]WIKILINKENDWIKITITLEBEGIN[
-产品注册差异文档整理-传送软件开发社区（内源&软件能力中心）-3ms知识管理社区
-dga
-daga
+C++与C#的数据传递与类型转换
 ]WIKITITLEENDWIKICONTENTBEGIN[
-1这个是wikiend
-2这个是wikiend
+一、数据传递方法
+1．基本数据类型的传递
+　　函数参数和返回值可以是C#和C++的各种基本数据类型，如int, float, double, char(注意不是char*)等。
+　　示例：
+　　C#代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+ 
+class Program
+{
+    [DllImport(@"E:\Projects\testdll\debug\testdll.dll")]
+    publicstatic externint testfunc(inta,float b,double c,chard);
+ 
+    staticvoid Main(string[] args)
+    {
+        inta = 1;
+        floatb = 12;
+        doublec = 12.34;
+        chard = 'A';
+        testfunc(a,b,c,d);
+        Console.ReadKey();
+    }
+}
+　　C++代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+<pre class="brush:cpp">#include <iostream>
+usingnamespace std;
+ 
+extern"C"
+{
+ _declspec(dllexport)int __stdcall testfunc(inta,float b,double c,chard)
+ {
+  cout<<a<<", "<<b<<", "<<c<<", "<<d<<endl;
+  return0;
+ }
+}
+</pre>
+2．向DLL传入字符串
+　　C#中使用string定义字符串，将字符串对象名传给DLL。
+　　注意：在DLL中更改字符串的值，C#中的值也会改变。
+　　缺点：无法改变字符串的长度，建议使用第3种方法。
+　　C#代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+ 
+class Program
+{
+    [DllImport(@"E:\Projects\testdll\debug\testdll.dll")]
+    publicstatic externint testfunc(stringa);
+ 
+    staticvoid Main(string[] args)
+    {
+        stringa="Hello World!";
+        testfunc(a);
+        Console.ReadKey();
+    }
+}
+　　C++代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+#include <iostream>
+usingnamespace std;
+ 
+extern"C"
+{
+ _declspec(dllexport)int __stdcall testfunc(char* astr)
+ {
+  cout<<astr<<endl;
+  *astr='A';//更改字符串的数据
+  cout<<astr<<endl;
+  return0;
+ }
+}
+3．DLL传出字符串
+　　C#中使用StringBuilder对象创建变长数组，并设置StringBuilder的Capacity为数组最大长度。将此对象名传递给DLL，使用char*接收。
+　　C#代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+ 
+class Program
+{
+    [DllImport(@"E:\Projects\testdll\debug\testdll.dll")]
+    publicstatic externint testfunc(StringBuilder abuf);
+ 
+    staticvoid Main(string[] args)
+    {
+        StringBuilder abuf=newStringBuilder();
+        abuf.Capacity = 100;//设置字符串最大长度
+        testfunc(abuf);
+        Console.ReadKey();
+    }
+     
+}
+　　C++代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+#include <iostream>
+usingnamespace std;
+ 
+extern"C"
+{
+ _declspec(dllexport)int __stdcall testfunc(char* astr)
+ {
+  *astr++='a';
+  *astr++='b';//C#中abuf随astr改变
+  *astr='\0';
+ 
+  return0;
+ }
+}
+4．DLL传递结构体（需要在C#中重新定义，不推荐使用）
+　　C#中使用StructLayout重新定义需要使用的结构体。
+　　注意：在DLL改变结构体成员的值，C#中随之改变。
+　　C#代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+ 
+[StructLayout(LayoutKind.Sequential)]
+public struct Point
+{
+    publicdouble x;
+    publicdouble y;
+}
+ 
+classProgram
+{
+    [DllImport(@"E:\Projects\testdll\debug\testdll.dll")]
+    publicstatic externint testfunc(Point p);
+ 
+    staticvoid Main(string[] args)
+    {
+        Point p;
+        p.x = 12.34;
+        p.y = 43.21;
+        testfunc(p);
+        Console.ReadKey();
+    }   
+}
+C++代码：
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+#include <iostream>
+usingnamespace std;
+ 
+structPoint
+{
+    doublex;
+    doubley;
+};
+ 
+extern"C"
+{
+ _declspec(dllexport)int __stdcall testfunc(Point p)
+ {
+  cout<<p.x<<", "<<p.y<<endl;
+  return0;
+ }
+}
+5．从C++传出字符串
+
+C++代码：
+
+
+#ifndef RGB_IHS_C_ADAPTER
+
+#define RGB_IHS_C_ADAPTER
+
+
+
+typedef char * (__stdcall* StringHelperCallback)(const char *);
+
+static StringHelperCallback g_csharp_string_callback = NULL;
+
+
+
+extern "C" __declspec(dllexport) void RegisterStringCallback(StringHelperCallback callback) {
+
+g_csharp_string_callback = callback;
+
+}
+
+
+
+extern "C" __declspec(dllexport) int ExcuteAlgo(const TCHAR* m_strRealpath,
+
+const TCHAR* m_strClassPath, 
+
+const char* m_tsReal ,
+
+const char* m_tsclass,
+
+const TCHAR* m_tsRealClassName,
+
+const char*m_tsClassName,
+
+char** fileInfo,/*数据返回,指向C#用委托开辟的内存*/
+
+SysAlgo::stAlgoErr* err,
+
+pProgressFunc pProg,void* pParams);
+
+
+
+#endif
+
+C#代码：
+
+
+
+using System;
+
+using System.Collections.Generic;
+
+using System.Text;
+
+using System.Runtime.InteropServices;
+
+
+
+namespace AccuracyAnalysis
+
+{
+
+public delegate int ProgressCallback(double dbPos, string pszMessage, IntPtr pArgs);
+
+public struct stAtomDataInfo
+
+{
+
+public string m_strRealpath;
+
+public string m_strClassPath;
+
+public string m_tsReal; 
+
+public string m_tsclass; 
+
+public string m_tsRealClassName;
+
+public string m_tsClassName;
+
+public string fileInfo;
+
+public stAlgoErr err;
+
+public ProgressCallback pProg;
+
+public IntPtr pParams;
+
+
+
+} 
+
+public struct stAlgoErr
+
+{
+
+private int m_ErrCode;
+
+private string m_ErrMsg;
+
+
+
+public stAlgoErr(int errCode, string errMsg)
+
+{
+
+m_ErrCode = errCode;
+
+m_ErrMsg = errMsg;
+
+}
+
+
+
+public int GetErrCode()
+
+{
+
+return m_ErrCode;
+
+}
+
+
+
+public string GetErrMsg()
+
+{
+
+return m_ErrMsg;
+
+}
+
+
+
+public void SetErrCodeAndMsg(int errCode, string errMsg)
+
+{
+
+m_ErrCode = errCode;
+
+m_ErrMsg = errMsg;
+
+}
+
+}
+
+class Algo
+
+{
+
+
+
+#region 本段代码可放在其他位置，但保证系统启动后能初始化
+
+
+
+static protected StringHelper swigStringHelper = new StringHelper();
+
+protected class StringHelper
+
+{
+
+public delegate string StringDelegate(string message);
+
+static StringDelegate stringDelegate = new StringDelegate(CreateString);
+
+
+
+[DllImport("ImgClassPostPA.dll", EntryPoint = "RegisterStringCallback", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+
+public static extern void RegisterStringCallback(StringDelegate stringDelegate);
+
+
+
+static string CreateString(string cString)
+
+{
+
+return cString;
+
+}
+
+
+
+static StringHelper()
+
+{
+
+RegisterStringCallback(stringDelegate);
+
+}
+
+}
+
+
+
+#endregion
+
+
+
+#region 算法调用
+
+
+
+[DllImport("ImgClassPostPA.dll", EntryPoint = "ExcuteAlgo", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+
+public static extern int ExcuteAlgo(string m_strRealpath, string m_strClassPath, string m_tsReal, string m_tsclass,
+
+string m_tsRealClassName, string m_tsClassName, ref string fileInfo, ref stAlgoErr err, ProgressCallback pProg, IntPtr pParams);
+
+
+
+
+
+
+
+#endregion
+
+}
+
+}
+
+
+
+
+二、C++与C#的基本类型对照：
+
+
+
+//c++:HANDLE(void   *)       ----   c#:System.IntPtr  
+
+//c++:Byte(unsigned   char)   ----    c#:System.Byte 
+        
+//c++:SHORT(short)           ----    c#:System.Int16   
+      
+//c++:WORD(unsigned short) ---  c#:System.UInt16 
+       
+//c++:INT(int)                 ----    c#:System.Int16     
+
+//c++:INT(int)                  ----    c#:System.Int32    
+
+//c++:UINT(unsigned int)  ----    c#:System.UInt16  
+      
+//c++:UINT(unsigned int) ----    c#:System.UInt32   
+     
+//c++:LONG(long)            ----    c#:System.Int32    
+     
+//c++:ULONG(unsigned long) --   c#:System.UInt32 
+        
+//c++:DWORD(unsigned long) --  c#:System.UInt32 
+        
+//c++:DECIMAL         ----    c#:System.Decimal        
+ 
+//c++:BOOL(long)        ----    c#:System.Boolean     
+    
+//c++:CHAR(char)       ----    c#:System.Char  
+       
+//c++:LPSTR(char *)      ----    c#:System.String      
+   
+//c++:LPWSTR(wchar_t *)  ----    c#:System.String  
+       
+//c++:LPCSTR(const char *)  ---   c#:System.String  
+       
+//c++:LPCWSTR(const wchar_t *) ---  c#:System.String     
+
+//c++:PCAHR(char *)   ----   c#:System.String     
+    
+//c++:BSTR       ----    c#:System.String       
+  
+//c++:FLOAT(float)      ----    c#:System.Single        
+ 
+//c++:DOUBLE(double)    ----    c#:System.Double    
+     
+//c++:VARIANT           ----    c#:System.Object        
+ 
+//c++:PBYTE(byte   *)   ----    c#:System.Byte[]       
+  
+//c++:BSTR      ----    c#:StringBuilder    
+    
+//c++:LPCTSTR   ----    c#:StringBuilder  
+      
+//c++:LPCTSTR   ----    c#:string        
+
+//c++:LPTSTR    ----    c#:[MarshalAs(UnmanagedType.LPTStr)] string  
+       
+//c++:LPTSTR     ----    c#:StringBuilder 
+     
+//c++:LPCWSTR   ----    c#:IntPtr        
+
+//c++:BOOL      ----    c#:bool           
+
+//c++:HMODULE   ----    c#:IntPtr        
+    
+//c++:HINSTANCE ----    c#:IntPtr        
+ 
+//c++:结构体    ----    c#:public struct 结构体{}; 
+        
+//c++:结构体 **变量名   ----    c#:out 变量名   
+
+//C#中提前申明一个结构体实例化后的变量名      
+ 
+//c++:结构体 &变量名    ----    c#:ref 结构体 变量名      
+
+           
+//c++:WORD      ----    c#:ushort        
+
+//c++:DWORD     ----    c#:uint        
+
+//c++:DWORD     ----    c#:int        
+
+//c++:UCHAR     ----    c#:int        
+
+//c++:UCHAR     ----    c#:byte        
+
+//c++:UCHAR*    ----    c#:string      
+  
+//c++:UCHAR*    ----    c#:IntPtr        
+
+//c++:GUID      ----    c#:Guid        
+
+//c++:Handle    ----    c#:IntPtr        
+
+//c++:HWND      ----    c#:IntPtr        
+
+//c++:DWORD     ----    c#:int        
+
+//c++:COLORREF  ----    c#:uint       
+ 
+//c++:unsigned char     ----    c#:byte      
+  
+//c++:unsigned char *   ----    c#:ref byte       
+ 
+//c++:unsigned char *   ----    c#:[MarshalAs(UnmanagedType.LPArray)] byte[]      
+  
+//c++:unsigned char *   ----    c#:[MarshalAs(UnmanagedType.LPArray)] Intptr       
+
+//c++:unsigned char &   ----    c#:ref byte  
+      
+//c++:unsigned char 变量名      ----    c#:byte 变量名  
+      
+//c++:unsigned short 变量名    ----   c#:ushort 变量名 
+       
+//c++:unsigned int 变量名       ----    c#:uint 变量名    
+    
+//c++:unsigned long 变量名     ----    c#:ulong 变量名 
+       
+//c++:char 变量名       ----    c#:byte 变量名 
+  
+//c++中一个字符用一个字节表示,c#中一个字符用两个字节
+
+表示        
+
+//c++:char 数组名[数组大小]     ----    c#:MarshalAs(UnmanagedType.ByValTStr, SizeConst 
+
+= 数组大小)]        
+   
+//c++:char *            ----    c#:string       
+ 
+//c++:char *            ----    c#:StringBuilder
+    
+//c++:char *变量名      ----    c#:ref string 变量名       
+ 
+//c++:char *输入变量名  ----    c#:string 输入变量名    
+    
+//c++:char *输出变量名  ----   c#:[MarshalAs(UnmanagedType.LPStr)] 
+
+StringBuilder 输出变量名      
+  
+//c++:char **           ----    c#:string     
+   
+//c++:char **变量名     ----    c#:ref string 变量名      
+  
+//c++:const char *      ----    c#:string   
+     
+//c++:char[]            ----    c#:string     
+   
+//c++:char 变量名[数组大小]     ----    c#:[MarshalAs
+
+(UnmanagedType.ByValTStr,SizeConst=数组大小)] 
+
+public string 变量名;     
+
+//c++:struct 结构体名 *变量名   ----    c#:ref 结构体名 
+
+变量名        
+
+//c++:委托 变量名   ----    c#:委托 变量名    
+    
+//c++:int       ----    c#:int        
+
+//c++:int       ----    c#:ref int        
+
+//c++:int &     ----    c#:ref int      
+  
+//c++:int *     ----    c#:ref int      
+
+//C#中调用前需定义int 变量名 = 0;      
+  
+//c++:*int      ----    c#:IntPtr        
+
+//c++:int32 PIPTR *     ----    c#:int32[]   
+     
+//c++:float PIPTR *     ----    c#:float[]       
+         
+//c++:double** 数组名          ----    c#:ref double 数
+
+组名        
+
+//c++:double*[] 数组名          ----    c#:ref double 数
+
+组名        
+
+//c++:long          ----    c#:int        
+
+//c++:ulong         ----    c#:int           
+     
+//c++:UINT8 *       ----    c#:ref byte      
+ 
+//C#中调用前需定义byte 变量名 = new byte();             
+
+//c++:handle    ----    c#:IntPtr        
+
+//c++:hwnd      ----    c#:IntPtr         
+               
+//c++:void *    ----    c#:IntPtr          
+      
+//c++:void * user_obj_param    ----    c#:IntPtr user_obj_param        
+
+//c++:void * 对象名称    ----    c#:([MarshalAs(UnmanagedType.AsAny)]Object 对象
+
+名称                
+
+//c++:char,INT8,SBYTE,CHAR  --  c#:System.SByte  
+        
+//c++:short, short int, INT16, SHORT     ----    c#:System.Int16        
+  
+//c++:int, long, long int,INT32, LONG32, BOOL , INT        ----    c#:System.Int32       
+   
+//c++:__int64,INT64,LONGLONG     --  c#:System.Int64          
+
+//c++:unsigned char, UINT8, UCHAR , BYTE      ----    c#:System.Byte          
+
+//c++:unsigned short, UINT16, USHORT, WORD, 
+
+ATOM, WCHAR , __wchar_t  ----  c#:System.UInt16  
+
+        
+//c++:unsigned, unsigned int, UINT32, ULONG32, 
+
+DWORD32, ULONG, DWORD, UINT     
+ ----    c#:System.UInt32          
+
+//c++:unsigned __int64, UINT64, DWORDLONG, 
+
+ULONGLONG                            
+----    c#:System.UInt64          
+
+//c++:float,FLOAT    --   c#:System.Single          
+
+//c++:double, long double, DOUBLE     ----    c#:System.Double          
+
+//Win32 Types        ----  CLR Type       
+           
+//Struct需要在C#里重新定义一个Struct    
+    
+//CallBack回调函数需要封装在一个委托里，delegate 
+
+static extern int FunCallBack(string str);       
+ 
+//unsigned char** ppImage替换成IntPtr ppImage       
+ 
+//int& nWidth替换成ref int nWidth       
+ 
+//int*, int&, 则都可用 ref int 对应      
+  
+//双针指类型参数，可以用 ref IntPtr       
+ 
+//函数指针使用c++: typedef double (*fun_type1)
+
+(double); 对应 c#:public delegate double  fun_type1
+
+(double);        
+
+//char* 的操作c++: char*; 对应 c#:StringBuilder;      
+  
+//c#中使用指针:在需要使用指针的地方 加 unsafe        
+
+//unsigned   char对应public   byte    
+版权声明：本文为博主原创文章，未经博
 ]WIKICONTENTENDWIKIABSTRACTBEGIN[
-Summary:框架模块mml和适配层注册产品过多，如RTN产品类型繁多……
+1．基本数据类型的传递
+　　函数参数和返回值可以是C#和C++的各种基本数据类型，如int, float, double, char(注意不是char*)等。
+　　示例：
+　　C#代码：
 ]WIKIABSTRACTENDWIKITAGBEGIN[
-MML,适配层
+C++,C#,数据传递,类型转换
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+
+WIKILINKBEGIN[
+http://xgag9.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+linux线程栈与进程栈
+]WIKITITLEENDWIKICONTENTBEGIN[
+1 线程使用方法
+pthread_create用于创建一个线程，pthread_join用于等待线程执行完毕，简单应用如下：
+#include<stdio.h>
+#include<pthread.h>
+#include<stdlib.h>
+
+void tid_1(){
+    printf("I am tid 1!\n");
+    sleep(1);
+    return;
+}
+
+void tid_2(){
+    printf("I am tid 2!\n");
+    sleep(2);
+    return;
+}
+
+int main(int argc, char *argv[]){
+    pthread_t tid1, tid2;
+    if(pthread_create(&tid1, NULL, (void *)&tid_1, NULL) || pthread_create(&tid2, NULL, (void *)&tid_2, NULL)){
+        printf("pthread_create error!\n");
+        exit(-1);
+    }
+    pthread_join(tid1, NULL);
+    pthread_join(tid2, NULL);
+    return 0;
+}
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+编译执行后的结果如下： 
+ 
+那么问题出现了，在操作系统中，线程是执行的最小单位，进程是资源分配的最小单位，而栈资源是内存资源的一种，按理说线程应该共享进程的栈资源，但是如果线程共享进程的栈资源的话，那就不可能出现多个线程可以并行运行的状态，因为栈是用来存储函数中参数、局部变量、返回地址等的地方，这种内存资源不可能被并行程序共享，所以，很明显，线程不共享进程的栈资源，线程栈和进程栈是分开的，而且每个线程都拥有一个独立的栈空间，那么线程栈和进程栈之间的关系又是什么呢？
+2 用户空间的线程栈资源的管理
+2.1 其实，pthread_*函数是glibc库对于栈的一种实现的封装，主要的函数和参数如下：
+Linux下的多线程遵从POSIX线程接口，简称pthread，在pthread库中提供。 
+pthread_create（）：创建一个线程 
+pthread_exit（）：退出一个线程 
+pthread_jion（）：阻塞当前线程，直到另一个线程执行结束 
+pthread_attr_init（）：设置线程是否脱离属性 
+pthread_attr_setstack(&tattr,stack,16*1024*1024); //分配线程的栈空间 
+pthread_kill（）：给线程发送kill信号 
+int pthread_cancel(pthread_t thread)；//发送终止信号给thread线程,如果成功则返回0 
+int pthread_setcancelstate(int state, int *oldstate)；//设置本线程对Cancel信号的反应 
+int pthread_setcanceltype(int type, int *oldtype)；//设置本线程取消动作的执行时机 
+void pthread_testcancel(void)；//检查本线程是否处于Canceld状态，如果是，则进行取消动作，否则直接返回 
+同步函数： 
+pthread_mutex_lock（）：互斥加锁 
+pthread_mutex_unlock（）：互斥锁解锁 
+pthread_cond_init（）：初始化条件变量 
+pthread_cond_signal（）：发送信号唤醒进程 
+pthread_cond_wait（）：等待条件变量的特殊事件发生 
+（备注：参考自https://www.cnblogs.com/minihaohao/p/5188906.html 和 https://blog.csdn.net/liujiabin076/article/details/53456962 ）
+2.2 glibc对于pthread_create函数的实现
+源码文件./nptl/pthread_create.c中，__pthread_create_2_1 (newthread, attr, start_routine, arg)便是对pthread_create函数的定义位置。 
+传入的参数如下： 
+pthread_t *newthread; 
+const pthread_attr_t *attr; 
+void (*start_routine) (void ); 
+void *arg;
+pthread_t的定义为typedef unsigned long int pthread_t，是线程的标识id 
+pthread_attr_t的定义如下
+union pthread_attr_t 
+{ 
+char __size[__SIZEOF_PTHREAD_ATTR_T]; 
+long int __align; 
+};
+实质上是一个字符串，但是其对应的真实结构体的样子如下所示：
+struct pthread_attr 
+{ 
+/* 调度参数和优先级别设置. */ 
+struct sched_param schedparam; 
+int schedpolicy; 
+/* 不同的标识，比如 detachstate, scope等. */ 
+int flags; 
+/* Size of guard area. */ 
+size_t guardsize; 
+/* 栈资源的地址和大小 */ 
+void *stackaddr; 
+size_t stacksize; 
+/* Affinity map. */ 
+cpu_set_t *cpuset; 
+size_t cpusetsize; 
+};
+pthread_create对于线程栈资源的操作过程解析如下：
+2.2.1 pthread_create使用函数nt err = ALLOCATE_STACK (iattr, &pd)给线程创建栈资源，ALLOCATE_STACK的宏定义为：
+#define ALLOCATE_STACK(attr, pd) allocate_stack (attr, pd, &stackaddr) 
+然后，我们进入函数allocate_stack继续分析，首先设置栈资源的大小（如果指定了就使用传进来的参数，否则使用默认值）：
+if (attr->stacksize != 0) 
+size = attr->stacksize; 
+else 
+{ 
+lll_lock (__default_pthread_attr_lock, LLL_PRIVATE); 
+size = __default_pthread_attr.stacksize; 
+lll_unlock (__default_pthread_attr_lock, LLL_PRIVATE); 
+}
+接下来，如果用户提供了栈资源的内存空间，则对该空间资源进行大小、有效性检查、清空操作等；然而，如果用户没有指定栈资源空间，则为该线程分配一些匿名内存或者从cache中获取内存，设置内存标识prot为PROT_READ | PROT_WRITE，调整栈大小size为页对齐或者cache大小对齐，然后调用函数mmap分配内存如下：
+mem = mmap (NULL, size, prot, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+接下来对获取的内存进行相应地检查，最后赋值给相应变量：pd->stackblock = mem; pd->stackblock_size = size。
+2.2.2 根据设置的相关标识依次调用系统调用sys_sched_getscheduler、sys_sched_getparam、sys_sched_get_priority_min、sys_sched_get_priority_max，最后真正的执行线程创建和调度：retval = create_thread (pd, iattr, STACK_VARIABLES_ARGS); create_thread()函数的执行流程如下：
+create_thread (struct pthread *pd, const struct pthread_attr *attr, STACK_VARIABLES_PARMS) 
+设置clone标识位：
+int clone_flags = (CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGNAL 
+| CLONE_SETTLS | CLONE_PARENT_SETTID 
+| CLONE_CHILD_CLEARTID | CLONE_SYSVSEM 
+| 0);
+然后调用sys_clone系统调用创建线程：
+int res = do_clone (pd, attr, clone_flags, start_thread, STACK_VARIABLES_ARGS, stopped);
+3 内核中线程的实现
+linux内核中没有明确的栈的概念，不过Linux内核中的进程支持灵活的创建模式，于是可以利用轻量级进程、线程组资源、各种其他资源的共享来用进程模拟线程，而且可以借助于进程的调度算法来实现线程的调度问题。 
+具体的内核中关于线程的创建，具体请根据上述clone_flag来阅读sys_clone的代码实现，实际上，sys_clone的代码实现主要集中在函数do_fork()的实现中。
+4 总结
+综上述所，一个进程的所有线程所使用的栈都是进程原本的资源，其资源主要有两种创建方法：用户显式创建、glibc默认创建，根据这两种创建方法可以得知：线程使用的栈资源主要来自于进程的三个内存区域—栈区（注意，使用进程栈分配线程栈资源导致不可预料的问题，一般都是大小问题，不过因为栈是一种限定在函数内部的临时资源，函数退出栈资源便会消失，于是也可能出现其他不可预料的状况。）、堆区、mmap匿名映射区。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+1 线程使用方法
+pthread_create用于创建一个线程，pthread_join用于等待线程执行完毕，简单应用如下：
+#include<stdio.h>
+#include<pthread.h>
+#include<stdlib.h>
+]WIKIABSTRACTENDWIKITAGBEGIN[
+linux,线程栈,进程栈
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag10.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+UML类图 - 关系介绍 - 程序员壁咚
+]WIKITITLEENDWIKICONTENTBEGIN[
+转载地址：UML类图几种关系的总结
+U在UML类图中，常见的有以下几种关系: 泛化（Generalization）, 实现（Realization），关联（Association)，聚合（Aggregation），组合(Composition)，依赖(Dependency)
+1. 泛化（Generalization）
+【泛化关系】：是一种继承关系，表示一般与特殊的关系，它指定了子类如何特化父类的所有特征和行为。例如：老虎是动物的一种，即有老虎的特性也有动物的共性。
+【箭头指向】：带三角箭头的实线，箭头指向父类
+
+2. 实现（Realization）
+【实现关系】：是一种类与接口的关系，表示类是接口所有特征和行为的实现.
+【箭头指向】：带三角箭头的虚线，箭头指向接口
+
+3. 关联（Association)
+【关联关系】：是一种拥有的关系，它使一个类知道另一个类的属性和方法；如：老师与学生，丈夫与妻子关联可以是双向的，也可以是单向的。双向的关联可以有两个箭头或者没有箭头，单向的关联有一个箭头。
+【代码体现】：成员变量
+【箭头及指向】：带普通箭头的实心线，指向被拥有者
+
+上图中，老师与学生是双向关联，老师有多名学生，学生也可能有多名老师。但学生与某课程间的关系为单向关联，一名学生可能要上多门课程，课程是个抽象的东西他不拥有学生。
+下图为自身关联：
+
+4. 聚合（Aggregation）
+【聚合关系】：是整体与部分的关系，且部分可以离开整体而单独存在。如车和轮胎是整体和部分的关系，轮胎离开车仍然可以存在。
+聚合关系是关联关系的一种，是强的关联关系；关联和聚合在语法上无法区分，必须考察具体的逻辑关系。
+【代码体现】：成员变量
+【箭头及指向】：带空心菱形的实心线，菱形指向整体
+
+5. 组合(Composition)
+【组合关系】：是整体与部分的关系，但部分不能离开整体而单独存在。如公司和部门是整体和部分的关系，没有公司就不存在部门。
+组合关系是关联关系的一种，是比聚合关系还要强的关系，它要求普通的聚合关系中代表整体的对象负责代表部分的对象的生命周期。
+【代码体现】：成员变量
+【箭头及指向】：带实心菱形的实线，菱形指向整体
+
+6. 依赖(Dependency)
+【依赖关系】：是一种使用的关系，即一个类的实现需要另一个类的协助，所以要尽量不使用双向的互相依赖.
+【代码表现】：局部变量、方法的参数或者对静态方法的调用
+【箭头及指向】：带箭头的虚线，指向被使用者
+
+各种关系的强弱顺序：
+泛化 = 实现 > 组合 > 聚合 > 关联 > 依赖
+下面这张UML图，比较形象地展示了各种类图关系：
+
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+转载地址：UML类图几种关系的总结
+U在UML类图中，常见的有以下几种关系: 泛化（Generalization）, 实现（Realization），关联（Association)，聚合（Aggregation），组合(Composition)，依赖(Dependency)
+1. 泛化（Generalization）
+【泛化关系】：是一种继承关系，表示一般与特殊的关系，它指定了子类如何特化父类的所有特征和行为。例如：老虎是动物的一种，即有老虎的特性也有动物的共性。
+【箭头指向】：带三角箭头的实线，箭头指向父类
+]WIKIABSTRACTENDWIKITAGBEGIN[
+UML类图
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag11.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+标识符和关键字
+]WIKITITLEENDWIKICONTENTBEGIN[
+标识符和关键字
+<1>标识符
+什么是标识符，看下图:
+
+开发人员在程序中自定义的一些符号和名称
+标识符是自己定义的,如变量名 、函数名等
+<2>标识符的规则
+标识符由字母、下划线和数字组成，且数字不能开头
+思考：下面的标识符哪些是正确的，哪些不正确为什么
+
+   fromNo12
+
+   from#12
+
+   my_Boolean
+
+   my-Boolean
+
+   Obj2
+
+   2ndObj
+
+   myInt
+
+   test1
+
+   Mike2jack
+
+   My_tExt
+
+   _test
+
+   test!32
+
+   haha(da)tt
+
+   int
+
+   jack_rose
+
+   jack&rose
+
+   GUI
+
+   G.U.I
+python中的标识符是区分大小写的
+
+<3>命名规则
+见名知意
+起一个有意义的名字，尽量做到看一眼就知道是什么意思(提高代码可 读性) 比如: 名字 就定义为 name , 定义学生 用 student
+驼峰命名法 
+小驼峰式命名法（lower camel case）： 第一个单词以小写字母开始；第二个单词的首字母大写，例如：myName、aDog
+大驼峰式命名法（upper camel case）： 每一个单字的首字母都采用大写字母，例如：FirstName、LastName
+还有一种命名法是用下划线“_”来连接所有的单词，比如send_buf，
+Python的命令规则遵循PEP8标准，这个在后面会慢慢讲到。
+<4>关键字
+什么是关键字
+python一些具有特殊功能的标识符，这就是所谓的关键字
+关键字，是python已经使用的了，所以不允许开发者自己定义和关键字相同的名字的标识符
+查看关键字:
+
+and     as      assert     break     class      continue    def     del
+
+elif    else    except     exec      finally    for         from    global
+
+if      in      import     is        lambda     not         or      pass
+
+print   raise   return     try       while      with        yield
+
+
+可以在Python Shell通过以下命令进行查看当前系统中python的关键字
+
+
+>>> import keyword
+
+>>> keyword.kwlist
+关键字的学习以及使用，咱们会在后面的课程中依一一进行学习。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+标识符和关键字
+<1>标识符
+什么是标识符，看下图:
+
+开发人员在程序中自定义的一些符号和名称
+标识符是自己定义的,如变量名 、函数名等
+]WIKIABSTRACTENDWIKITAGBEGIN[
+标识符,关键字
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag13.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+大一萌新时期的一点总结w
+]WIKITITLEENDWIKICONTENTBEGIN[
+大一马上就要结束了，还是来做一点总结（流水账）吧QwQ
+
+本来高考之后的暑假就是打算在慕课上自学一下编程的，然而最后还是免不了沉迷炉石0.0
+
+新训结束十一假期无聊的时候顺手翻了翻大计基的书，虽然讲的是Python，但是这一点预习多少为后面的学习打下了一点基础。真正比较意外的是Python的第一次期中考试居然拿到了全班第二，可能这一点小骄傲也变成了我继续学习的动力，能让我厚着脸皮跟班上一群大佬去报名学校的ACM集训。对C语言一脸懵逼的我靠着上网搜教程&厚颜无耻的拽着学长问题（现在看那时候问的问题真是蠢爆了）勉强入了门，开启了深更半夜肝代码的时代。不过到后来，深搜广搜和数据结构的部分没能跟住进度，到现在还没完全掌握0.0
+
+到后来的寒假集训，时间短任务重，可惜我归（xiang）乡（lang）心切再加上被冻的缺乏睡眠，感觉集训潦潦草草，对各种内容都是一知半解，到现在还有许多东西没有熟练掌握。本来寒假回去之后应该乖乖补题，可惜我又沉迷吃鸡……
+
+再回到学校就是三月份了，先是准备天梯赛。可惜我太菜，哪怕最后正常发挥也没能做出T3的题目，不过好在心态比较稳，大概是因为TLE的时候想起了自家小伙子吧（不对，那个时候还不是我的）w然后和班上的大佬组队去参加多校赛，成绩浮浮沉沉，最好的时候拿到了第二（因为强队没来？），主要还是积累了组队的经验以及感受到了后两个小时做不出来题的绝望……
+
+湘潭赛是第一次参加的比较正式的比赛，热身赛一个都没做出来但是还是开开心心的去吃了自助（内心os：啊小伙子好能吃养不起养不起）以及窝在床上打守望（还拿了狂鼠的全场最佳）。第二天正式赛，我一上来就给A题贡献了一发WA然后发现思路错了，稍微改了改就AC了，果然面对题目（英语阅读理解）一定要耐心啊。B、C题和A背景差不多所以我试图肝C，然后失败了……队友A了K和G，实在做不出C的我跑去帮小伙子看F，成功的猜到了精度问题以及爆longlong的问题，然后用化简加结构体成功AC，于是就去开心的吃午饭了w后来小伙子靠想象力又过了B题，五题拿银皆大欢喜。感觉湘潭赛是体验最好的一次了，题目没什么错，午饭也很好吃，第一次出来比赛特别开心，也拿到了不错的成绩，并且因此得到了宁夏赛的机会，最重要的是还成功撩到了某只傻小伙子QwQ另外对大佬们的实力有了直观的认识（瑟瑟发抖），好佩服封榜之后还在过题的大佬们……
+
+然后是西安赛，可能是因为脱单智商掉线的缘故……以及西安赛的一些题有点迷……总之我们队发挥平庸，队友各过一题，而我全程划水0.0还好最后蹭了个铜，避免了打铁。另外感觉功夫还是要下在平时，赛前可以适当浪一浪放松心情，而如果把计划定在赛后浪的话比赛的时候就容易比较浮躁，影响发挥。不过确实西安赛那几天学业繁忙（还不是你非要拖到ddl），心态比较炸。
+
+隔了几个星期才是宁夏赛，宁夏赛之前和小伙子立flag不打游戏，导致在宁夏的几天疯狂沉迷守望……还有炉石。组了法术猎冲天梯然后成功被墙德怼的炉石玩家-1（不对这不是重点）。热身赛codeblocks爆炸，以及对ubuntu的系统还是不熟悉，不过正式赛就好多了，虽然觉得键盘和鼠标的手感都很不适应吧0.0自家小伙子意外拿到了D题的一血，第一次一血有点激动，可惜没有牌子。我还是厚颜无耻的写了最水的一个题……然后写了一道思路简单分类麻烦的数学题，也算是弥补了西安赛G题的遗憾。然后队友陆陆续续过了三题，又是银牌。感觉自己一路被大佬carry，大概是躺银的，有点愧疚0.0
+上半年的比赛就此结束，但接下来又有暑假集训和7月底的上海赛，希望这次可不要沉迷守望荒废假期了0.0另外感谢学长们能够耐心带我们这些萌新以及帮我们选择合适的题目练习QwQ（下学期或许也有学弟学妹了呐）这一年来也算收获颇丰，两银一铜还有一只超可爱超贤惠傻乎乎的小伙子（承办狗粮批发），但是还是有很多遗憾，还是希望自己能够更强一些，能够为队里贡献更多的AC~
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+大一马上就要结束了，还是来做一点总结（流水账）吧QwQ
+]WIKIABSTRACTENDWIKITAGBEGIN[
+总结
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag14.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+对Java中继承、多态与重写的关系理解 -----Jack
+]WIKITITLEENDWIKICONTENTBEGIN[
+小杰作为一个刚刚入门的萌新程序猿，刚刚结束为期三周的Java教学，因老师需赶回澳洲，时间仓促有很多问题小杰并未请教。关于Java的多态和继承也一直存在疑惑，现在小杰就想谈谈目前对他们的认识。
+    小杰认为，多态、继承和重写是相辅相成的，继承是多态的基础，多态是有了继承后功能的延伸，而重写方法则是具体实现的工具。在Java中多态的使用规则也决定了这些关系：
+1. 使用多态必须先有继承。    我们在例子中用Cat、Dog、extends Animal.
+2. 使用父类引用指向子类对象。    例如：Animal cat = new Cat();     
+        【1】子类是不能指向父类的。
+        【2】我们可以通过上下转型来改变引用类型
+3. 利用在子类中重写父类方法实现多态：
+        【1】对象只能调用子类从父类那继承来的方法，而不能调用子类特有的方法。
+        【2】对象调用顺序是先在子类中寻找，如果子类中没有再向上检索。
+    多态的最终目的是用同一种方法在面对不同对象或事件的时候执行不同的结果，即方法的多种状态。选取一段简单的代码进行简要解释。
+
+    我们可以看到，这段程序中的Cat和Dog类首先与Animal形成了继承关系，两个类分别重写了Animal中的 public void eat();方法，并且在两个类中又分别添加了一个特有的方法。
+    我们跟随main()；函数运行，他首先分别以Cat和Dog的形式调用了show()；根据show();函数会先执行eat();再通过instanceof关键字来判断该对象的类型，并执行work();所以前两行的打印结果应该是“吃鱼”“抓老鼠”，“吃骨头”“看家”。
+    Animal a = new Cat();就是利用Animal引用指向了Cat类。并用类型为Animal的 a 调用了子类方法，这就是典型的多态。故执行结果为“吃鱼”“抓老鼠”。
+
+    最后我们总结一下：
+1. 不管是向上转型，还是向下转型，我们涉及到的都是子类和父类的问题，也就是说多态必须存在继承关系
+2. 正如上面所说，多态就是多种形态。也就是说，当我们需要实现多态的时候，就需要有父类的方法被子类重写。否则，如果没有重写的方法，就看不出多态的特性，一切按照父类的方法来，还不如不要继承，直接在父类中添加相应的方法，然后在实例化好了
+3. 不管是向上转型还是向下转型，都有一个共性，就是父类指向子类对象。如果没有这个，也就没有了多态。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+小杰作为一个刚刚入门的萌新程序猿，刚刚结束为期三周的Java教学，因老师需赶回澳洲，时间仓促有很多问题小杰并未请教。关于Java的多态和继承也一直存在疑惑，现在小杰就想谈谈目前对他们的认识。
+    小杰认为，多态、继承和重写是相辅相成的，继承是多态的基础，多态是有了继承后功能的延伸，而重写方法则是具体实现的工具。在Java中多态的使用规则也决定了这些关系：
+]WIKIABSTRACTENDWIKITAGBEGIN[
+继承,多态,重写
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag14.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+分布式事务底层原理剖析
+]WIKITITLEENDWIKICONTENTBEGIN[
+分布式事务是企业集成中的一个技术难点，也是每一个分布式系统架构中都会涉及到的一个东西，特别是在微服务架构中，几乎可以说是无法避免，本文就分布式事务来简单聊一下。
+
+数据库事务
+
+在说分布式事务之前，我们先从数据库事务说起。 数据库事务可能大家都很熟悉，在开发过程中也会经常使用到。
+
+但是即使如此，可能对于一些细节问题，很多人仍然不清楚。比如很多人都知道数据库事务的几个特性：原子性(Atomicity )、一致性( Consistency )、隔离性或独立性( Isolation)和持久性(Durabilily)，简称就是ACID。
+
+但是再往下比如问到隔离性指的是什么的时候可能就不知道了，或者是知道隔离性是什么但是再问到数据库实现隔离的都有哪些级别，或者是每个级别他们有什么区别的时候可能就不知道了。
+
+本文并不打算介绍这些数据库事务的这些东西，有兴趣可以搜索一下相关资料。不过有一个知识点我们需要了解，就是假如数据库在提交事务的时候突然断电，那么它是怎么样恢复的呢？ 为什么要提到这个知识点呢？
+
+因为分布式系统的核心就是处理各种异常情况，这也是分布式系统复杂的地方，因为分布式的网络环境很复杂，这种“断电”故障要比单机多很多，所以我们在做分布式系统的时候，最先考虑的就是这种情况。
+
+这些异常可能有 机器宕机、网络异常、消息丢失、消息乱序、数据错误、不可靠的TCP、存储数据丢失、其他异常等等...
+
+我们接着说本地事务数据库断电的这种情况，它是怎么保证数据一致性的呢？我们使用SQL Server来举例，我们知道我们在使用 SQL Server 数据库是由两个文件组成的，一个数据库文件和一个日志文件，通常情况下，日志文件都要比数据库文件大很多。
+
+数据库进行任何写入操作的时候都是要先写日志的，同样的道理，我们在执行事务的时候数据库首先会记录下这个事务的redo操作日志，然后才开始真正操作数据库，在操作之前首先会把日志文件写入磁盘，那么当突然断电的时候，即使操作没有完成，在重新启动数据库时候，数据库会根据当前数据的情况进行undo回滚或者是redo前滚，这样就保证了数据的强一致性。
+
+接着，我们就说一下分布式事务。
+
+分布式理论
+
+当我们的单个数据库的性能产生瓶颈的时候，我们可能会对数据库进行分区，这里所说的分区指的是物理分区，分区之后可能不同的库就处于不同的服务器上了，这个时候单个数据库的ACID已经不能适应这种情况了，而在这种ACID的集群环境下，再想保证集群的ACID几乎是很难达到，或者即使能达到那么效率和性能会大幅下降，最为关键的是再很难扩展新的分区了，这个时候如果再追求集群的ACID会导致我们的系统变得很差，这时我们就需要引入一个新的理论原则来适应这种集群的情况，就是 CAP 原则或者叫CAP定理，那么CAP定理指的是什么呢？
+
+CAP定理
+
+CAP定理是由加州大学伯克利分校Eric Brewer教授提出来的，他指出WEB服务无法同时满足一下3个属性：
+
+一致性(Consistency) ： 客户端知道一系列的操作都会同时发生(生效)
+
+可用性(Availability) ： 每个操作都必须以可预期的响应结束
+
+分区容错性(Partition tolerance) ： 即使出现单个组件无法可用,操作依然可以完成
+
+具体地讲在分布式系统中，在任何数据库设计中，一个Web应用至多只能同时支持上面的两个属性。显然，任何横向扩展策略都要依赖于数据分区。因此，设计人员必须在一致性与可用性之间做出选择。
+
+这个定理在迄今为止的分布式系统中都是适用的！ 为什么这么说呢？
+
+这个时候有同学可能会把数据库的2PC（两阶段提交）搬出来说话了。OK，我们就来看一下数据库的两阶段提交。
+
+对数据库分布式事务有了解的同学一定知道数据库支持的2PC，又叫做 XA Transactions。
+
+MySQL从5.5版本开始支持，SQL Server 2005 开始支持，Oracle 7 开始支持。
+
+其中，XA 是一个两阶段提交协议，该协议分为以下两个阶段：
+
+第一阶段：事务协调器要求每个涉及到事务的数据库预提交(precommit)此操作，并反映是否可以提交.
+
+第二阶段：事务协调器要求每个数据库提交数据。
+
+其中，如果有任何一个数据库否决此次提交，那么所有数据库都会被要求回滚它们在此事务中的那部分信息。这样做的缺陷是什么呢? 咋看之下我们可以在数据库分区之间获得一致性。
+
+如果CAP 定理是对的，那么它一定会影响到可用性。
+
+如果说系统的可用性代表的是执行某项操作相关所有组件的可用性的和。那么在两阶段提交的过程中，可用性就代表了涉及到的每一个数据库中可用性的和。
+
+我们假设两阶段提交的过程中每一个数据库都具有99.9%的可用性，那么如果两阶段提交涉及到两个数据库，这个结果就是99.8%。根据系统可用性计算公式，假设每个月43200分钟，99.9%的可用性就是43157分钟, 99.8%的可用性就是43114分钟，相当于每个月的宕机时间增加了43分钟。
+
+以上，可以验证出来，CAP定理从理论上来讲是正确的，CAP我们先看到这里，等会再接着说。
+
+BASE理论
+
+在分布式系统中，我们往往追求的是可用性，它的重要程序比一致性要高，那么如何实现高可用性呢？ 前人已经给我们提出来了另外一个理论，就是BASE理论，它是用来对CAP定理进行进一步扩充的。BASE理论指的是：
+
+Basically Available（基本可用）
+
+Soft state（软状态）
+
+Eventually consistent（最终一致性）
+
+BASE理论是对CAP中的一致性和可用性进行一个权衡的结果，理论的核心思想就是：我们无法做到强一致，但每个应用都可以根据自身的业务特点，采用适当的方式来使系统达到最终一致性（Eventual consistency）。
+
+有了以上理论之后，我们来看一下分布式事务的问题。
+
+分布式事务
+
+在分布式系统中，要实现分布式事务，无外乎那几种解决方案。
+
+一、两阶段提交（2PC）
+
+和上一节中提到的数据库XA事务一样，两阶段提交就是使用XA协议的原理，我们可以从下面这个图的流程来很容易的看出中间的一些比如commit和abort的细节。
+
+
+
+两阶段提交这种解决方案属于牺牲了一部分可用性来换取的一致性。在实现方面，在 .NET 中，可以借助 TransactionScop 提供的 API 来编程实现分布式系统中的两阶段提交，比如WCF中就有实现这部分功能。不过在多服务器之间，需要依赖于DTC来完成事务一致性，Windows下微软搞的有MSDTC服务，Linux下就比较悲剧了。
+
+另外说一句，TransactionScop 默认不能用于异步方法之间事务一致，因为事务上下文是存储于当前线程中的，所以如果是在异步方法，需要显式的传递事务上下文。
+
+优点： 尽量保证了数据的强一致，适合对数据强一致要求很高的关键领域。（其实也不能100%保证强一致）
+
+缺点： 实现复杂，牺牲了可用性，对性能影响较大，不适合高并发高性能场景，如果分布式系统跨接口调用，目前 .NET 界还没有实现方案。
+
+二、补偿事务（TCC）
+
+TCC 其实就是采用的补偿机制，其核心思想是：针对每个操作，都要注册一个与其对应的确认和补偿（撤销）操作。它分为三个阶段：
+
+Try 阶段主要是对业务系统做检测及资源预留
+
+Confirm 阶段主要是对业务系统做确认提交，Try阶段执行成功并开始执行 Confirm阶段时，默认 Confirm阶段是不会出错的。即：只要Try成功，Confirm一定成功。
+
+Cancel 阶段主要是在业务执行错误，需要回滚的状态下执行的业务取消，预留资源释放。
+
+举个例子，假入 Bob 要向 Smith 转账，思路大概是：
+
+我们有一个本地方法，里面依次调用
+
+1、首先在 Try 阶段，要先调用远程接口把 Smith 和 Bob 的钱给冻结起来。
+
+2、在 Confirm 阶段，执行远程调用的转账的操作，转账成功进行解冻。
+
+3、如果第2步执行成功，那么转账成功，如果第二步执行失败，则调用远程冻结接口对应的解冻方法 (Cancel)。
+
+优点： 跟2PC比起来，实现以及流程相对简单了一些，但数据的一致性比2PC也要差一些
+
+缺点： 缺点还是比较明显的，在2,3步中都有可能失败。TCC属于应用层的一种补偿方式，所以需要程序员在实现的时候多写很多补偿的代码，在一些场景中，一些业务流程可能用TCC不太好定义及处理。
+
+三、本地消息表（异步确保）
+
+本地消息表这种实现方式应该是业界使用最多的，其核心思想是将分布式事务拆分成本地事务进行处理，这种思路是来源于ebay。我们可以从下面的流程图中看出其中的一些细节：
+
+
+
+基本思路就是：
+
+消息生产方，需要额外建一个消息表，并记录消息发送状态。消息表和业务数据要在一个事务里提交，也就是说他们要在一个数据库里面。然后消息会经过MQ发送到消息的消费方。如果消息发送失败，会进行重试发送。
+
+消息消费方，需要处理这个消息，并完成自己的业务逻辑。此时如果本地事务处理成功，表明已经处理成功了，如果处理失败，那么就会重试执行。如果是业务上面的失败，可以给生产方发送一个业务补偿消息，通知生产方进行回滚等操作。
+
+生产方和消费方定时扫描本地消息表，把还没处理完成的消息或者失败的消息再发送一遍。如果有靠谱的自动对账补账逻辑，这种方案还是非常实用的。
+
+这种方案遵循BASE理论，采用的是最终一致性，笔者认为是这几种方案里面比较适合实际业务场景的，即不会出现像2PC那样复杂的实现(当调用链很长的时候，2PC的可用性是非常低的)，也不会像TCC那样可能出现确认或者回滚不了的情况。
+
+优点： 一种非常经典的实现，避免了分布式事务，实现了最终一致性。在 .NET中 有现成的解决方案。
+
+缺点： 消息表会耦合到业务系统中，如果没有封装好的解决方案，会有很多杂活需要处理。
+
+四、MQ 事务消息
+
+有一些第三方的MQ是支持事务消息的，比如RocketMQ，他们支持事务消息的方式也是类似于采用的二阶段提交，但是市面上一些主流的MQ都是不支持事务消息的，比如 RabbitMQ 和 Kafka 都不支持。
+
+以阿里的 RocketMQ 中间件为例，其思路大致为：
+
+第一阶段Prepared消息，会拿到消息的地址。
+
+第二阶段执行本地事务，第三阶段通过第一阶段拿到的地址去访问消息，并修改状态。
+
+也就是说在业务方法内要想消息队列提交两次请求，一次发送消息和一次确认消息。如果确认消息发送失败了RocketMQ会定期扫描消息集群中的事务消息，这时候发现了Prepared消息，它会向消息发送者确认，所以生产方需要实现一个check接口，RocketMQ会根据发送端设置的策略来决定是回滚还是继续发送确认消息。这样就保证了消息发送与本地事务同时成功或同时失败。
+
+
+
+遗憾的是，RocketMQ并没有 .NET 客户端。有关 RocketMQ的更多消息，大家可以查看这篇博客
+
+优点： 实现了最终一致性，不需要依赖本地数据库事务。
+
+缺点： 实现难度大，主流MQ不支持，没有.NET客户端，RabbitMQ事务消息部分代码也未开源。
+
+五、Sagas 事务模型
+
+Saga事务模型又叫做长时间运行的事务（Long-running-transaction）, 它是由普林斯顿大学的H.Garcia-Molina等人提出，它描述的是另外一种在没有两阶段提交的的情况下解决分布式系统中复杂的业务事务问题。你可以在这里看到 Sagas 相关论文。
+
+我们这里说的是一种基于 Sagas 机制的工作流事务模型，这个模型的相关理论目前来说还是比较新的，以至于百度上几乎没有什么相关资料。
+
+该模型其核心思想就是拆分分布式系统中的长事务为多个短事务，或者叫多个本地事务，然后由 Sagas 工作流引擎负责协调，如果整个流程正常结束，那么就算是业务成功完成，如果在这过程中实现失败，那么Sagas工作流引擎就会以相反的顺序调用补偿操作，重新进行业务回滚。
+
+比如我们一次关于购买旅游套餐业务操作涉及到三个操作，他们分别是预定车辆，预定宾馆，预定机票，他们分别属于三个不同的远程接口。可能从我们程序的角度来说他们不属于一个事务，但是从业务角度来说是属于同一个事务的。
+
+
+
+他们的执行顺序如上图所示，所以当发生失败时，会依次进行取消的补偿操作。
+
+因为长事务被拆分了很多个业务流，所以 Sagas 事务模型最重要的一个部件就是工作流或者你也可以叫流程管理器（Process Manager），工作流引擎和Process Manager虽然不是同一个东西，但是在这里，他们的职责是相同的。在选择工作流引擎之后，最终的代码也许看起来是这样的
+
+SagaBuilder saga = SagaBuilder.newSaga("trip")
+        .activity("Reserve car", ReserveCarAdapter.class) 
+        .compensationActivity("Cancel car", CancelCarAdapter.class) 
+        .activity("Book hotel", BookHotelAdapter.class) 
+        .compensationActivity("Cancel hotel", CancelHotelAdapter.class) 
+        .activity("Book flight", BookFlightAdapter.class) 
+        .compensationActivity("Cancel flight", CancelFlightAdapter.class) 
+        .end()
+        .triggerCompensationOnAnyError();
+
+camunda.getRepositoryService().createDeployment() 
+        .addModelInstance(saga.getModel()) 
+        .deploy();
+
+
+优缺点这里我们就不说了，因为这个理论比较新，目前市面上还没有什么解决方案，即使是 Java 领域，我也没有搜索的太多有用的信息。
+
+
+总结
+
+通过本文我们了解到两个分布式系统的理论，他们分别是CAP和BASE 理论，同时我们也总结并对比了几种分布式分解方案的优缺点，分布式事务本身是一个技术难题，是没有一种完美的方案应对所有场景的，具体还是要根据业务场景去抉择吧
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+分布式事务是企业集成中的一个技术难点，也是每一个分布式系统架构中都会涉及到的一个东西，特别是在微服务架构中，几乎可以说是无法避免，本文就分布式事务来简单聊一下。
+]WIKIABSTRACTENDWIKITAGBEGIN[
+数据库事务,分布式理论
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag16.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+聊聊阿里社招面试，谈谈“野生”Java程序员学习的道路
+]WIKITITLEENDWIKICONTENTBEGIN[
+引言 　　
+　　
+　　很尴尬的是，这个类型的文章其实之前笔者就写过，原文章里，笔者自称LZ（也就是楼主，有人说是老子的简写，笔者只想说，这位同学你站出来，保证不打死你，-_-），原文章名称叫做《回答阿里社招面试如何准备，顺便谈谈对于Java程序猿学习当中各个阶段的建议》，首发于笔者的博客园博客，这里也郑重声明一下，所有内容类似文章均属转载或抄袭。 　　
+　　之前看过的朋友可能会有疑问，为什么要再次捡起这篇文章，还把称谓改成了笔者这么高端的词汇。 　　
+　　简单的解释一下，原因有三个，第一个原因，是说不得的原因，请各位看官自行YY。第二个原因，是两年过去了，笔者在阿里也呆了700+天的时间，所以对这篇文章，又有了一些新的理解和想法，想回过头来，再完善一下。最后一个原因，是因为最近笔者经常刷某音，根据玩某音的经验，发两次会火，哈哈，-_-。 　　
+　　所以，这篇文章，可以说是之前那篇文章的进阶版，为了方便大家观看，本文会引入很多原文章的内容，避免没看过上一篇文章的同学，还需要回过头去翻看。（好吧，我承认是为了偷懒，-_-）
+ 
+阿里社招面试都问什么？ 　　 　　
+　　
+　　和之前一样，文章一上来，我们先来谈谈阿里的社招面试都问什么，其实这个话题并不是什么秘密，所有来阿里面试过的同学，都能回答一二。
+　　两年前的时候，笔者在文章里是这么回答的。
+　　这个是让LZ最头疼的一个问题，也是群里的猿友们问的最多的一个问题。
+　　说实话，LZ只能隐约想起并发、JVM、分布式、TCP/IP协议这些个关键字，具体的问题真的是几乎都没记住。而且就算LZ记住了，也告诉你了，你也背会了，但LZ觉得，在面试中，你被问到一模一样问题的可能性依然很小。
+　　甚至，就算你运气好被问到了，你也照着背下来了，也不一定就能对你的面试起到正面的作用，因为面试官万一多问一句，你可能就露馅了，那还不如干脆点说不会更好。
+　　LZ参加的是阿里的社招面试，而社招不同于校招，问题的范围其实是很随机的。因为能参加一些比较知名的互联网公司社招的人，70%以上都会有个3-5年的经验。这倒不是说一两年经验的同学没有机会进这些公司，而是因为这种公司，大部分情况下只招一些比较资深的开发和应届生，而不招那些处于中间阶段的人。而1-2年经验的同学，往往就刚好处于这个尴尬的阶段。
+　　对于能有3-5年经验的这部分人中，每个人的经历又都不同，所擅长的点也不一样，因此这就会导致每个人的问题和范围都不太一样。
+　　很少说有哪个知名的互联网公司，比如BAT、京东、360、搜狐、网易等这些公司，其社招面试还有固定的问题和模式，让你可以像应届生面试一样，在面试前靠临时抱佛脚度过这一关。
+　　大部分公司在社招的时候，不光是阿里，其它公司也都一样（因为LZ在一年多前也参加过很多其它知名互联网公司的面试，详情见《记录2015年年初跳槽的经历！》），基本上都分为两个阶段的提问。
+　　第一个阶段是主语言本身以及它的高级特性，第二个阶段是讲述自己的项目，并在中间穿插着问题。
+　　所以，LZ不妨就这两个阶段，谈谈社招面试的准备，而不是去把阿里面试的过程背一遍。说实话，LZ也确实记不住，所以不要再问LZ阿里面试都会问哪些问题了，你看看上面那个连接里的文章，也会发现，LZ里面也基本上没有写具体的问题，原因是一样的，真的记不住啊。（就是因为记忆力的问题，导致LZ从小偏科，文科成绩一直堪忧，-_-）
+　　看到当时自己的回答，笔者有种在review几年前代码的错觉，不过好在，哪怕是现在来看，当时写的虽然多了些废话，但整体思路应该还是没错的。
+　　只不过在这里，笔者想要再补充下，如果把以上两个阶段再概括化一下，其实得到的答案，就基本适用于所有面试，而并非只是阿里的社招面试。
+　　那就是，第一阶段是主语言，第二阶段是项目。
+　　这点相信不少人在面试的过程中，已经深有体会，大部分面试就是分这么两个阶段去问的，只不过针对不同的公司和职位，每个阶段面试的难易程度会不同，所问的问题范围，自然也会有所不同。
+　　说到面试的难易程度，不得不八卦一下，据之前笔者在网上某地方看到的评论中说，就面试的技术难度而言，BAT之间的排列顺序是这样的，阿里>百度>腾讯。
+　　对此，笔者实际的感受倒是和上面一致，因为笔者参加过百度和阿里的面试，就个人的感觉而言，阿里的难度是高于百度的。
+　　不过笔者说阿里的难度比百度高，其实也仅限于笔者那一次具体的面试，实际上，两家公司面试的具体难度，是不能这么简单对比的。
+　　面试的难度，根据职位的不同（比如低级工程师还是高级），部门的不同（比如业务部门还是纯研发部门），用人需求的不同（比如是急需还是人才储备），面试官的喜好（比如是装逼型还是温和型）等等因素，就算是在同一家公司，难度也是会有差异的，所以不能简单的对比两家公司的面试难度。
+　　到底难不难，只有来试了才知道！
+　　所以，阿里中间件团队欢迎你！（咳咳，不要问我为啥加这句话，说不得，0-0）
+ 
+阿里社招面试如何准备？ 　　
+ 
+　　这个话题相信是大家比较关心的话题，之前笔者其实已经详细谈论过了，就这一部分内容来说，之前写的还是比较详细的，所以索性偷个懒，把原文搬上来了。
+　　LZ会分为四个部分来谈论这个问题，由于LZ本身是Java出身，因此关于主语言的问题，都是与Java相关，其它语言的同学可以选择性忽略。此外，面试的时候一般面试官的问题都是环环相扣，逐渐深入的，这点在下面大家可以更明显的感受出来。
+　　1、主语言本身以及它的高级特性。
+　　主语言当然就是你平日里拿来赚钱的家伙。不要告诉LZ你没有主语言，你会N多种语言，或者是你精通N多种语言，你要非这么说的话，你可以来杭州试试，LZ保证不打死你，最多打残。
+　　LZ的主语言很显然是Java，那么对于Java来说，它的语言本身以及它的高级特性，都有哪些比较容易在面试中问到呢？
+　　一般情况下，主要有以下知识点很容易被问到。（PS：以下所列举的，都是一些Java相对而言比较高级一点的知识点，因为这里谈的是社招，而不是校招）
+ 
+　　1）Java的数据结构相关的类实现原理，比如LinkedList，ArrayList，HashMap，TreeMap这一类的。以下简单模拟一个数据结构的连环炮。
+　　比如，面试官先问你HashMap是不是有序的？
+　　你肯定回答说，不是有序的。那面试官就会继续问你，有没有有顺序的Map实现类？
+　　你如果这个时候说不知道的话，那这个问题就到此结束了。如果你说有TreeMap和LinkedHashMap。
+　　那么面试官接下来就可能会问你，TreeMap和LinkedHashMap是如何保证它的顺序的？
+　　如果你回答不上来，那么到此为止。如果你依然回答上来了，那么面试官还会继续问你，你觉得它们两个哪个的有序实现比较好？
+　　如果你依然可以回答的话，那么面试官会继续问你，你觉得还有没有比它更好或者更高效的实现方式？
+　　如果你还能说出来的话，那么就你所说的实现方式肯定依然可以问你很多问题。
+　　以上就是一个面试官一步一步提问的例子。所以，如果你了解的不多，千万不要敷衍，因为可能下一个问题你就暴露了，还不如直接说不会，把这个问题结束掉，赶紧切换到你熟悉的领域。
+ 
+　　2）Java并发包当中的类，它们都有哪些作用，以及它们的实现原理，这些类就是java.concurrent包下面的。与上面一样，咱们也简单的模拟一个并发包的连环炮。
+　　比如面试官可能会先问你，如果想实现所有的线程一起等待某个事件的发生，当某个事件发生时，所有线程一起开始往下执行的话，有什么好的办法吗？
+　　这个时候你可能会说可以用栅栏（Java的并发包中的CyclicBarrier），那么面试官就会继续问你，你知道它的实现原理吗？
+　　如果你继续回答的话，面试官可能会继续问你，你还知道其它的实现方式吗？
+　　如果你还能说出很多种实现方式的话，那么继续问你，你觉得这些方式里哪个方式更好？
+　　如果你说出来某一个方式比较好的话，面试官依然可以继续问你，那如果让你来写的话，你觉得还有比它更好的实现方式吗？
+　　如果你这个时候依然可以说出来你自己更好的实现方式，那么面试官肯定还会揪着这个继续问你。
+　　为什么说面试的时候要引导面试官，原因就在这了。因为面试官的提问很多时候都是有迹可循的，你如果抓住了他的轨迹，能够猜到他下面很可能会问什么，那你在回答的时候就可以往你想要谈的方向去说。这样面试时就会显得更加从容，更加的游刃有余。
+　　
+　　3）IO包和NIO包中的内容。这部分里面NIO会是重点，IO包大部分都会比较熟悉，因此可能会直接略过，直接问你NIO的内容。
+　　IO包和NIO包的内容相对来说不是很多，首先NIO模型要熟悉，特别是其中的selector一定要非常清楚它的职责和实现原理。其实NIO的核心是IO线程池，一定要记住这个关键点。有的时候，面试官可能也会问你IO包的设计模式（装饰器模式），为什么要这样设计？
+　　有的面试官还会问你有没有更好的设计，这个时候如果你不知道请果断说自己现在的水平有限，想不出来更好的设计，千万不要信口开河，随意YY。
+　　
+　　4）Java的虚拟机的内容。这部分主要包括三部分，GC、类加载机制，以及内存。
+　　一个GC部分简单的连环炮。
+　　面试官可以先问你什么时候一个对象会被GC？
+　　接着继续问你为什么要在这种时候对象才会被GC？
+　　接着继续问你GC策略都有哪些分类？
+　　你如果说出来了，继续问你这些策略分别都有什么优劣势？都适用于什么场景？
+　　你继续说出来了以后，给你举个实际的场景，让你选择一个GC策略？
+　　你如果选出来了，继续问你，为什么要选择这个策略？
+　　下面是关于类加载机制的简单连环炮。
+　　首先肯定是先问你Java的类加载器都有哪些？
+　　回答了这些以后，可能会问你每个类加载器都加载哪些类？
+　　说完以后，可能会问你这些类加载之间的父子关系是怎样的？
+　　你在回答的时候可能会提到双亲委派模型，那么可以继续问你什么是双亲委派模型？
+　　你解释完了以后，可能会继续问你，为什么Java的类加载器要使用双亲委派模型？
+　　你回答完以后，可能会继续问你如何自定义自己的类加载器，自己的类加载器和Java自带的类加载器关系如何处理？
+　　再来一个关于内存的连环炮。
+　　首先肯定就是问你内存分为哪几部分，这些部分分别都存储哪些数据？
+　　然后继续问你一个对象从创建到销毁都是怎么在这些部分里存活和转移的？
+　　接着可能会问你，内存的哪些部分会参与GC的回收？
+　　完事以后，可能还会问你Java的内存模型是怎么设计的？
+　　你回答了以后，还会继续问你为什么要这么设计？
+　　问完以后，还可能会让你结合内存模型的设计谈谈volatile关键字的作用？
+　　你在谈的时候，肯定会提到可见性，那么接着可见性这三个字，还可以继续问你并发的内容。
+　　
+　　基本上Java语言本身以及语言稍微高级点的内容就是以上部分，如果你能把以上四部分了解的非常透彻，那基本上Java这部分就没啥问题了，因为光以上的内容就够你跟面试官聊很久了。你聊这些聊得久了，自然问你其它问题的时间就会短点。
+　　你从LZ写这些问题的过程也应该能感受出来，很多时候，面试官都是顺着一条线一路问下去的，如果你觉得这条线你不熟悉的话，就要及时拐弯，引导面试官去问其它方面的问题。千万不要一直往下深入，直到自己跳不出来为止，那就尴了个尬了。
+　　
+　　2、讲述自己的项目，并在中间穿插着问题
+　　这一部分是面试过程中必问，也是聊得最久的一个阶段。除非你前面的语言部分非常扎实，扎实到面试官问了一两个小时，依旧没有探出你对语言本身的了解到底有多深。否则的话，你一定逃不过自己的项目这一关，而且一般情况下聊得时间不会太短。
+　　这一部分内容，一般的模式就是你自己去讲你做过的项目，然后面试官会冷不丁的让你去解释其中某一部分，比如让你解释当时为什么要这么做，或者问你现在觉得有没有更好的办法。而这些穿插的问题，大部分与你的项目所用到的技术有关。而你需要做的，就是充分、再充分的去总结自己做过的项目（尤其是最近的一两个项目），挖掘出一个甚至N个亮点，以备于到时候可以让面试官产生眼前一亮的感觉。如果你能达到这种效果的话，基本上离你成功就不远了。
+　　这部分内容由于和每个人自己的经历息息相关，因此这里也没法列举可能问到的问题。这篇文章《程序员面经：面试前到底该不该刷题以及面试前该如何准备》是LZ之前写的，里面大概讨论了下如何在面试前总结，有兴趣的可以去了解一下。
+　　
+　　3、额外的加分项
+　　上面两个阶段基本上是必问的，还有一些加分项。这些加分项中，有些内容面试官也会问你（比如TCP/IP协议、算法），但更多的是会先问你了解不了解，你了解的话再继续聊，不了解的话就直接略过了，不至于因为这种问题而直接把你打入地狱。
+　　下面LZ列举一下这些加分项，如果可以的话，这些加分项还是要争取一下的。
+　　1、计算机系统原理。
+　　2、网络通信协议（TCP/IP，HTTP等）。
+　　3、数据结构与算法。
+　　4、著名开源项目的源码。
+　　5、你自己有很棒的开源项目。
+　　6、你的个人博客。
+　　7、待评论区补充。
+　　这几项当中，对于前1-3项，如果你之前就比较了解，只是由于时间问题忘记了的话，还是可以临时抱佛脚一下的。至于后面4-6项，就需要你日常的积累了，不是一时半会儿能做到的。如果你平日里没有积累，那么后面这三个加分项只能抛弃了。
+　　
+　　4、与你职位相关的内容
+　　其实这最后一项是对前面三项的补充，你应该尽量去主攻和你面试的职位相关的内容。比如你面试一个实时计算的职位，那么你的算法最好要厉害，对于著名的实时计算开源项目要熟悉，最好阅读过源码，而且还要对分布式系统有一定的见解。
+　　因此，这个第4部分没有具体的内容，只是提醒你，如果你很明确自己的面试职位，最好在面试前准备的时候，尽量朝职位的需求方向靠拢，这样成功的可能性更大。
+　　看完以后，关于连环炮的部分，笔者这里还是想简单再补充几句，上面之所以举了那么多连环炮的例子，其实并不是想让大家背下来，而是想让各位看官体会一下社招面试的套路。
+　　说到底，这些连环炮的例子，就是在考验你对某一个知识点理解的有多深。就笔者的亲身经历而言，其实上面所提到的这些连环炮，你并不需要每个都理解的很深，只需要有那么一两个点比较深，甚至超过面试官的理解，就可以达到要求了。
+　　很多时候，面试官并不需要你对每一个知识点都很深入，他只是在考察你的理解能力，以及平时有没有一些技术积累。
+　　如果一个面试官，只因为一两个技术知识点而否决你的话，那么只有两种可能，第一种是这个点，可能确实是你所面试的职位中，非常重要的知识点，比如面试算法类岗位的话，算法不好是不行的，或者是面试偏运维类的技术岗位，Linux玩不好也是不行的。
+　　第二种可能就是——他在装逼，-_-。
+ 
+“野生”Java程序猿学习的道路
+ 
+　　这一部分笔者上篇文章谈了很多，不过这一次，笔者在Java程序猿前面加了个限定词——野生。
+　　笔者一向自称是“野生”程序员，所谓的“野生”，笔者这里先简单下一个定义，就是在大学之前，从来没想过会走程序猿这条路，而是在进入社会之后，才逐渐走上程序猿这条路的人，笔者称之为“野生”程序猿。
+ 
+自学还是培训机构？
+ 
+　　“野生”程序猿有不少程序猿“正规军”所不具备的共性，其中最典型的一个共性，就是“野生”程序猿在进入社会之后，都会经历一个学习入门的阶段。
+　　也正是因此，社会上出现了大量的培训机构，所以往往“野生”程序猿在入行初期，所面临的第一个问题就是，到底是自学，还是选择培训机构？
+　　笔者就收到过无数这类的问题，其实这个问题没办法一概而论，要具体情况具体分析，但如果简单粗暴一些来说的话，假设你家里不缺那个培训费，就去培训机构，反之就别去。
+　　毕竟花了钱，总会多一些学习上的资源，最起码聊胜于无。
+　　所以，这个问题通俗点说，就是有钱就去，没钱就自学。
+　　就像那个经典的笑话一样，说自己买东西有选择恐惧症的同学，不是真的有选择恐惧症，唯一的原因就是——穷，呵呵哒。
+ 
+算法到底重不重要？
+ 
+　　除了上述的共性之外，“野生”程序员还有一个共性，就是学习曲线和程序员“正规军”会有所不同，前者是从实践到理论，后者是从理论到实践，这就会导致“野生”程序员的基本功一般不怎么扎实，比如算法、计算机系统原理、计算机网络等。
+　　私底下，无数同学问过笔者同样的一个问题，到底算法重不重要？阿里面试考不考算法？
+　　其实第一个问题，关于算法到底重不重要，笔者这里是有两个答案的，如果来问的同学互相对质一下的话，可能会发现笔者给每个人的答案会略有不同。
+　　如果是一个学生来问的话，笔者会告诉他，算法非常重要，一定要全力学习。
+　　而如果是一个已经踏入职场多年的人来问的话，笔者一般会告诉他，按需学习即可，如果你做的工作和算法关系很大，那自然要好好学，比如你做算法工程师，你告诉我算法重不重要？ 当然重要！
+　　而如果你每天写的是增删改查，更注重业务，那还是别花那个精力了，省省吧，有学算法这个精力，多研究研究业务，多思考思考技术与业务结合这种问题，可能比你学习算法收效更高。
+　　至于第二个问题，阿里面试考不考算法，笔者清晰记得，面试官问了这样一个问题的，“你对算法的了解多不？”
+　　而笔者当时的回答是，“不好意思，这个我不会。”
+　　看到这里，可能有的同学会有疑问了，“作者啊，你这样做不太好，你这不等于告诉大家，算法不重要，不学算法一样可以进阿里吗？”
+　　有这种疑问的同学，是没有想明白这么一件事，算法是否重要，和是否一定要花精力学习它，并没有什么直接的卵关系。
+　　更何况，不会算法能进阿里也很正常，难道你觉得阿里万千工程师，都是熟悉算法的吗？我敢说，你敢信吗？
+　　还有不少人有一个误区，那就是，“算法好的人，工资都高了不少。”
+　　关于这个，笔者只想说，如果这个人本身就是搞算法类工作的，那无可厚非，但是如果他是搞增删改查的，笔者可以很确定的说，他学算法这个时间去学点别的，工资可能会更高。
+　　所以，不要被这个表象迷惑了，他高工资本质是因为他业余时间学习了才高，而不是因为学习了算法才高。
+　　俗话说学以致用，不光花钱要花到刀刃上，学习也是要学到刀刃上的，因为时间比金钱更珍贵。
+　　当然，以上所说对于算法要按需学习的论调，仅适合于毕业多年，已经进入职场的同学，如果你是一个在校生，那么对于算法这个东西，就只有一个字——学！往死里学！
+ 
+“野生”Java程序员如何学习
+ 
+　　扯完了家常，咱们聊点正事，“野生”程序员，如何度过自己的学习和职场生涯。
+　　关于这个话题，笔者会引用一下上一篇文章中的内容，但是两年过去了，笔者会对其中再做一些补充。
+　　接下来，我们首先看一下之前笔者所写的前奏。
+　　这一部分其实也算是今天的重点，这一部分用来回答很多群里的朋友所问过的问题，那就是LZ你是如何学习Java的，能不能给点建议？
+　　今天LZ是打算来点干货，因此咱们就不说一些学习方法和技巧了，直接来谈每个阶段要学习的内容甚至是一些书籍。这一部分的内容，同样适用于一些希望转行到Java的同学。
+　　在大家看之前，LZ要先声明两点。
+　　1、由于LZ本人是Java后端开发出身，因此所推荐的学习内容是Java Web和Java后端开发的路线，非Java Web和Java后端开发的同学请适当参考其学习思想即可，切勿照搬。
+　　2、下面对于【第一部分】的推荐内容，目的是让你尽快成为一个可以参加工作的Java开发者，更适用于处于待业状态，准备转行Java的同学。如果你是在校学生，务必要在学好基础（比如计算机系统、算法、编译原理等等）的前提下，再考虑去进行下面的学习。
+　　其实这段前奏中，笔者第2点中所说的“处于待业状态，准备转行Java的同学”，就是今天一直提到的“野生”程序员。
+　　笔者这里专门提到这点，也是希望看官们可以明白，本文所有内容，都是围绕着“野生”程序员展开的，如果你不属于其中的一员，那么一定要对文中提到的学习道路自行取舍。
+　　哪怕是“野生”程序员，也不一定就非要完全照搬文中的学习，也要有自己的思考。
+ 
+第一阶段——未参加工作的同学
+ 
+　　这个阶段，其实就是上面笔者提到过的，是“野生”程序员学习入门的阶段。大部分人在这个阶段学习的时候，都是非常痛苦的，所谓万事开头难，是有一定道理的。
+　　不过没关系，谁让你运气好，看到了这篇文章呢（吹逼会不会遭雷劈？），你只需要保持学习的信念，然后按照下面的思路去学习就可以了。
+　　强调一下，对于程序员来说，心中那股信念很重要，你要问笔者这股信念是什么，笔者只能说只可意会不可言传，自己在职场生涯中慢慢体会吧。
+　　一、Java基础
+　　首先去找一个Java的基础教程学一下，这里可以推荐一个地址，或者你也可以参照这个地址上去找相应的视频，地址为http://www.runoob.com/java/java-tutorial.html。
+　　学习Java基础的时候，应该尽量多动手，很多时候，你想当然的事情，等你写出来运行一下，你就会发现不是这么回事儿，不信你就试试。
+　　学完以上内容以后，你应该对Java有一个基本的了解了，你可以用Java语言写出一些简单的程序，并且你用的是最简单的编辑器，比如记事本。
+　　这个时候，不要急于进入下一部分，留下几天好好写一些程序，尽可能熟悉这些基础内容。
+　　二、Web开发
+　　等你写上几天程序以后，你往往会比较迷茫，因为你写的东西似乎看起来毫无用处，比如实现一个简单的计算器，读取一个文件等。这个时候你就应该去学着写一些让你觉得有意思的东西了，所以你应该学习更多的知识。
+　　这些内容主要是Web开发相关的内容，包括HTML/CSS/JS（前端页面）、Servlet/JSP（J2EE）以及Mysql（数据库）相关的知识。
+　　它们的学习顺序应该是从前到后，因此最先学习的应该是HTML/CSS/JS（前端页面），这部分内容你可以去上面的那个runoob网站上找。你可以试着自己写一些页面，当然，你可以尽你最大的努力让它变得最漂亮。这部分内容对于后端Java来说，理论上不是特别重要，但至少要达到可以自己写出一些简单页面的水平。
+　　接下来，你需要学习的是Servlet/JSP（J2EE）部分，这部分是Java后端开发必须非常精通的部分，因此这部分是这三部分中最需要花精力的，而且这个时候，你要学会使用开发工具，而不能再使用记事本了，可以选择eclipse。
+　　当你下载安装好eclipse以后，请视频中的教程一步一步去学习，一定要多动手。关于Servlet/Jsp部分视频的选择，业界比较认可马士兵的视频，因此推荐给大家。当然了，LZ本人并没有看过他的视频，所以不好说的太绝对，如果大家自己有更好的选择，可以坚持自己的，不要被LZ干扰。
+　　原本LZ也是打算出教学视频的，但是由于时间问题，还是决定放弃了。但是如果你看视频的过程中遇到了问题，欢迎来LZ的交流群提问，或者去斗鱼观看LZ的直播提出你的问题，直播地址和群号都在LZ的个人博客左侧。
+　　最后一步，你需要学会使用数据库，mysql是个不错的入门选择，而且Java领域里主流的关系型数据库就是mysql。这部分一般在你学习Servlet/Jsp的时候，就会接触到的，其中的JDBC部分就是数据库相关的部分。你不仅要学会使用JDBC操作数据库，还要学会使用数据库客户端工具，比如navicat，sqlyog，二选一即可。
+　　三、开发框架
+　　当你学会以上内容以后，这个时候你还不足以参加工作，你还需要继续深造。公司里为了提高开发的效率，会使用一些Java Web框架，因此你还需要学习一些开发框架。
+　　目前比较主流的是SSM框架，即spring、springmvc、mybatis。你需要学会这三个框架的搭建，并用它们做出一个简单的增删改查的Web项目。你可以不理解那些配置都是什么含义，以及为什么要这么做，这些留着后面你去了解。但你一定要可以快速的利用它们三个搭建出一个Web框架，你可以记录下你第一次搭建的过程，相信我，你一定会用到的。
+　　还要提一句的是，你在搭建SSM的过程中，可能会经常接触到一个叫maven的工具。这个工具也是你以后工作当中几乎是必须要使用的工具，所以你在搭建SSM的过程中，也可以顺便了解一下maven的知识。在你目前这个阶段，你只需要在网络上了解一下maven基本的使用方法即可，一些高端的用法随着你工作经验的增加，会逐渐接触到的。
+　　关于学习SSM框架的地址给大家推荐一个，这里面有视频，大家可以去观看，地址是http://edu.51cto.com/lesson/id-76468.html。
+　　四、找工作
+　　当你完成开发框架的学习以后，你就该找工作了，在校的找实习，毕业的找全职。与此同时，在找工作的同时，你不应该停下你的学习，准确的说，是你在以后都不能停下学习。
+　　上面这些内容你只是囫囵吞枣的学会了使用，你可以逐步尝试着去了解更多的东西，网络是你最重要的老师。
+　　两年过去了，其实这个学习路线，并没有什么太大的变化，唯一变化的点，就是spring-boot的普及，省去了之前很多框架整合的工作。
+　　回想11年笔者培训那会儿，想要搭建一个SSH框架，还要自己梳理jar包，整合一大堆配置，一不小心就各种报错，而且那异常往往都不是简单的NPE，甭提多苦逼了。
+　　所以，同学们，珍惜你现在的生活吧，呵呵哒。
+ 
+第二阶段——工作0到1年的同学
+ 
+　　这个阶段是所有人都会经历的一个阶段，这个阶段的程序员，心里往往都是非常复杂的，刚找到工作，坐在明亮的办公室里，仿佛自己成为了电视剧中的主角，难免会感到意气风发，但是同时心中又不免会有些恐惧，生怕自己一个不小心，再次被打回原形。
+　　如果你有这样的感觉，不用紧张，这是所有人都要经历的，你要做的，就是让自己彻底沉浸在工作和学习当中即可，原因很简单，因为这个时候——你还是单身狗，-_-。
+　　恭喜你，这个时候，你已经拥有了一份Java的工作。这个阶段是你成长极快的阶段，而且你可能会经常加班。
+　　但是加班不代表你就可以松懈了，永远记得LZ说的那句话，从你入行那一刻起，你就要不停的学习。在这一年里，你至少需要看完《Java编程思想》这本书。这本书的内容是帮助你对于Java有一个更加深入的了解，是Java基础的升级版。
+　　这本书很厚，当初看这本书，LZ花了整整三个月。正常速度的话，应该可以在半年左右看完。LZ这里不要求过高，只要你在一年以内把这本书看完即可。当然了，LZ所说的看完，是充分吸收，而不是读一遍就完事了，因此有些内容你可能会看不止一遍。
+　　总而言之，这个阶段的核心学习思想就是，在工作中实践，并且更加深入的了解Java基础。
+　　补充一下，看书的时候，不要只是看书，一定要经常思考，比如思考你所写的代码，和书中的内容是否有联系。
+　　举个实际的例子，当你看到static这一部分内容的时候，你是否会去翻一下你现在开发的项目里，是否有地方使用static，它使用的目的是什么，它使用的方式是否正确。
+　　只有这样看书，你才能真正的把书看进去，一定要注意，看书的最终目的是为了引发自己的思考，只看书不思考的话，那叫背书，不叫看书。
+　　说到这里，有不少同学问过笔者这样的一个问题，“我看书看不进去怎么办呢？有没有什么好的办法？”
+　　笔者这里可以很负责的告诉你，哪有什么岁月静好，只是有人替你负重前行而已。
+　　所以，不要期望有什么开开心心，快快乐乐就把书给看了的办法，你想的倒还挺美，呵呵哒。
+　　这玩意儿没有什么好办法，就是靠着自己内心的一股信念，强迫自己去看，特别是刚开始的时候，是最困难的，熬过那一段时间，后面看起来相对来说会顺畅很多。
+　　万事开头难，用在看书学习上，也同样适用。
+ 
+第三阶段——工作1到2年的同学
+ 
+　　这个阶段的你一般已经做了一年的增删改查，与刚入职时的意气风发不同，这个时候的你，会开始考虑你未来要走的路，但通常在这个时候，你很难看清前方的路，因此你或许会有些焦虑。
+　　如果你存在这样的焦虑，不必忧心，只需记得，在程序员的道路上，学习能使你变得更加充实，继续沉浸在学习的海洋中吧。
+　　这部分时间段的同学，已经对Java有了一个更加深入的了解。但是对于面向对象的体会可能还不够深刻，编程的时候还停留在完成功能的层次，很少会去考虑设计的问题。
+　　于是这个时候，设计模式就来了。LZ当时看的是《大话设计模式》这本书，并且写了完整版的设计模式博客。因此，LZ要求大家，最多在你工作一年的时候，必须开始写博客，而设计模式就是你博客的开端。
+　　请记住，LZ所提的基本都是最低要求，因此不要有任何松懈的心理，否则五年后，你不要去羡慕别人高于你的工资，也不要去羡慕别人进入了某公司。
+　　这一年，你必须对于设计模式了如指掌，《大话设计模式》可以作为你的开端。当然了，你也可以去看LZ的个人博客去学习，地址是http://www.cnblogs.com/zuoxiaolong/p/pattern26.html。
+　　此外，设计模式并不是你这一年唯一的任务，你还需要看一些关于代码编写优化的书。比如《重构 改善既有代码的设计》，《effective java》。
+　　总而言之，这个阶段，你的核心任务就是提高你的代码能力，要能写出一手优雅的代码。
+　　这个阶段笔者所建议的三本书，其实都是在教你如何更好的编写和设计你的代码，除此之外，设计模式这个系列，也是在锻炼你对问题的抽象能力。
+　　使用Java这种面向对象的语言，抽象能力是非常重要的一项能力，和上面一样，笔者建议，当你看完设计模式、重构和Effective Java这几本书后，一定要结合自己的项目，做深入的思考。
+　　不思考的人生是不完整的，只干活儿不动脑子的人，看似勤奋，实际就是台机器，既然是机器，那就早晚会被取代的。
+　　只有不断思考，总结过往，指导未来的人，才最终会成为这个社会的主导者。
+ 
+第四阶段——工作2到3年的同学
+ 
+　　这个阶段，对于程序员来说，是非常重要的一个阶段。在笔者的学习道路规划中，这个阶段学习的目的，是为了让你从初中级工程师迈入高级，实现质的提升，因此，这一部分的学习，难度会比之前两年的要高。
+　　但既然你已经踏上了这条路，就没有回旋的余地，只能往前冲。
+　　所以，做好心理准备，迎接挑战吧。
+　　有的同学在这个时候觉得自己已经很牛逼了，于是忍不住开始慢慢松懈。请记住，你还嫩的多。
+　　这个阶段，有一本书是你必须看的，它叫做《深入理解Java虚拟机》。这本书绝对是Java开发者最重要的书，没有之一。在LZ眼里，这本书的重要性还要高于《Java编程思想》。
+　　这本书的内容是帮助你全面的了解Java虚拟机，在这个阶段，你一定已经知道Java是运行在JVM之上的。所以，对于JVM，你没有任何理由不了解它。LZ之前有写过JVM系列的知识，可以去看一下，地址是http://www.cnblogs.com/zuoxiaolong/category/508918.html。
+　　另外，在过去2年的工作当中，你肯定或多或少接触过并发。这个时候，你应该去更加深入的了解并发相关的知识，而这部分内容，LZ比较推荐《Java并发编程实战》这本书。只要你把这本书啃下来了，并发的部分基本已经了解了十之六七。
+　　与此同时，这个阶段你要做的事情还远不止如此。这个时候，你应该对于你所使用的框架应该有了更深入的了解，对于Java的类库也有了更深入的了解。因此，你需要去看一些JDK中的类的源码，也包括你所使用的框架的源码。
+　　这些源码能看懂的前提是，你必须对设计模式非常了解。否则的话，你看源码的过程中，永远会有这样那样的疑问，这段代码为什么要这么写？为什么要定义这个接口，它看起来好像很多余？
+　　由此也可以看出，这些学习的过程是环环相扣的，如果你任何一个阶段拉下来了，那么你就真的跟不上了，或者说是一步慢步步慢。而且LZ很负责的告诉你，LZ在这个阶段的时候，所学习的东西远多于这里所罗列出来的。因此千万不要觉得你已经学的很多了，LZ所说的这些都只是最低要求，不光是LZ，很多人在这个时间段所学习的内容都远超本文的范围。
+　　如果你不能跟上节奏的话，若干年后，如果不是程序猿市场还不错的话，你很可能不仅仅是工资比别人低，公司没别人好，而是根本就找不到工作。
+　　总而言之，这个阶段，你需要做的是深入了解Java底层和Java类库（比如并发那本书就是Java并发包java.concurrent的内容），也就是JVM和JDK的相关内容。而且还要更深入的去了解你所使用的框架，方式比较推荐看源码或者看官方文档。
+　　另外，还有一种学习的方式，在2年这个阶段，也应该启用了，那就是造轮子。
+　　不要听信那套“不要重复造轮子”的论调，那是公司为了节省时间成本编造出来的。重复造轮子或许对别人没有价值，因为你造的轮子可能早就有了，而且一般情况下你造出来的轮子还没有现存的好。但是对别人没有价值，不代表对你自己没有价值。
+　　一个造轮子的过程，是一个从无到有的过程。这个过程可以对你进行系统的锻炼，它不仅考察你的编码能力，还考察你的框架设计能力，你需要让你的轮子拥有足够好的扩展性、健壮性。
+　　而且在造轮子的过程中，你会遇到各种各样的难题，这些难题往往又是你学习的契机。当你把轮子造好的时候，你一定会发现，其实你自己收获了很多。
+　　所以，这个阶段，除了上面提到的了解JVM、JDK和框架源码以外，也请你根据别人优秀的源码，去造一个任何你能够想象出来的轮子。
+　　可以看到，这个阶段笔者列的任务非常之多，不仅要了解JVM、并发、JDK类库，还要自己尝试造轮子。
+　　如果你仔细阅读了本文的话，你会发现，阿里社招面试笔者所举的连环炮中，有一大部分都是这个阶段学习的，那些连环炮中，基本上都是JVM、并发和JDK一些类库的内容。
+　　而比较巧的是，阿里大部分招聘要求的年限，都是3年或以上。
+　　这意味着什么？
+　　相信反应快的同学已经明白了，你如果可以在3年内，完成笔者的学习计划的话，那么在你满3年的时候，刚好可以来阿里检验你的学习成果。
+　　所以，阿里中间件欢迎你！（没有违和感的植入两次，今年我要3.75了，-_-）
+ 
+第五阶段——工作3到4年的同学
+ 
+　　这个阶段的同学，很多已经碰到了天花板，在此之前，只要你按部就班的学习，智商又没啥硬伤，90%以上的同学（有人问，剩下的10%呢？笔者只想说，我怎么知道？/尴尬），在工作3年的时候，都可以达到年薪30W左右这个范围（仅指2015年或以后北上深一线城市）。
+　　而如果你的年薪想要更上一层楼（一般10W为一档，比如40W、50W等），仅靠之前的积累是远远不够的，你需要打造你的核心竞争力，在之前的文章里，笔者把这个所谓的核心竞争力，称之为差异性，其实想表达的意思都是一样的。
+　　具体如何在这个阶段学习，还是先看看之前笔者是怎么建议的吧。
+　　这个阶段的同学，提升已经是很难了，而且这个阶段的学习往往会比较多样化。
+　　因为在前3年的过程中，你肯定或多或少接触过一些其它的技术，比如大数据、分布式缓存、分布式消息服务、分布式计算、软负载均衡等等。这些技术，你能精通任何一项，都将是你未来面试时巨大的优势，因此如果你对某一项技术感兴趣的话，这个时候可以深入去研究一下。这项技术不一定是你工作所用到的，但一定是相关的。
+　　而且在研究一门新技术时，切忌朝三暮四。有的同学今天去整整大数据，搞搞Hadoop、hbase一类的东西。过不了一段时间，就觉得没意思，又去研究分布式缓存，比如redis。然后又过不了一段时间，又去研究分布式计算，比如整整Mapreduce或者storm。
+　　结果到最后，搞得自己好像什么都会一样，在简历上大言不惭的写上大数据、分布式缓存、分布式计算都了解，其实任何一个都只是浮于表面。到时候面试官随便一问，就把你给识破了。
+　　一定要记住，作为一个程序猿，平日里所接触的技术可能会很多，但是想要让一门技术成为你的优势，那么一定是你对这门技术的了解强过绝大多数人才行。
+　　因此在这个阶段，你就不能再简单的去学习前3年的内容了，虽然前面的学习如果还不够深入的话依旧要继续，但这个时候你应该更多的考虑建立你的优势，也可以称为差异性。
+　　差异性相信不难理解，就是让你自己变得与众不同。你前面三年的学习足够你成为一名基本合格的Java开发者，但你离成为一名优秀的Java开发者还有很大的距离。
+　　所谓优秀，即能别人所不能。而你前三年所学习的内容，是很多做过几年的Java开发都能够掌握的。那么为了让自己有差异性，你就需要另辟蹊径，找一个方向深入研究下去，以期在将来，你能够成为这个领域的专家，比如分布式计算领域的专家，大数据领域的专家，并发领域的专家等等。
+　　此外，你除了建立你的差异性之外，还要去弥补你基础上的不足，直到现在，LZ都没有提及基础知识。原因是基础是很枯燥无味的，学的太早不仅容易懵逼，而且懵逼的同时还容易产生心理阴影，以至于以后再不想去研究这些基础。但基础又是你深入研究一些领域时所必须掌握的，比如你去研究分布式计算，你不懂算法你玩个毛毛？比如你去做分布式缓存，你对计算机系统的内存不了解，你如何去做缓存？
+　　如果你的基础本来就非常强，那么恭喜你，相信你在之前的工作中已经充分体会到了这些基础对你的帮助。但LZ相信大部分人的基础都很薄弱，哪怕是科班毕业的人，很多人也不敢说自己当初的基础学的多么强大，比如算法、计算机系统原理、编译原理这些。
+　　但是每个人时间都是有限的，而且这些基础的书籍每一本读下来，没个一年半载的，还真拿不下来，因此还是要有所抉择的。虽然艺多不压身，但问题是艺多是有代价的，是需要你付出时间和精力的，而LZ个人更赞成在同等代价的情况下获取最大的收获。
+　　首先，LZ比较推崇的基础书籍有三本，分别是《深入理解计算机系统》，《tcp/ip详解 卷一、二、三》，《数据结构与算法》。其中TCP/IP有三本书，但我们这里把这三本看成是一本大书。
+　　这三本分别适合三种人，《深入理解计算机系统》比较适合一直从事Java Web开发和APP后端开发工作的人群。《tcp/ip详解 卷一、二、三》比较适合做网络编程的人群，比如你使用netty去开发的话，那么就要对TCP/IP有更深入的了解。而《数据结构与算法》这本书，则比较适合做计算研究工作的人，比如刚才提到的分布式计算。
+　　另外，LZ要强调的是，这里所说的适合，并不是其它两本对你就没有用。比如你做Java Web和APP后端开发，《tcp/ip详解 卷一、二、三》这本书对你的作用也是很大的。这里只是分出个主次关系而已，你要是时间足够的话，能把三本都精读那当然最好不过了。但如果时间有限的话，那么就先挑对你帮助最大的书去读。
+　　理论上来讲，这一年你能把这三本其中一本精读下来，就已经非常厉害了。有了基础，有了前面的工作经验，你就可以去开拓属于你的领域了。
+　　在这一年里，一定要规划好自己的领域，建立好自己的优势，制造出差异性。如果你对自己的领域不够清晰的话，随着你工作的时间日益增多，你接触的技术会越来越多，这个时候，你很容易被淹死在技术的海洋里，看似接触的技术越来越多，会用的也越来越多，但你毫无优势。
+　　有的同学可能会问，“LZ，我也不知道我的领域是什么啊？怎么办呢？”
+　　对于这种人，LZ只想说，“卧槽，这还问我？要不干脆我替你学习得了，好不好？”
+　　可以看到，在这个阶段，笔者提到了三本基础书籍（操作系统原理、网络协议、算法），这三本书，会让你更加的接近底层。
+　　如果你仔细品味本文所提到的学习路线，你会注意到，笔者一直在让你由浅入深的学习，也就是一直在让你提高知识的深度，而不是知识的广度。
+　　这就回答了不少同学问过笔者的那个问题，“到底是先有广度后有深度好，还是先有深度后有广度好？”
+　　首先，很多人在思考这个问题的时候，有一个误区，那就是一直在纠结这个问题本身，有的说学习要先学深了，才好提升自己的广度，而有的却说，学习要先了解更多，开阔眼界，才能更好的提升自己的深度。
+　　其实，这种讨论已经本末倒置了，回答这个问题很简单，看市场上需要哪一类，就是哪个好。
+　　所以，把上面那个问题换一下，你就很容易得到答案了，“如果让你来面试一个5年经验以下的程序员，你喜欢在某个领域研究很深的人，还是每个都懂点的人？”
+　　答案是显而易见的，笔者相信大部分人，都会选择在某个领域有深度钻研的人，特别是一些一二线的互联网公司。
+　　或许有的同学在这个时候，会用“全栈工程师”这个概念来试图反驳，毕竟全栈工程师这个概念，有一段时间被炒得很热，很多公司的招聘上都加了这么一条——全栈工程师优先。
+　　全栈工程师这个概念，其实是小公司（或者是大公司的小部门）为了节省人力成本，想让程序员干杂活，却又不好意思直说，因此所编造出来得美丽的谎言，可笑可悲的是，一些不知全栈真正含义的程序员，还以自己是全栈为荣，觉得自己跟上了潮流，真的是被人卖了还在帮人数钱。
+　　笔者在这里可以很负责的说，初入职场的头几年，一定是以提高深度为主才是正道，像全栈工程师这种潮流，就如同最近一些采用非常规手段出名的网红一般，注定只是昙花一现，只有一技傍身，才是长久之计。
+ 
+第六阶段——工作4到5年的同学
+ 
+　　4到5年其实也是一个比较重要的阶段，咱们先来看看，两年前，笔者是怎么来讨论这个阶段的。
+　　经过前面一年的历练，相信你在自己所钻研的领域已经有了自己一定的见解，这个时候，技术上你应该已经遇到瓶颈了。
+　　这个时候不要着急提高自己的技术，已经是时候提高你的影响力了，你可以尝试去一些知名的公司去提高你的背景，你可以发表一些文章去影响更多的人。当然，你也可以去Github创建一个属于你的开源项目，去打造自己的产品。这次的开源项目不同于之前的造轮子，你这个时候是真的要去尽量尝试造出来真正对别人有价值的轮子。
+　　技术学到这个阶段，很容易遇到瓶颈，而且往往达到一定程度后，你再深入下去的收效就真的微乎其微了，除非你是专门搞学术研究的。然而很可惜，大部分程序猿做不到这一步，那是科学家做的事情。
+　　这个时候提高影响力不仅仅是因为技术上容易遇到瓶颈，更多的是影响力可以给你创造更多的机会。程序猿在某种程度上和明星很像，一个好的电视剧和电影就可以成就一批明星，程序猿有的时候也是，一个好的项目就可以成就一群程序猿。
+　　比如国内几个脍炙人口的项目，像淘宝、支付宝、QQ、百度、微信等等。这每一个项目，都成就了一批程序猿。LZ敢说，这里面任何一个项目，如果你是它的核心开发，光是这样一个Title，就已经是你非常大的优势。更何况还不止如此，Title说到底也是个名头，更重要的是，这种项目在做的时候，对你的历练一定也是非常给力的。
+　　而你如果想要参与这样的项目，除了靠运气之外，影响力也是很重要的一个手段。比如你在分布式计算领域有一定的影响力，那么如果有什么好的关于分布式计算的项目，对方就很可能会邀请你。就算人家不邀请你，你自己主动去面试的时候，对方如果知道你在这个领域的影响力，也肯定会起到很大的作用，而这个作用，甚至可能会超过你现在的技术能力。
+　　所以，在这个阶段，你最大的任务是提高自己的影响力，为自己未来的十年工作生涯那一天做准备。如果你能够靠你的影响力和以前积累的技术，参与到一个伟大的项目当中，那么你后面的五年也就有着落了。
+　　当然了，LZ现在满打满算，做程序猿也就4年半不到，因此关于4年到5年这一部分，LZ的见解不一定是对的，就算是对的，也不一定是适合任何人的。所以，希望大家自己有的判断力，去决定到底该如何度过这一年。
+　　从引文中最后一段可以看出，笔者当初写的时候，才工作不到4年半，所以当时笔者也是处于一个摸索的阶段。
+　　如今两年过去了，其实现在来看，到了这个阶段，笔者已经很难再提出有效的建议了。
+　　如果你仔细阅读了本文，会注意到，在前3年的时候，笔者建议的学习道路都是一样的，因为笔者没有给出任何选择的余地，就按照笔者所罗列的去学就可以了。
+　　但是从第3年开始，也就是第3到4年的时候，笔者所给的建议当中，已经出现了选择，比如操作系统原理、网络协议、算法这三本书，再比如你准备钻研的领域，都是在让你自己选择，而不是笔者直接告诉你，应该看哪本书，钻研哪个领域。
+　　这其实是符合常规的学习道路的，初中级工程师的时候，大家学的都一样，3年过去，进阶为高级工程师以后，自然每个人会走向不同的领域。
+　　就和上学一样，小的时候学的都差不多，高中就开始分文理班了，大学就开始选专业了，到了研究生......
+　　额，忽然想起没上过研究生，不太清楚，但学习的道路肯定更加细分了，对不对？
+　　所以，在4到5年这个阶段，其实同样没有固定的道路可走，之前之所以建议大家提高“影响力”，其实现在笔者自己回想起来，其中深层次的原因，是希望大家去一些知名的公司，比如......咳咳.......你懂的（这次完美的暗示，感觉要个4不过分）。
+　　其实在第3-5年这段期间，最好的选择，就是一边提高自己的核心竞争力，一边着手开始进入一家可以“洗白”的公司，或者说是可以提高“影响力”的公司。
+　　什么叫“洗白”？
+　　作为一个“野生”程序员，你通常没有华丽的学历，你能仰仗的，只有自己的实力，这在你做程序员，包括做一些中低层技术管理者的时候，并不会特别阻碍你的发展。
+　　但是当你想往上爬的时候，也就是做高层技术管理者的时候，你没有一定的背景，就算你实力再牛逼，也是无济于事的，这就是笔者所说的“影响力”，其实也可以叫“信服力”。
+　　你听说过哪个公司的CTO或者是技术总监，是没什么学历，也没进过任何大公司，一穷二白的野书生吗？
+　　可能有的人这个时候会举手发言了，“作者你说的不对啊，我见过这样的人啊！啥学历没有，啥大公司没进过，但人家就是CTO，老厉害了呢。”
+　　这只有两种情况，第一种，你说的这个人太厉害，不在本文讨论范围内，呵呵哒，第二种，这个CTO，是一个披着项目经理的皮，管着十人二十人的假CTO，因为公司一共就这么点人，-_-。
+　　总而言之，言而总之，说了这么多，“洗白”的意思就是，在学历不够亮眼的情况下，就想办法提高一下自己的公司背景吧。
+　　最起码，如果哪一天，你真的坐上了CTO的位置，你的简介里可以加这么一句话，“曾就职于某著名XXXX公司，任XXX职位。”
+　　是不是感觉多了一些信服力呢？
+　　所以，还是那句话，阿里中间件欢迎你！5年了，同学，你该回家了！（老板，今年我要5，-_-）
+ 
+第七阶段——工作5年以上的同学
+ 
+　　这一部分之前的文章是没有的，因为那时候笔者自己工作还不到5年。
+　　对于这个阶段的同学来说，与5年前初入职场相比，除了工作上的不同以外，最大的可能是来自于生活上的变化。
+　　所以，这个阶段，咱们不谈工作，不谈学习道路，咱们来谈谈生活。
+　　5年前，你可能还是单身狗，你自由，你拼搏，你各种跳槽，你四处流浪，但是5年过去了，你恐怕已经结婚，甚至孩子都有了，这个时候的你，不得不考虑一些现实问题。
+　　买车？买房？落户？
+　　这每一项，都像一座大山一样，压在奋斗在一线城市的上班族身上。
+　　特别是买房这件事，哪怕你此时已经年薪50W，在一线城市，买房依旧是非常困难。
+　　因为50W扣掉各种乱七八糟，估计得缩水15W，等于是到手只有35W左右了，再加上你的花销，一年能存20W算是非常不错了，而一线的一套房子，首付基本上最少的都要上百万（也就是总价300W，这已经是一线的白菜价了），这都要存5年才够，更何况有多少人在这个时候，年薪还不到50W。
+　　再者说，你敢保证这5年房价不涨？你敢保证这5年你一次都没有大的花销？
+　　有的同学可能要举手说话了，“我爸妈已经给我在北京2环买好房子了呀。”
+　　那笔者只能说，“这位同学，请你出去！呵呵哒......”
+　　咱们这里讨论的，主要是非二代同学，关于二代同学们，笔者给你的建议只有一个，吃好玩好就行，就别出来抢饭碗了，-_-。
+　　好了，言归正传，买房其实只是第一大难关，其它城市笔者不知道，但是在北京，落户比买房还要困难，基本可以说是无路可走，虽说最近出了个积分落户，但怎么看都是中看不中用。
+　　当然，因为笔者早就逃离北京，所以对这个政策没有细研究，有兴趣的同学可以自行去这个地址研究下，看你有没有落户的希望，呵呵哒，http://www.bjrbj.gov.cn/jflh/jf_zcwj/。
+　　说到这里，笔者不得不提到之前写的一篇文章，题目叫做《程序员们，再不行动就来不及了！》，其实讲的就是程序员的安家之道。
+　　具体的这里就不再具体详述了，有兴趣的同学可以自行去看，这里只是引用一下文中的一句话——一线城市奋斗攒钱，二线城市安居乐业。
+　　一句话已经道出了程序员的最终归宿，而在二线城市中，目前最合适的，杭州就是其中之一。
+　　杭州的互联网行业相当发达，工资不比一线的低多少，甚至还可能会更高，但是房子均价却是一线的一半都不到，再加上杭州风景怡人，这样的城市，绝对是最适合在外拼搏的“野生”程序员，安居乐业的好地方。
+　　而从一线转往杭州，总需要一个公司来过渡，那这个最合适的公司也自不用说，咳咳.......你懂的.......（毫无违和感的植入，-_-）
+　　而其他知名互联网公司，大部分都在北上深，就算工资高些，但是从生活压力，和幸福感上来说，相信和杭州这样的宜居城市，是没办法相提并论的。
+　　5年了，5年的奋斗是为了什么？或许在你初入职场的时候，你意气风发，你要改变世界，但是当你结婚生子以后，你会发现，在你改变世界之前，你要先安居乐业，-_-。
+　　所以，还是那句话，咳咳......
+　　阿里中间件欢迎你！
+ 
+“野生”Java程序员学习道路小结
+ 
+　　其实纵观笔者今天所讲的，就是“野生”Java程序员，如何通过学习和努力，进入阿里，并且在杭州买房落户的道路。
+　　是的，这个学习道路的终点，不是帮助你成为技术大牛，而是教你安居乐业。
+　　毕竟咱们在外奋斗，不就是想在大城市扎根安家吗？
+　　至于当初改变世界的梦想，等你把生活安顿好了以后，再去谈改变世界也不晚。
+　　当然了，有一点要强调一下，关于学习的那一部分（也就是前4年），是相对来说比较通用的，基本上所有的Java学习者，都可以适当参考一下笔者当时的学习路线，甚至在极端情况下，照搬也不无不可。（免责声明：学成啥样，作者概不负责，-_-）
+　　但是，对于安家落户的这一部分（也就是4年后），可能并不适用于所有人，比如有的人老家就是深圳这种一线城市的，那自然没有必要来杭州了，毕竟深圳也有阿里中心嘛，-_-。
+　　因此，在工作的前面几年，你可以按照笔者的学习道路去走，但是当你工作到3-4年这个阶段的时候（又或者是你讨到老婆的时候，-_-），一边工作学习，一边你也要规划一下，你未来要去哪个城市安家，进哪家公司。
+　　认准目标以后，你就要好好研究一下这个城市的房价、购房政策、落户政策等，也要研究一下这个公司面试，都倾向于哪方面（比如本文第一部分的内容，-_-），然后等钱存的差不多以后......
+　　好了，之所以后面用省略号，是怕你们现在的老板看到以后，来杭州找我拼命，但是我相信你们看懂了，-_-。
+ 
+文末划重点
+ 
+　　写到现在，整篇文章算是完成了10%，虽然之前已经写了2W多字，但本文最重要的，是在末尾的这一小段文字。
+　　那就是——广告！
+　　咳咳......就是这么直接......为了弥补，最末尾准备了双彩蛋，-_-。
+　　老板说了，评论或者转发数超过1W，今年直接打5，明年直接连升两级，-_-。
+　　反正你是老板，你说啥都对咯，1W......呵呵哒......
+　　咳......说正经的，前不久，笔者给我们的产品开发了一个新功能，虽说这个功能不大，但是它是有划时代意义的一个feature，意味着凡是基于SpringCloud或者ServiceMesh开发的应用，从此在任意一台机器上，都可以轻松的接入EDAS。
+　　就因为这个feature，笔者还有幸成为了云栖大会的演讲嘉宾，上去狠狠的装了一把，/偷笑。
+　　这个feature到底是什么？
+　　热烈欢迎你到这个地址来亲自体验一下，只需要几分钟噢，https://help.aliyun.com/document_detail/72618.html。
+　　什么？你连EDAS都还没听说过？
+　　你真的out了，-_-，EDAS（Enterprise Distributed Application Service）是阿里巴巴中间件团队研发的 PaaS 平台，专门为企业提供高可用和分布式的互联网架构解决方案，赶快到这个地址了解一下吧，https://www.aliyun.com/product/edas。
+ 
+文末双彩蛋
+ 
+　　2W多字的文章，能看到现在的，应该是真爱了。（假装不知道你直接跳到彩蛋，-_-）
+　　多的不说了，献歌一首，《程序员版一人饮酒醉》，/偷笑，https://kg2.qq.com/node/play?s=lW1J2-lrkrR3klvD&shareuid=619598862d2a31893d&topsource。
+　　最后，再附上当时云栖上的宣传照一张，不过要你们自己找，/偷笑，https://yunqi.aliyun.com/2018/shanghai/guest。
+　　我的诚意已经送上，明年能不能升职加薪（迎娶白富美是没戏了），就看你们了，-_-。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+　　很尴尬的是，这个类型的文章其实之前笔者就写过，原文章里，笔者自称LZ（也就是楼主，有人说是老子的简写，笔者只想说，这位同学你站出来，保证不打死你，-_-），原文章名称叫做《回答阿里社招面试如何准备，顺便谈谈对于Java程序猿学习当中各个阶段的建议》，首发于笔者的博客园博客，这里也郑重声明一下，所有内容类似文章均属转载或抄袭。 　　
+　　之前看过的朋友可能会有疑问，为什么要再次捡起这篇文章，还把称谓改成了笔者这么高端的词汇。 　　
+　　简单的解释一下，原因有三个，第一个原因，是说不得的原因，请各位看官自行YY。第二个原因，是两年过去了，笔者在阿里也呆了700+天的时间，所以对这篇文章，又有了一些新的理解和想法，想回过头来，再完善一下。最后一个原因，是因为最近笔者经常刷某音，根据玩某音的经验，发两次会火，哈哈，-_-。 　　
+　　所以，这篇文章，可以说是之前那篇文章的进阶版，为了方便大家观看，本文会引入很多原文章的内容，避免没看过上一篇文章的同学，还需要回过头去翻看。（好吧，我承认是为了偷懒，-_-）
+]WIKIABSTRACTENDWIKITAGBEGIN[
+阿里,社招,面试,Java程序员,学习的道路
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag17.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+去吃离职同事的散伙饭后，回来就被老板炒了鱿鱼！当事人这样说…
+]WIKITITLEENDWIKICONTENTBEGIN[
+工作中有着许多“潜规则”，就算你不是工作新人，也可能一不小心就栽了。就比如说，下面这位网友的朋友，因为和离职同事吃饭的照片发朋友圈后被现任老板看见，面临解雇……
+@没什么大不了101 分享了他的经历：
+
+
+
+吃散伙饭的离职和在职员工（应被访者要求做了面部模糊处理）
+
+这事引起了很多的争议和讨论。很多网友这样说：
+@小雾：老板格局太低。这样的公司，离开未尝不是一件好事。
+@小不点：我离开工作了5年的公司，今年回去吃了好几次，有两次还是前老板娘打电话叫我回去吃龙虾。
+@枫林子：我们公司直接规定在职员工不准有超过三人的私下聚餐，说是不准有私下的小圈子。
+@北大才子：我同事辞职，老板请吃饭送行，说在职这么久辛苦了。（这一条评论获得几千个点赞）
+@不问东西：我离职时老板也是请我和我在公司玩得好的小伙伴们一起吃的饭。
+也有网友觉得，老板这么做也有他（她）的考虑，吃散伙饭发朋友圈的做法未必妥当。
+@去来佤：老板肯定会有老板的考虑吧，拉帮结派的，挖人的数不胜数。
+@小兔子的耳朵：我觉得这件事，有点脑子的都不会发朋友圈，或者直接屏蔽老板。
+@风清杨他爹：我觉得可能没那么简单，离职那位，在职的时候跟老板闹过很不愉快的事情，可能还是很严重的那种，各位同事明知这种情况还吃散伙饭，发朋友圈，变相力挺同事。老板觉得员工不站自己这边，一时不爽就炒人的。我的猜想。
+@佛祖小二：说不定有内幕的，我对象公司里有人拉帮结派，拉一帮同事去别家公司应聘，结果没应聘上。
+【任多多】是基于区块链，大数据，云计算等技术打造的互联网+人才共享创新诚信用工平台，靠谱、安全、高效、有保障：
+1.就近找工作，不用东奔西跑。
+基于LBS地理位置的精准推荐，让雇主更快找到你。
+2.报酬托管，安全无忧。
+接单后报酬由雇主打到任多多平台，完工确认验收后秒速到求职账户，对拖欠工资，克扣工资说不。
+3.去中介，雇主认证。
+让黑中介走开，雇主与找工者直接交易，且雇主是经过严格审核认证，资质真实有效，保障求职者的安全。
+4.信用评价，可查可追溯。
+基于区块链共识机制，不可篡改，数据可查可追溯。
+当事人：感到很冤枉
+记者联系上发帖人小李（化名），90后，他讲述了事情的前因后果：
+我们这帮人都是92、93、94年出生的大学生，不是杭州人，但属于江浙沪一带的，是一支很年轻的队伍，之前在这家外贸公司上班，是私企，第一因为工资待遇不好，二是老板的各种压榨，半年时间有8个人离开了。
+这次是一个女孩，打算6月末要离职回河南老家发展，我们说把大家叫出来一起聚个餐，当是送别这个女孩，我们七个已经离职的，加上这位即将离职的女士，又叫了一男一女在职的两位一共10个人一起聚餐， 费用AA制。
+然后叫服务生给我们拍了这张合影，我们几个都很感慨地发了朋友圈，因为这次聚完又要各奔东西了。
+也正是因为发的这张聚餐照，没想到影响这么大。
+在职的两位，其中有一位是发了这张聚餐照片，但配的文字跟图片无关，另一位朋友圈什么也没发。
+第二天，老板就把这张聚餐照发到公司群里，叫他们两位自己提交离职报告。
+后来没想到帖子火了，老板在新闻推送里也看到了自己这条新闻，还把新闻链接发到公司群里，说，恭喜我们公司上了头条，他还转发到朋友圈里，内心很强大。
+马上，老板把我们这些离职人的微信都删了，看不到他朋友圈的动态了。
+这两位在职的同事感到很冤枉，也很生气，准备周一找老板面谈一次。
+记者问小李，如何评价这位老板？
+小李说，老板脾气大起来，什么都不管的，六亲不认。
+记者又联系上其中一位在职却被老板要求辞退的员工。他说，首先感谢大家对我们的关心，没想到会引起这么大的关注；
+其次，我只是单纯地想让老板给个说法，维护好自己的权益，因为毕竟自己在公司里也兢兢业业，而且这次什么也没做，无缘无故就被解聘。
+“当时老板在群里发出这样的信息，真的很蒙，而且我也很窝火，很憋屈，再次谢谢大家的关心。”他说。
+这两位都不愿提供老板的联系方式。一个说，老板已经把他们的微信拉黑了，所以没有了。另一个说，自己想先用自己的方式处理。
+记者未能采访到事件另一方的公司老板，无法听他（她）讲讲事情经过和真实想法。
+律师说：这样解除劳动合同违法
+浙江劳动律师事务所方华表示，该用人单位解除劳动合同的行为违法。
+因为用人单位解除劳动合同必须符合劳动合同法39、40、41条的规定，不符合上述条文的情形，用人单位不得解除，因此，该单位解除劳动合同是违法的。
+发朋友圈的人，是已离职的人，并不是这些当事人，且同事之间的聚餐也是个人自由，单位不得干涉员工下班后的生活。
+因此，劳动者有权提起劳动仲裁，诉求既可以选择要求继续履行劳动合同，也可以选择要求单位支付违法解除劳动合同的赔偿金，但两种诉求，只能选择一种
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+工作中有着许多“潜规则”，就算你不是工作新人，也可能一不小心就栽了。就比如说，下面这位网友的朋友，因为和离职同事吃饭的照片发朋友圈后被现任老板看见，面临解雇……
+]WIKIABSTRACTENDWIKITAGBEGIN[
+工作,潜规则
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag18.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+认知升级是比其他一切技能都更为重要的思维模式转变
+]WIKITITLEENDWIKICONTENTBEGIN[
+我们在过去的时光中，谈了很多关于技术、关于生活、关于工作、关于学习的话题，这次我们来谈谈关于『认知升级』这个话题。
+实际上，『认知升级』相对来说是个比较抽象的概念，它与掌握一门技术相比不是那么容易看到。因为技术的进步和成长是任何人都可以看到成效的。比如说，你之前不会Netty或是对Netty不是那么了解，通过学习和实践掌握了Netty的方方面面，那这其中的进步就是非常明显的，也是很容易看到成效的。
+与技术上的成长相比，『认知升级』则属于更加抽象，且更具方法论的一个话题了。那么，到底什么是认知呢？
+我个人认为，所谓认知指的是你对这个世界，对身边环境，对于生活、学习与工作的认识以及所采取的行事方法。
+如果说切实掌握了一项技术属于『硬技能』的话，那么『认知升级』则属于软技能这个领域。不过，这里千万不要认为只有『硬技能』才是我们需要掌握的；相反，『软技能』的重要性有时还会超越『硬技能』，为什么这么说呢？
+根据我的经历，诸如『认知』这样的软技能是我们能够切实掌握『硬技能』的一个重要前提和方法论保证。具体来说，我们在学习任何一项新技术时，每个人所采取的方式与方法都是不尽相同的，你有你的方法，他有他的方法，而我显然也有我的方法。不过，无论中间采取了何种方法，我们的目标是不是都是一样，或是几乎是一样的呢？那我们的目标是什么呢？显然，我们的目标是扎实地掌握所学习的这项技术或是这个框架，并且对于一些重要技术与框架来说，掌握的越深入、越扎实越好。
+既然大家的目标是一样的，即我们所要追求的最终结果几乎是无差别的，那么这中间的过程就会对结果起到很大的影响，有的影响是正向的，有的影响则是负向的。
+从我们准备学习一门技术开始，一直到最终彻底掌握它，这中间会经历很多的过程，也会出现很多反复。因此，如何更好地确保中间过程的效率与效果就会对最终的结果产生极大的影响。
+可以将掌握一门技术的过程分为如下几个步骤：
+1. 觉得这门技术挺有用，准备学习。
+2. 搜集学习资料，看官方文档、购买相关图书、看相关视频。
+3. 不停地遇到各种各样的问题，在网上不停地搜索解决方案。
+4. 继续看官方文档、继续看书、继续看视频。
+5. 依然会遇到各种问题，心情比较烦躁地搜索关于问题的解决方案。
+6. 初步掌握了这项技术。
+7. 一段时间没有使用或是没有再看这项技术，开始产生遗忘。
+8. 又经过一段时间，发现之前学习的这项技术很多都已经记不清楚了，甚至当时非常清晰的一些细节已经完全回忆不起来了。
+9. 重新开始学习这门技术。
+10. 历经千辛万苦，终于算是比较深入地掌握了这项技术。
+11. 又有一段时间没有再碰这项技术。
+12. 当有一天翻看这项技术时，发现又有太多、太多的细节已经完全想不起来了。
+13. 感到非常的沮丧。
+14. 感到更加的沮丧。
+15. 重复上述的步骤9。
+是不是上面的这15个步骤感到似曾相识呢？
+原因在于什么？
+根本原因在于，你将太多的精力放在了非核心上面，而对真正的核心之处却从来没有深入思考过。
+经常有人咨询我，为什么我学起一些技术会比较快，而且还比较深入，并且还能将自己的积累很系统地讲出来。但是换作自己，哪怕将一门技术扎实掌握都很难做到呢？其实，这个问题并非个案，而是一个普遍存在的问题。这个普遍存在的问题严重到会成为制约你更好前进的一个巨大障碍。
+正所谓『不识庐山真面目，只缘身在此山中』。我们每个人都上了十多年学，但是很多人甚至连最为重要的学习方法都没有掌握。这里面一方面有学校教育的缺失，另一方面则是作为个体从来没有认真思考过这个问题。
+对于我来说，在上大学时收获的最重要两个方面并非掌握了什么专业知识，而是我在大三时明白了下面两点：
+1. 我知道自己热爱的专业是什么：我不喜欢自己当时所在的专业，我更加喜欢计算机专业，因此确定了跨校跨专业考研的目标。
+2. 我掌握了适合自己的较为高效的自学方式：这一点在后来的时光中对我产生了巨大的帮助，让我能够走得更加从容不迫。
+回到上面的话题，为什么我们在学习一项技术时总是容易遗忘，哪怕当时印象极其深刻的内容，以为自己永远也不会忘记的内容过一阵还是会遗忘呢？
+答案就是『无输出』。
+是的，道理就是如此简单。
+无论你的学习手段是什么，是看官方文档，看书，看文章，还是看视频，这些都是『输入』。是别人的东西灌输到你的脑海中，但它不是你的。
+如何将别人的东西最终变成自己的呢？答案只有一个：输出。即，通过自己的不断输入，在脑海中经过一系列的加工，最终变成自己的输出。即下面这3个过程：
+1. 输入
+2. 加工
+3. 输出。
+很多很多人在学习时，第1个步骤做得都还可以；第2步则因人而异了，有些人会思考，有些人则全盘接受，更可悲的是将网上看来的东西就当作真理一般对待。至于第3步，只有很少很少人才会做。因为，这个步骤是最耗费时间与精力的一个步骤。而且，第3步在你学习的当下你会认为是一个毫无存在必要的步骤，因为你当时自我感觉已经将待学习的这项技术理解的很透彻了。然而，成败就在一念之间。
+对于没有输出的学习，其最终的效果就如同我上面所列出的15个步骤那般。
+为什么总有人说，一项技术只有在项目中实际用过了才能真正掌握，其实这里面暗暗隐含着『输出』这个环节。在项目中实际用过显然就是一种输出方式。但在项目中使用过仅仅是『输出』的一种方式而已，它并非全部，请勿一叶障目，不见树林。
+在项目中使用本质上就是一种『输出』方式，它会令你产生一种错觉：一项技术只有在项目中使用过了才能算真正掌握。
+当下的技术领域如此之多，一个项目充其量只会使用其中很少的一些技术集合。按照上面的理论，难道项目中用不上的技术就不用学了么？答案不言自明。
+其实，在项目中使用会令你加深对一项技术的理解与认识这个观点只不过是对于一种方法论的具体解读而已。
+『输出』的形态其实有很多种：
+1. 在项目中使用
+2. 形成记录（记录到印象笔记或是有道云笔记上），发表到博客、微信公众号等媒体上
+3. 给别人讲
+这里面我只列出了自己所钟爱的3种方式，其他方式也有很多。
+因此，你觉得在项目中使用才算掌握一门技术，在我眼里看来，可谓是『认知』尚未升级，因为你并未透过现象看到本质。在项目中使用可以让我们比较好地学会到应用，但是对于技术的深层次掌握是需要额外下功夫的，这通常都是对自己有着较高要求的人才会做的事情。
+给别人讲是一种我特别推崇的学习方式。通过这个过程，你会发现自己在技术理解上的诸多问题，同时会不断加深对技术细节的把控；可以这么说，将上面3种『输出』方式有机结合起来，会令你真正掌握学习的方法论，也会令你在学习之路上越走越好，越走越踏实。
+可以举一个例子，目前圣思园正在发布『深入理解JVM』课程。实际上，除了本职工作就是与JVM打交道之外，绝大多数人的日常工作并非天天都会接触到JVM，那为何还要学习呢？因为它重要啊！
+既然无法做到天天与JVM打交道，那该如何学习JVM呢？显然，既然无法做到在项目中直接使用，那我们就完全可以用其余2种方法：形成技术+给别人讲。
+这里我也期望你能将自己的学习观点与认知方式分享出来，在评论区写出你的见解。
+欢迎大家加入圣思园，网址：http://iprogramming.cn。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+我们在过去的时光中，谈了很多关于技术、关于生活、关于工作、关于学习的话题，这次我们来谈谈关于『认知升级』这个话题。
+实际上，『认知升级』相对来说是个比较抽象的概念，它与掌握一门技术相比不是那么容易看到。因为技术的进步和成长是任何人都可以看到成效的。比如说，你之前不会Netty或是对Netty不是那么了解，通过学习和实践掌握了Netty的方方面面，那这其中的进步就是非常明显的，也是很容易看到成效的。
+]WIKIABSTRACTENDWIKITAGBEGIN[
+认知升级
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag19.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+事务的定义，事务的作用以及Spring事务原理
+]WIKITITLEENDWIKICONTENTBEGIN[
+(1):事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。通过事务，SQL Server能将逻辑相关的一组操作绑定在一起，以便服务器保持数据的完整性。
+(2):事务通常是以BEGIN TRANSACTION开始，以COMMIT或ROLLBACK结束。
+COMMIT表示提交，即提交事务的所有操作。具体地说就是将事务中所有对数据库的更新写回到磁盘上的物理数据库中去，事务正常结束。
+ROLLBACK表示回滚，即在事务运行的过程中发生了某种故障，事务不能继续进行，系统将事务中对数据库的所有以完成的操作全部撤消，滚回到事务开始的状态。
+(3):事务运行的三种模式:
+A:自动提交事务
+          每条单独的语句都是一个事务。每个语句后都隐含一个COMMIT。
+B:显式事务
+       以BEGIN TRANSACTION显式开始，以COMMIT或ROLLBACK显式结束。
+C:隐性事务
+       在前一个事务完成时，新事务隐式启动，但每个事务仍以COMMIT或ROLLBACK显式结束。
+(4):事务的特性(ACID特性)
+A:原子性(Atomicity)
+       事务是数据库的逻辑工作单位，事务中包括的诸操作要么全做，要么全不做。
+B:一致性(Consistency)
+       事务执行的结果必须是使数据库从一个一致性状态变到另一个一致性状态。一致性与原子性是密切相关的。
+C:隔离性(Isolation)
+      一个事务的执行不能被其他事务干扰。
+D:持续性/永久性(Durability)
+      一个事务一旦提交，它对数据库中数据的改变就应该是永久性的。
+注:事务是恢复和并发控制的基本单位。
+
+Spring事务原理
+统观spring事务，围绕着两个核心PlatformTransactionManager和TransactionStatus 
+
+spring提供了几个关于事务处理的类： 
+TransactionDefinition //事务属性定义
+TranscationStatus //代表了当前的事务，可以提交，回滚。
+PlatformTransactionManager这个是spring提供的用于管理事务的基础接口，其下有一个实现的抽象类AbstractPlatformTransactionManager,我们使用的事务管理类例如DataSourceTransactionManager等都是这个类的子类。
+
+一般事务定义步骤：
+TransactionDefinition td = new TransactionDefinition();
+TransactionStatus ts = transactionManager.getTransaction(td);
+try
+{ //do sth
+transactionManager.commit(ts);
+}
+catch(Exception e){transactionManager.rollback(ts);}
+
+
+spring提供的事务管理可以分为两类：编程式的和声明式的。编程式的，比较灵活，但是代码量大，存在重复的代码比较多；声明式的比编程式的更灵活。
+
+编程式主要使用transactionTemplate。省略了部分的提交，回滚，一系列的事务对象定义，需注入事务管理对象.
+void add()
+{
+    transactionTemplate.execute( new TransactionCallback(){
+        pulic Object doInTransaction(TransactionStatus ts)
+       { //do sth}
+    }
+}
+
+声明式：
+使用TransactionProxyFactoryBean:
+<bean id="userManager" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+   <property name="transactionManager"><ref bean="transactionManager"/></property>
+   <property name="target"><ref local="userManagerTarget"/></property>
+   <property name="transactionAttributes">
+    <props>
+     <prop key="insert*">PROPAGATION_REQUIRED</prop>
+     <prop key="update*">PROPAGATION_REQUIRED</prop>
+     <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+    </props>
+   </property>
+</bean>
+
+围绕Poxy的动态代理 能够自动的提交和回滚事务
+org.springframework.transaction.interceptor.TransactionProxyFactoryBean
+PROPAGATION_REQUIRED--支持当前事务，如果当前没有事务，就新建一个事务。这是最常见的选择。
+PROPAGATION_SUPPORTS--支持当前事务，如果当前没有事务，就以非事务方式执行。
+PROPAGATION_MANDATORY--支持当前事务，如果当前没有事务，就抛出异常。
+PROPAGATION_REQUIRES_NEW--新建事务，如果当前存在事务，把当前事务挂起。
+PROPAGATION_NOT_SUPPORTED--以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。
+PROPAGATION_NEVER--以非事务方式执行，如果当前存在事务，则抛出异常。
+PROPAGATION_NESTED--如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则进行与PROPAGATION_REQUIRED类似的操作。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+(1):事务（Transaction）是并发控制的单位，是用户定义的一个操作序列。这些操作要么都做，要么都不做，是一个不可分割的工作单位。通过事务，SQL Server能将逻辑相关的一组操作绑定在一起，以便服务器保持数据的完整性。
+(2):事务通常是以BEGIN TRANSACTION开始，以COMMIT或ROLLBACK结束。
+COMMIT表示提交，即提交事务的所有操作。具体地说就是将事务中所有对数据库的更新写回到磁盘上的物理数据库中去，事务正常结束。
+ROLLBACK表示回滚，即在事务运行的过程中发生了某种故障，事务不能继续进行，系统将事务中对数据库的所有以完成的操作全部撤消，滚回到事务开始的状态。
+(3):事务运行的三种模式:
+
+]WIKIABSTRACTENDWIKITAGBEGIN[
+事务,自动提交事务,显式事务,隐性事务
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag19.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+事务的概念及事务的四个特性
+]WIKITITLEENDWIKICONTENTBEGIN[
+事务是用户定义的一个数据库操作序列，这些操作要么全做要么全不做，是一个不可分
+割的工作单位。
+事务具有4 个特性：原子性、一致性、隔离性和持续性。
+原子性：事物是数据库的逻辑工作单位，事物中包括得诸操作要么都做，要么都不做。
+一致性：事务执行的结果必须是使数据库从一个一致性状态变到另一个一致性状态。
+隔离性：一个事务的执行不能被其它事物干扰。即一个事物内部的操作及使用的数据对
+其它并发事物是隔离的，并发执行的各个事物之间不能互相烦扰。
+持续性：也称永久性，只一个事物一旦提交，它对数据库中数据的改变就应该是永久性
+的。接下来的其它操作或故障不应该对其执行结果有任何影响。
+5
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+事务是用户定义的一个数据库操作序列，这些操作要么全做要么全不做，是一个不可分
+割的工作单位。
+]WIKIABSTRACTENDWIKITAGBEGIN[
+事务,原子性,一致性,隔离性和持续性。
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag20.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+事务的基本概念和事务的性质
+]WIKITITLEENDWIKICONTENTBEGIN[
+一、事务 
+所谓事务是用户定义的一个数据库操作序列，这些操作要么全做要么全不做，是一个不可分割的工作单位。例如，在关系数据库中，一个事务可以是一条SQL语句、一组SQL语句或者整个程序。 
+事务和程序是两个概念。一般的讲，一个程序中包含多个事务。 
+事务的开始和结束可以由用户显示控制。如果用户没有显示的定义事务，则有DBMS按照缺省规定自动划分事务。在SQL中，定义事务的语句有3条： 
+BEGIN TRANSACTION 
+COMMIT 
+ROLLBACK 
+事务通常以BEGIN TRANSACTION开始，以COMMIT或ROLLBACK结束。COMMIT表示提交，即提交事务的所有操作。具体的说就是将事务中所有对数据库的更新写回到磁盘上的物理数据库中去，事务正常结束。ROLLBACK表示回滚，即在事务运行的过程中发生了某种故障，事务不能继续执行，系统将事务中对数据库的所有已完成的操作全部撤销，回滚到事务开始时的状态。这里的操作指对数据库的更新操作。 
+二、事务的特性 
+事务具有四个特性：原子性（Atomicity）、一致性（Consistency）、隔离性（Isolation）和持续性（Durability）。这四个特性简称为ACID特性（ACID properties）。 
+1.原子性 
+事务是数据库的逻辑工作单位，事务中包括的诸操作要么都做，要么都不做。 
+2.一致性 
+事务执行的结果必须是使数据库从一个一致性状态变成另一个一致性状态。因此当数据库指包含成功事务提供的结果时，就说数据库处于一致性状态。如果数据库系统运行中发生故障，有些事务尚未完成就被迫中断，这些未完成事务对数据库所做的修改有一部分一写入物理数据库，这时数据库就处于一种不正确的状态，或者说是不一致的状态。例如，在银行中有A、B两个账号，现在公司想从账号A中取出一万元，存入账号B中。那么就可以定义一个事务，改事务包括两个操作，第一个操作是从账号A中减去一万元，第二个操作是向账号B中加入一万元。这两个操作要么全做，要么全不做。全做或者全不做，数据库都处于一致性状态。如果只做一个操作则用户逻辑上就会发生错误，少了一万元，这时数据库就初一不一致性状态。可见一致性与原子性密切相关。 
+3.隔离性 
+一个事务的执行不能被其他事务干扰。即一个事务内部的操作及使用的数据对其他并发事务是隔离的，并发执行的各个事务之间不能相互干扰。 
+4.持续性 
+持续性也称永久性（Permanence），指一个事务一旦提交，它对数据库中的数据的改变就应该是永久性的。接下来的其他操作或故障不应该对其执行结果有任何影响。 
+事务是恢复和并发控制的基本单位。所以下面的考虑均与事务为对象。 
+保证事务ACID特性是事务管理的重要任务。事务ACID特性可能遭到破坏的因素有： 
+（1）多个事务并行运行时，不同事务的操作交叉执行； 
+（2）事务在运行过程中被强行停止。 
+在第一种情况下，数据库管理熊必须保证多个事务的交叉运行不影响这些事务的原子性。在第二种情况下，数据库管理熊必须保证被强行终止的事务对数据库和其他事务没有任何影响。 
+这些就是数据库管理系统中恢复机制和并发控制机制的责任。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+所谓事务是用户定义的一个数据库操作序列，这些操作要么全做要么全不做，是一个不可分割的工作单位。例如，在关系数据库中，一个事务可以是一条SQL语句、一组SQL语句或者整个程序。 
+]WIKIABSTRACTENDWIKITAGBEGIN[
+事务,原子性,一致性,隔离性和持续性。
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+WIKILINKBEGIN[
+http://xgag21.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+一：事务（transaction）的概念与特性
+]WIKITITLEENDWIKICONTENTBEGIN[
+一：事务（transaction）的概念与特性
+    事务是一系列操作，这些操作组成了一个逻辑工作单元。这个逻辑工作
+    单元中的操作作为一个整体，要么全部成功，要么全部失败。
+    事务的特性（ACID）：
+    1.原子性（Atomicity）：
+      事务中的一系列操作作为一个原子性的逻辑工作单元，这个逻辑工作
+      单元中的操作要么全部成功，要么全部失败。
+
+    2.一致性（Consistency）：
+      事务操作之前与操作之后数据库系统的数据状态是从一种一致性状态
+      转换到另一种一致性状态。
+
+    3.隔离性(Isolation)
+      多个事务并发执行时，互相不能看到对方的操作过程。
+
+    4.持久性（Durability）
+      一旦事务执行成功，对数据库系统的影响是持久性的。
+
+二：事务的隔离级别
+    事务的隔离级别有四个：
+    1. 读未提交(read uncommitted)
+       可能会发生脏读现象（读取了其他事务未提交的数据）、
+       不可重复读、幻读（两次读取的行数不一致）。
+
+    2. 读提交(read committed)
+       可能发生不可重复读、幻读（两次读取的行数不一致）。
+
+    3. 可重读级别(repeatable read)
+       MySQL默认隔离级别。注意：MySQL的InnoDB存储引擎已经解决了幻读问题。
+
+    4. 串行化级别(serializable)
+       隔离级别最高，甚至针对普通的查询操作都会加锁。
+       eg: select * from student; 执行该查询会默认加读锁(共享锁)。
+
+三：读锁(共享锁)与写锁(排他锁)
+    读锁（共享锁）：一个事务对某些数据加上了读锁，其他事务对这些数据也可以
+                    加读锁;但是其他事务不能对这些数据加写锁。
+    写锁（排他锁）：一个事务一旦对数据加上了写锁，则其他事务既不能对数据加
+                    读锁，也不能加写锁。
+
+    一般情况下，不需要显式对数据加锁，因为DBMS会自动为我们添加锁。
+    
+    
+    添加读锁：
+    select 字段列表 from 表名称 lock in share mode;
+
+    还要注意：在事务的“串行化隔离级别中”，"select 字段列表 from 表名称"也会
+              自动加读锁。
+
+    添加写锁：
+    update、delete会自动添加写锁。
+    select 字段列表 from 表名称 for update;
+
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+一：事务（transaction）的概念与特性
+    事务是一系列操作，这些操作组成了一个逻辑工作单元。这个逻辑工作
+    单元中的操作作为一个整体，要么全部成功，要么全部失败。
+]WIKIABSTRACTENDWIKITAGBEGIN[
+事务,transaction,,概念,特性
+]WIKITAGENDWIKICLASSESBEGIN[
+GROUP[KERNEL]FEATURE[VOS]classes[VOS]
+]WIKICLASSESEND
+
+
+WIKILINKBEGIN[
+http://xgag23.CSDN.COM
+]WIKILINKENDWIKITITLEBEGIN[
+专利撰写一二三(2)：专利基础知识
+]WIKITITLEENDWIKICONTENTBEGIN[
+在上面的文章中，我为大家介绍了专利对于国家、公司和个人的重要性。看了文章之后，大家不要一下子就对专利肃然起敬，它实际上和大家平时写的文章和论文一样，也是很普通的东西。“万层大楼平地起”，在这篇文章中，我们来学习专利的基础知识，包括：专利的分类、专利权期限、专利申请人和发明人、专利年费等。本文介绍的内容主要参考的是我国2009年10月1日开始施行的《中华人民共和国专利法》(以下简称《专利法》)。
+
+专利的分类
+在我们的周围，对事物分门别类已是司空见怪。我们不光对人分类(婴儿、小孩、成人、老人)，还要对车分类(自行车、摩托车、三轮车、小汽车、大货车、公交车。。。)，甚至还要对垃圾分类(可回收和不可回收的)。说到对垃圾分类，这里要多说几句，之前我在得到上听了《薛兆丰的经济学课》，薛老师说日本人将垃圾分为十几类，每种垃圾都要专门运输和处理，虽然垃圾处理厂早就建议政府取消垃圾分类，但已习惯于垃圾分类的人们强烈反对取消，他们对于垃圾分类已经产生乐趣了，真是一个奇葩的民族！
+
+闲话扯远了，既然任何事物都要分类，那么专利也自然需要分类了。我国专利法将专利分为三种：发明专利、实用新型专利和外观设计专利。我们逐一进行说明。
+
+发明专利的定义是：对产品、方法或者其改进所提出的新的技术方案。一看到“发明”二字，大家可能就会想到爱迪生发明电灯、贝尔发明电话，以为一定是要做出一个前无古人的东西才能称之为发明，其实不是这样的。当然，电灯和电话也确实属于发明的范畴，但我更愿意称它们为发明中的发明，或叫超级发明，因为历史上这种彻底改变人类文明进程的发明并不多见。我们这里提到的发明是指一项新的解决问题的方案或是一种新的构思，并不要求它可以直接应用于工业生产而做出产品来，只要是一种比较合理的设想都可以。举个例子来说，当前我们的普通出行主要靠的是小车、公交车、地铁等交通工具，但考虑到目前拥堵的现状，我们可以提出在每人身上安装一套可伸缩的飞行设备，当需要出行时，设备自动弹出来，就像给每个人身上装了一套翅膀一样，让人可以直接在空中飞，这样地面上就不会这么拥挤了。那么，我们的这个看似异想天开的想法实际上就可以申请为一个发明专利，只要我们能够描述清楚设备安装和使用的全过程。
+
+实用新型专利的定义是：对产品的形状、构造或者其结合所提出的适于实用的新的技术方案。从“实用新型”这个名字就可以看出，这个专利主要注重实用性。虽然实用新型专利也是一种新的技术方案，但它的含金量要远远低于发明专利，它只保护有一定形状或结构的新产品，不保护方法以及没有固定形状的物质。举个例子来说，以前我们小的时候，家里安装的窗户都是向外开的，通过一个挂钩支撑起来；而现在我看大部分人家里的窗户都是横向滑动那种，结构和以前完全不一样。这样一个不同原理和结构的窗户就可以申请一个实用新型专利。
+
+外观设计专利的定义是：对产品的形状、图案或其结合以及色彩与形状、图案的结合所作出的富有美感并适于工业应用的新设计。这个专利比较容易理解，主要涉及到产品的外观。拿我们形影不离的手机来说，之前的大哥大、诺基亚等手机的外观大都是矩形的，也就是说，它们的四个角都是直角；这时，如果一个手机厂商(比如苹果)设计一款手机的外观是圆角矩形的，那么这个外观就可以申请外观专利。话又说回来，正因为每个人的审美不一样，外观专利是最好申请的，只要你的东西不要和别人完全一样，那么申请成功的可能性就很大。
+
+专利权期限
+看了上面对专利分类的描述，你可能会问：是不是申请一个专利之后，专利的所有权就永远属于我了呢？不是这样的。不管是对于发明专利，还是实用新型专利，抑或是外观设计专利，都是有时效性限制的。也就是说，有一个专利权期限。
+
+在天朝，发明专利权的有效期限为20年，实用新型专利和外观设计专利的有效期限为10年。值得注意的是，专利的有效期限都是从申请日起开始计算。也就是说，专利申请是哪天提交给专利局的，有效期就是从哪天开始算起走。
+
+根据我个人的经验，我国一个发明专利从申请到授权至少要两年以上的时间，实用新型专利和外观设计专利从申请到授权大约要半年时间，这可能也是为什么发明专利有效期限为20年而另两个专利有效期限为10年的原因之一吧。从这里也可以看出，发明专利的含金量要更高些。
+
+正因为专利有一个有效的期限，所以一般的企业在申请了专利之后，都会想法设法地确保在专利有效期限到来之前自己用专利做出的产品能够占领市场，并收回研发的成本。在医药行业，药品研发周期很长，当药品研发出来的时候，专利的有效期限也快到了，所以，很多药物才会非常的贵，医药企业都想在专利保护期内收回高额的研发成本。
+
+专利申请人和发明人
+一般说来，有两种方式申请专利，第一种(也是最常见的一种)是员工在工作中写出了专利，单位认为这个专利有价值，于是决定向专利局提交专利申请；另外一种是个人利用业余时间搞点与单位工作无关的发明创造，并以个人的名义申请专利。在前一种情况中，专利的申请人是单位，专利的发明人是撰写专利的员工；在后一种情况中，专利的申请人和发明人都是专利撰写者本人。
+
+根据我个人的经验，以单位的形式去申请专利对于个人来说比较的省事，因为你只需要把专利文件写好就OK了，所以我们在网上查到的专利中，有超过90%的专利的申请人是单位。如果要想以个人的名义申请，要注意的是，看单位是否规定员工在业余时间所做的发明创造的所有权归属于单位，否则一旦申请下来，可能会导致员工和单位之间的纠纷。
+
+专利年费
+就像人的一生难以避免的是死亡和纳税一样，申请的专利也必须要缴纳年费。专利年费是指从被授予专利权的当年开始，在专利权有效期内逐年向专利局缴纳的费用。有关每种专利年费收费的清单，大家可以在网上查询到，我在这里就不用详细介绍了。对于在单位申请的专利，由单位缴纳年费，大家就可以不用关心实际缴纳多少了。
+
+大家可能会问，我的专利都申请成功了，为啥每年还要缴纳费用呢？实际上，只有你缴纳了费用，专利局才认定这个专利还是属于你的，你还在乎它。如果后面有公司侵犯了你的专利，那么你就可以要求对方付费或赔偿。这个年费实际上就类似于一种保护费的性质(我大天朝的保护费真多)。
+
+总结
+我们来总结一下这篇文章的主要内容，在本文中，我们依次了解了专利的分类、专利权期限、专利申请人和发明人、专利年费等内容，这些都是专利的基础知识。只有对专利的分类有所了解，当我们打算申请一个专利时，才能够判断到底应该申请哪种类型的专利。
+
+总的说来，专利知识包罗万象，有技术方面的知识，有写作方面的知识，还有法律法规方面的知识。大家除了要会写专利，了解基本的专利知识也是很有必要的。
+]WIKICONTENTENDWIKIABSTRACTBEGIN[
+在上面的文章中，我为大家介绍了专利对于国家、公司和个人的重要性。看了文章之后，大家不要一下子就对专利肃然起敬，它实际上和大家平时写的文章和论文一样，也是很普通的东西。“万层大楼平地起”，在这篇文章中，我们来学习专利的基础知识，包括：专利的分类、专利权期限、专利申请人和发明人、专利年费等。本文介绍的内容主要参考的是我国2009年10月1日开始施行的《中华人民共和国专利法》(以下简称《专利法》)。
+]WIKIABSTRACTENDWIKITAGBEGIN[
+专利
 ]WIKITAGENDWIKICLASSESBEGIN[
 GROUP[KERNEL]FEATURE[VOS]classes[VOS]
 ]WIKICLASSESEND
