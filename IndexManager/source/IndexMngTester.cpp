@@ -5,8 +5,14 @@ using namespace std;
 #pragma comment(lib,"IndexMng.lib")
 #endif
 
+extern int ParserInvertedFile(string path);
+
 int main()
 {
+    
+    ParserInvertedFile("/Users/kinmioliu/Develop/Python/assistant/assistant/inverted_file.txt");
+    return 0;
+    
 	cout << "this is IndexMng Tester!\n";
 	int testdll = 0;
     testdll = sum(5, 6);

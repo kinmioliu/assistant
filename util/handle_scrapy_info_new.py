@@ -44,6 +44,15 @@ class WikiRecord(CommonRecord):
         return self.set_attr(attrs[0], attrs[1], attrs[2], tags, classes[0][0], classes[0][1], classes[0][2])
 
     def set_attr(self, Link, Title, Content, Abstract, tags ,Group, Feature, Classes):
+        #1. 将所有的空白字符转换成' '
+        new_content = Content.replace('\s',' ').replace('\r\n', ' ').replace('\t', ' ').replace('\n',' ')
+        #2. 将连续的空格转换成单个' '
+        while new_content.find('  ') >= 0 :
+            new_content = new_content.replace('  ', ' ')
+        if (len(Content) > len(new_content)):
+            print(new_content)
+            print("完毕!\n完毕!\n完毕!\n完毕!\n完毕!\n完毕!\n完毕!\n")
+        print("完了\n完了\n完了\n完了\n完了\n完了\n完了\n")
         self.Link = Link
         self.Title = Title
         self.Abstract = Abstract
@@ -51,8 +60,8 @@ class WikiRecord(CommonRecord):
         self.Group = Group
         self.Feature = Feature
         self.Classes = Classes
-        self.Content = Content
-        conf.DUMP(self.__str__())
+        self.Content = new_content
+        #conf.DUMP(self.__str__())
 
     def update_or_create(self):
 
@@ -136,7 +145,7 @@ class WikiParser(CommonParser):
                         search_eof_file = True
                     break
 
-        print(tag)
+        conf.DUMP(tag)
         return 0x5555
 
 

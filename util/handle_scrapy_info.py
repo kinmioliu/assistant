@@ -44,15 +44,21 @@ class WikiRecord(CommonRecord):
         return self.set_attr(attrs[0], attrs[1], attrs[2], attrs[3], tags, classes[0][0], classes[0][1], classes[0][2])
 
     def set_attr(self, Link, Title, Content, Abstract, tags ,Group, Feature, Classes):
+        #1. 将所有的空白字符转换成' '
+        new_content = Content.replace('\s',' ').replace('\r\n', ' ').replace('\t', ' ').replace('\n',' ')
+        #2. 将连续的空格转换成单个' ',部分那种比较特殊的字符替换不了
+        while new_content.find('  ') >= 0 :
+            new_content = new_content.replace('  ', ' ')
+
         self.Link = Link
         self.Title = Title
-        self.Content = Content
+        self.Content = new_content
         self.Abstract = Abstract
         self.tags = tags
         self.Group = Group
         self.Feature = Feature
         self.Classes = Classes
-        conf.DUMP(self.__str__())
+        #conf.DUMP(self.__str__())
 
     def update_or_create(self):
 

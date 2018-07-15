@@ -191,8 +191,9 @@
         {% for wiki in wikiinfo %}
         <div class="well searched_solution">
             <span class="wiki_info"><a href="{{wiki.link}}">{{ wiki.title }}</a></span><br>
-            <span class="wiki_abstract">{{ wiki.abstract }}</a></span><br>
-            <span class="wiki_class"> 分类:{{ wiki.group }}>{{ wiki.feature }}>{{ wiki.classes }}></a></span>
+            <span class="wiki_abstract">摘要:{{ wiki.abstract}}...</a></span><br>
+            <span class="wiki_content">内容:{{ wiki.content}}</span><br>
+            <span class="wiki_class">分类:{{ wiki.group }}>{{ wiki.feature }}>{{ wiki.classes }}></a></span>
         </div>
         {% endfor %}
 

@@ -10,8 +10,8 @@
 #include "IndexMng.h"
 #include <stdarg.h>
 
-map<unsigned int, PostingList> Index;
-map<unsigned int, unsigned int> DocInfoTable;
+extern map<unsigned int, PostingList> Index;
+extern map<unsigned int, unsigned int> DocInfoTable;
 
 
 extern void ExcuteTfIDF();

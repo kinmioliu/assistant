@@ -265,7 +265,29 @@ class StructResutlPointer(Structure):
                ('Result8', c_uint),
                ('Result9', c_uint),
                ('Result10', c_uint),
+               ('Loc1', c_int),
+               ('Loc2', c_int),
+               ('Loc3', c_int),
+               ('Loc4', c_int),
+               ('Loc5', c_int),
+               ('Loc6', c_int),
+               ('Loc7', c_int),
+               ('Loc8', c_int),
+               ('Loc9', c_int),
+               ('Loc10', c_int),
                ]
+
+class WikiInfoView:
+    def __init__(self, link, title, abstract, content, group, feature, classes):
+        self.link = link
+        self.title = title
+        self.abstract = abstract
+        self.content = content
+        self.group = group
+        self.feature = feature
+        self.classes = classes
+        pass
+
 
 class SearchResultPage(View):
 
@@ -408,6 +430,7 @@ class SearchResultPage(View):
         query_result_total_cnts = p.contents.ResultCnts
         query_result_size = p.contents.PageCnt
         query_result_list = []
+        wiki_pos_list  = []
         query_result_list.append(p.contents.Result1)
         query_result_list.append(p.contents.Result2)
         query_result_list.append(p.contents.Result3)
@@ -418,10 +441,21 @@ class SearchResultPage(View):
         query_result_list.append(p.contents.Result8)
         query_result_list.append(p.contents.Result9)
         query_result_list.append(p.contents.Result10)
+        wiki_pos_list.append(p.contents.Loc1)
+        wiki_pos_list.append(p.contents.Loc2)
+        wiki_pos_list.append(p.contents.Loc3)
+        wiki_pos_list.append(p.contents.Loc4)
+        wiki_pos_list.append(p.contents.Loc5)
+        wiki_pos_list.append(p.contents.Loc6)
+        wiki_pos_list.append(p.contents.Loc7)
+        wiki_pos_list.append(p.contents.Loc8)
+        wiki_pos_list.append(p.contents.Loc9)
+        wiki_pos_list.append(p.contents.Loc10)
 
         print("#查询结果")
-        for q in query_result_list:
+        for q,p in zip(query_result_list, wiki_pos_list):
             print(hex(q))
+            print(p)
         #显示查询结果
         query_result = self.get_all_query_result(query_result_list, query_type)
 
@@ -460,12 +494,21 @@ class SearchResultPage(View):
             elif isinstance(item, EVTCmdInfo):
                 evtinfo_list.append(item)
 
+        #将wikiinfo 转换成 待显示的内容
+        wikilist = list()
+        for (wikiinfo, pos) in zip(wikiinfo_list, wiki_pos_list):
+            content_pos = pos;
+            if (pos > 10):
+                content_pos = pos - 10;
+            newwiki = WikiInfoView(wikiinfo.link, wikiinfo.title,wikiinfo.abstract[0:50], wikiinfo.content[content_pos:content_pos+150], wikiinfo.group, wikiinfo.feature, wikiinfo.classes)
+            wikilist.append(newwiki)
+
         RspParas['solutions'] = solution_list
         RspParas['cmdinfos'] = cmdinfo_list
         RspParas['fileinfos'] = fileinfo_list
         RspParas['resourceint'] = resourceint_list
         RspParas['resourcerue'] = resourcerud_list
-        RspParas['wikiinfo'] = wikiinfo_list
+        RspParas['wikiinfo'] = wikilist
         RspParas['evtinfos'] = evtinfo_list
 
         # after_range_num = 2

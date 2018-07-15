@@ -2,6 +2,19 @@ import re
 import os
 from ctypes import *
 
+tempstr = r"类和对象的定义    面向对象             面向对象是一种程序设计范型，" \
+          "  同时也" \
+          "   是程 " \
+          "             序开发的一种方法。   对象是指类的实例，将对象作为程序的基本单元，将程序和数据封装其中，以提高软件的重用性、灵活性和扩展性。  需要明确的是：C语言是面向过程语言，而C++不是纯粹的面向对象语言，而是基于面向对象的语言，因为C++包含C语言的部分。 "
+print(tempstr)
+# 1. 将所有的空白字符转换成' '
+new_content =  tempstr.replace('\s', ' ').replace('\r\n', ' ').replace('\t', ' ')
+# 2. 将连续的空格转换成单个' '
+while new_content.find('  ') >= 0:
+    new_content = new_content.replace('  ', ' ')
+
+print(new_content)
+
 test = cdll.LoadLibrary(r"F:\pyhton\project\site\assistant\IndexDLL\x64\Debug\IndexDLL.dll")
 #test = WinDLL(r"F:\pyhton\project\site\assistant\util\IndexDLL.dll")
 print(test)

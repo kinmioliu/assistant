@@ -1,0 +1,113 @@
+APPMCSP				PER				STATE0
+APPMCSP	PER	STATE1
+APPMCSP	PER	STATE2
+APPMCSP	PER	STATE3
+APPMCSP	PER	STATE4
+appcfg-delay-time1
+appcfg-delay-time2
+appcfg-delay-time3
+appcfg-delay-time4
+appcfg-delay-time5
+appcfg-delay-time6
+appcfg-delay-time7
+appcfg-delay-time8
+appcfg-delay-time9
+appcfg-delay-time10
+appcfg-delay-time11
+appcfg-delay-time12
+appcfg-delay-time13
+appcfg-delay-time14
+appcfg-delay-time15
+appcfg-delay-time16
+appcfg-delay-time17
+appcfg-delay-time18
+appcfg-delay-time19
+appcfg-delay-time20
+FRAMEMCSPPER			STATE0
+FRAMEMCSP	PER	STATE1
+FRAMEMCSP	PER	STATE2
+FRAMEMCSP	PER	STATE3
+FRAMEMCSP	PER	STATE4
+framecfg-delay-time1
+framecfg-delay-time2
+framecfg-delay-time3
+framecfg-delay-time4
+framecfg-delay-time5
+framecfg-delay-time6
+framecfg-delay-time7
+framecfg-delay-time8
+framecfg-delay-time9
+framecfg-delay-time10
+framecfg-delay-time11
+framecfg-delay-time12
+framecfg-delay-time13
+framecfg-delay-time14
+framecfg-delay-time15
+framecfg-delay-time16
+framecfg-delay-time17
+framecfg-delay-time18
+framecfg-delay-time19
+framecfg-delay-time20
+MML
+适配层
+
+类
+对象
+
+1. Future设计模式
+2. Master-Worker 
+3. 生产者-消费者模型
+
+        封装
+继承
+多态
+
+C++
+C#
+数据传递
+类型转换
+
+linux
+线程栈
+进程栈
+
+UML类图
+
+标识符
+关键字
+
+总结
+
+多态
+重写
+
+数据库事务
+分布式理论
+
+阿里
+社招
+面试
+Java程序员
+学习的道路
+
+工作
+潜规则
+
+认知升级
+
+事务
+自动提交事务
+显式事务
+隐性事务
+
+原子性
+一致性
+隔离性和持续性。
+
+transaction
+
+概念
+特性
+
+专利
+

@@ -126,6 +126,7 @@ STATIC_URL = '/static/'
 
 DEBUG_TOOLBAR_CONFIG = {'JQUERY_URL': r"/static/js/jquery-1.12.4.min.js"}
 
+#g++ BM25Score.cpp IndexInfoRegister_v2.cpp main.cpp -I ../pubh -fPIC -shared -o IndexMng.so
 #IndexDllObj = cdll.LoadLibrary("/IndexDLL/Debug/IndexDLL.dll")
 if (platform.system() == "Windows"):
     IndexDllObj = cdll.LoadLibrary("IndexMng.dll")
@@ -133,5 +134,6 @@ if (platform.system() == "Windows"):
     print(IndexDllObj.sum(1,5))
 else:
     IndexDllObj = cdll.LoadLibrary("IndexMng.so")
+    IndexDllObj.ParserInvertedFile_ForPython();
     print("linux")
     print(IndexDllObj.sum(1,5))

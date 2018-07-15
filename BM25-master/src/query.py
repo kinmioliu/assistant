@@ -22,7 +22,7 @@ class QueryProcessor:
 			if term in self.index:
 				doc_dict = self.index[term] # retrieve index entry
 				for docid, freq in doc_dict.iteritems(): #for each document and its word frequency
-					doclen = len(doc_dict)
+					doclen = len(doc_dict) #df
 					tf = freq
 					dltlen = len(self.dlt) #文档总数量
 					doc_len = self.dlt.get_length(docid)

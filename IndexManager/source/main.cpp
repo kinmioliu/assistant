@@ -16,12 +16,15 @@
 using namespace std;
 
 // tokenid|count|<docid,fk>,<docid,fk>,<docid,fk>
-extern map<unsigned int, PostingList> Index;
-extern map<unsigned int, unsigned int> DocInfoTable;
+map<unsigned int, PostingList> Index;
+map<unsigned int, unsigned int> DocInfoTable;
+map<unsigned int, WikiDocInfo> DocInfoTableWiki;
+
 unsigned int WIKI_TYPE = 0x01000000;
 unsigned int MML_TYPE = 0x02000000;
-unsigned int EVT_TYPE = 0x03000000;
-unsigned int INTRES_TYPE = 0x04000000;
+unsigned int EVT_TYPE = 0x04000000;
+unsigned int INTRES_TYPE = 0x08000000;
+unsigned int ID_MASK = 0x00ffffff;
 
 float g_AverageDocLen = 0;
 
@@ -115,6 +118,15 @@ int compare(const PAIR& x, const PAIR& y)
 {
     return  y.second < x.second;
 }
+
+typedef pair<unsigned int, unsigned int> DocWord;
+// doctid,score
+typedef pair<DocWord, double> PAIR_V2;
+int compare_v2(const PAIR_V2& x, const PAIR_V2& y)
+{
+    return  y.second < x.second;
+}
+
 
 int QueryDocIdByTokensImpl(vector<unsigned int> &Tokens, unsigned int Page, unsigned int PageSize,unsigned int &ResultCnts, vector<unsigned int> &Result)
 {
@@ -271,10 +283,62 @@ int QueryDocIdByTokensImpl_V2(vector<unsigned int> &Tokens, unsigned int Page, u
     }
     return 0;
 }
-
-int QueryDocIdByTokensImpl_BM25(vector<unsigned int> &Tokens, unsigned int Page, unsigned int PageSize, unsigned int QueryClass, unsigned int &ResultCnts, vector<unsigned int> &Result)
+int CalculateLocation(unsigned int docId, unsigned int wordId)
 {
-    map<unsigned int, float > QueryDocScore;
+    //判断这个单词是否在索引当中，若不存在，就跳过
+    map<unsigned int, PostingList>::iterator IndexIter = Index.find(wordId);
+    if (IndexIter == Index.end())
+    {
+        //若找不到，那么就从0开始显示
+        return 0;
+    }
+    //从这个postlist中找到对应的docid
+    unsigned int DF = IndexIter->second.DF;
+    for(unsigned int docIndex = 0; docIndex < DF; docIndex++)
+    {
+        unsigned int indexDocId = IndexIter->second.DocIDList[docIndex];
+        //判断是否匹配
+        if (docId == indexDocId)
+        {
+            //暂时先返回第一个位置
+            //
+            return IndexIter->second.DocPosition[docIndex][0];
+        }
+    }
+    return 0;
+}
+
+typedef struct QueryScore
+{
+    unsigned int wordId;
+    unsigned int contnetPos;
+    float curWordScore;
+    float totalScore;
+}QueryScore;
+
+bool IsInContent(const PostingList& postingList, int DocIndex, unsigned int queryClass, int &contentPos)
+{
+    const vector<int> & position = postingList.DocPosition[DocIndex];
+    if (queryClass != WIKI_TYPE)
+    {
+        return false;
+    }
+    const WikiDocInfo& docInfo = DocInfoTableWiki[postingList.DocIDList[DocIndex]];
+    int contentbegin = docInfo.titleLen + docInfo.abstractLen;
+    for (int posIndex = 0; posIndex < position.size(); posIndex++)
+    {
+        if (position[posIndex] >= contentbegin)
+        {
+            contentPos =  position[posIndex] - contentbegin;
+            return true;
+        }
+    }
+    return false;
+}
+
+int QueryDocIdByTokensImpl_BM25(vector<unsigned int> &Tokens, unsigned int Page, unsigned int PageSize, unsigned int QueryClass, unsigned int &ResultCnts, vector<unsigned int> &Result, vector<int> &Loc)
+{
+    map<unsigned int, QueryScore > QueryDocScore;
     vector<unsigned int>::iterator TermItr = Tokens.begin();
     //遍历每个单词
     for (;TermItr != Tokens.end(); TermItr++)
@@ -296,41 +360,67 @@ int QueryDocIdByTokensImpl_BM25(vector<unsigned int> &Tokens, unsigned int Page,
                 //如果不是要查询的类别，跳过
                 continue;
             }
-            
+            //查询这个词的TF
             unsigned int tf = IndexIter->second.TFList[docIndex];
             unsigned int DltLen = DocInfoTable.size(); //文档总数量
             unsigned int DocLen = DF;//文档频率
             unsigned int TotalDicSize = Index.size();
             unsigned int CurDocLen = DocInfoTable[docId];
             float Score = CalculateBM25(DocLen, tf, 1, 0, DltLen, CurDocLen, g_AverageDocLen);
+            
+            int contentPos = 0;
             if (QueryDocScore.find(docId) == QueryDocScore.end())
             {
-                QueryDocScore[docId] = Score;
+                //还需要判断该单词是否在content中，是content中才赋值
+                QueryScore QS;
+                QS.totalScore = Score;
+                if (IsInContent(IndexIter->second, docIndex, QueryClass, contentPos))
+                {
+                    
+                    QS.wordId = *TermItr;
+                    QS.curWordScore = Score;
+                    QS.contnetPos = contentPos;
+                }
+                else
+                {
+                    QS.wordId = 0;
+                    QS.curWordScore = 0;
+                    QS.contnetPos = 0;
+                }
+                QueryDocScore[docId] = QS;
             }
             else
             {
-                QueryDocScore[docId] += Score;
+                if (Score > QueryDocScore[docId].curWordScore
+                    && IsInContent(IndexIter->second, docIndex, QueryClass, contentPos))
+                {
+                    QueryDocScore[docId].wordId = *TermItr;
+                    QueryDocScore[docId].curWordScore = Score;
+                    QueryDocScore[docId].contnetPos = contentPos;
+                }
+                QueryDocScore[docId].totalScore += Score;
             }
         }
     }
-    vector<PAIR> DocResult;
-    map<unsigned int, float>::iterator itr = QueryDocScore.begin();
+    vector<PAIR_V2> DocResult;
+    map<unsigned int, QueryScore>::iterator itr = QueryDocScore.begin();
     for (; itr != QueryDocScore.end(); itr++)
     {
-        DocResult.push_back(PAIR(itr->first, itr->second));
+        DocResult.push_back(PAIR_V2(DocWord(itr->first, itr->second.contnetPos), itr->second.totalScore));
     }
     
     //打印结果
     //按照得分高者进行排序
     cout << "sorted by score result\n";
-    sort(DocResult.begin(), DocResult.end(), compare);
+    sort(DocResult.begin(), DocResult.end(), compare_v2);
     for (int i = 0 ; i < DocResult.size(); i++)
     {
-        cout << hex<< DocResult[i].first << ":" << DocResult[i].second << endl;
+        cout << hex<< DocResult[i].first.first << ":" << DocResult[i].second << endl;
     }
     
     ResultCnts = DocResult.size();
     
+    vector<DocWord> Result_V2;
     //提取出对应Page的数据
     unsigned int ResultSize = DocResult.size();
     Page = (Page == 0) ? 0 : Page - 1;
@@ -338,7 +428,11 @@ int QueryDocIdByTokensImpl_BM25(vector<unsigned int> &Tokens, unsigned int Page,
     unsigned int ResultIndexEnd = ResultIndex + PageSize;
     for (; ResultIndex < ResultSize && ResultIndex < ResultIndexEnd ; ResultIndex++)
     {
-        Result.push_back(DocResult[ResultIndex].first);
+        Result.push_back(DocResult[ResultIndex].first.first);
+        //Result_V2.push_back(DocResult[ResultIndex].first);
+        //计算显示的位置
+        //int loc = CalculateLocation(DocResult[ResultIndex].first.first, DocResult[ResultIndex].first.second);
+        Loc.push_back(DocResult[ResultIndex].first.second);
     }
     return 0;
 }
@@ -368,8 +462,9 @@ StructResutlPointer QueryDocIdByTokens(unsigned int Docid1, unsigned int Docid2,
     Tokens.push_back(Docid19);
     Tokens.push_back(Docid20);
     vector<unsigned int> Result;
+    vector<int> Loc;
     unsigned int ResultCnts = 0;
-    unsigned int Ret = QueryDocIdByTokensImpl_BM25(Tokens, Page, PageSize, QueryClass, ResultCnts, Result);
+    unsigned int Ret = QueryDocIdByTokensImpl_BM25(Tokens, Page, PageSize, QueryClass, ResultCnts, Result, Loc);
     StructResutlPointer st = (StructResutlPointer)malloc(sizeof(StructResut));
     st->ResultCnts = ResultCnts; //搜索总结果
     st->PageCnt = Result.size();    //本次搜索结果中的数据
@@ -377,10 +472,12 @@ StructResutlPointer QueryDocIdByTokens(unsigned int Docid1, unsigned int Docid2,
     //搜索结果
     cout << "搜索结果如下\n";
     unsigned int TmpResult[10] = {0,};
+    int tmpLoc[10] = {0,};
     for (int i = 0 ; i < Result.size() && i < 10 ; i++)
     {
         TmpResult[i] = Result[i];
-        cout << Result[i] << endl;
+        tmpLoc[i] = Loc[i];
+        cout << Result[i] << ":loc" << tmpLoc[i] << endl;
     }
     //转移到struct中
     st->Result1 = TmpResult[0];
@@ -393,7 +490,16 @@ StructResutlPointer QueryDocIdByTokens(unsigned int Docid1, unsigned int Docid2,
     st->Result8 = TmpResult[7];
     st->Result9 = TmpResult[8];
     st->Result10 = TmpResult[9];
-    
+    st->Loc1 = tmpLoc[0];
+    st->Loc2 = tmpLoc[1];
+    st->Loc3 = tmpLoc[2];
+    st->Loc4 = tmpLoc[3];
+    st->Loc5 = tmpLoc[4];
+    st->Loc6 = tmpLoc[5];
+    st->Loc7 = tmpLoc[6];
+    st->Loc8 = tmpLoc[7];
+    st->Loc9 = tmpLoc[8];
+    st->Loc10 = tmpLoc[9];
     return st;
 }
 

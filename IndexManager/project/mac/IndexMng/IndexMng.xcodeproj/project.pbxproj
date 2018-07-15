@@ -11,6 +11,7 @@
 		330D03DD20E922DF00779006 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 330D03DA20E922DE00779006 /* main.cpp */; };
 		330D03DE20E922DF00779006 /* IndexInfoRegister.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 330D03DB20E922DE00779006 /* IndexInfoRegister.cpp */; };
 		330D03E320E9292D00779006 /* BM25Score.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 330D03E120E9292D00779006 /* BM25Score.cpp */; };
+		33D8A9FC20FA5093006B786F /* IndexInfoRegister_v2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33D8A9FB20FA5093006B786F /* IndexInfoRegister_v2.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,6 +35,7 @@
 		330D03E020E922FC00779006 /* IndexMng.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IndexMng.h; path = ../../../../pubh/IndexMng.h; sourceTree = "<group>"; };
 		330D03E120E9292D00779006 /* BM25Score.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BM25Score.cpp; path = ../../../../source/BM25Score.cpp; sourceTree = "<group>"; };
 		330D03E220E9292D00779006 /* BM25Score.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BM25Score.h; path = ../../../../source/BM25Score.h; sourceTree = "<group>"; };
+		33D8A9FB20FA5093006B786F /* IndexInfoRegister_v2.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = IndexInfoRegister_v2.cpp; path = ../../../../source/IndexInfoRegister_v2.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +68,7 @@
 		330D03D120E922B900779006 /* IndexMng */ = {
 			isa = PBXGroup;
 			children = (
+				33D8A9FB20FA5093006B786F /* IndexInfoRegister_v2.cpp */,
 				330D03DF20E922FC00779006 /* IndexDLL.h */,
 				330D03E020E922FC00779006 /* IndexMng.h */,
 				330D03DB20E922DE00779006 /* IndexInfoRegister.cpp */,
@@ -136,6 +139,7 @@
 				330D03E320E9292D00779006 /* BM25Score.cpp in Sources */,
 				330D03DC20E922DF00779006 /* IndexMngTester.cpp in Sources */,
 				330D03DD20E922DF00779006 /* main.cpp in Sources */,
+				33D8A9FC20FA5093006B786F /* IndexInfoRegister_v2.cpp in Sources */,
 				330D03DE20E922DF00779006 /* IndexInfoRegister.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
