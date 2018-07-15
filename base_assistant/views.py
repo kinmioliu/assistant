@@ -393,6 +393,7 @@ class SearchResultPage(View):
         query_wordid_list = []
         for word in words:
             print(word)
+            word = word.lower()
             indexs = IndexInfo.objects.filter(word = word)
             if (indexs.count() != 0):
                 print(indexs[0].id)
